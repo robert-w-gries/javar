@@ -1,78 +1,154 @@
 /**
  * Created by rgries on 1/25/15.
  */
+
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class LetterStateMachine {
 
-    private static int state;
-    private static String token;
+    private enum State {
+        START, VALID_ID, CHECK_RESERVED,    // non-terminal states
+        ACCEPT_ID, ACCEPT_RESERVED, ERROR,  // terminal states
+        DONE                                // end state before exiting LetterStateMachine
+    }
 
-    private static final int START = 0,
-            ACCEPT_ID = 1,
-            RESERVED_CLASS = 2,
-            RESERVED_PUBLIC = 3,
-            RESERVED_STATIC = 4,
-            RESERVED_VOID = 5,
-            RESERVED_MAIN = 6,
-            RESERVED_STRING = 7,
-            RESERVED_EXTENDS = 8,
-            RESERVED_RETURN = 9,
-            RESERVED_INT = 10,
-            RESERVED_BOOLEAN = 11,
-            RESERVED_IF = 12,
-            RESERVED_ELSE = 13,
-            RESERVED_WHILE = 14,
-            RESERVED_LENGTH = 15,
-            RESERVED_TRUE = 16,
-            RESERVED_FALSE = 17,
-            RESERVED_THIS = 18,
-            RESERVED_NEW = 19,
-            RESERVED_SYNCHRONIZED = 20,
-            RESERVED_XINU_PRINT = 21,
-            RESERVED_XINU_PRINTLN = 22,
-            RESERVED_XINU_PRINTINT = 23,
-            RESERVED_XINU_READINT = 24,
-            RESERVED_XINU_THREADCREATE = 25,
-            RESERVED_XINU_YIELD = 26,
-            RESERVED_XINU_SLEEP = 27,
-            ACCEPT_RESERVED = 28,
-            VALID_ID = 29,
-            ERROR = 30;
+    private static ArrayList<String> reservedWords = new ArrayList<String>();
 
-    public static void handle(Scanner scanner) {
+    static {
+        reservedWords.add("class");
+        reservedWords.add("public");
+        reservedWords.add("static");
+        reservedWords.add("void");
+        reservedWords.add("main");
+        reservedWords.add("String");
+        reservedWords.add("extends");
+        reservedWords.add("return");
+        reservedWords.add("int");
+        reservedWords.add("boolean");
+        reservedWords.add("if");
+        reservedWords.add("else");
+        reservedWords.add("while");
+        reservedWords.add("length");
+        reservedWords.add("true");
+        reservedWords.add("false");
+        reservedWords.add("this");
+        reservedWords.add("new");
+        reservedWords.add("synchronized");
+        reservedWords.add("Xinu.print");
+        reservedWords.add("Xinu.println");
+        reservedWords.add("Xinu.readint");
+        reservedWords.add("Xinu.threadCreate");
+        reservedWords.add("Xinu.yield");
+        reservedWords.add("Xinu.sleep");
+    }
 
-        state = START;
-        token = "" + scanner.nextChar;
+    public static void handle(Scanner scanner) throws IOException {
 
-        while (!isDone(state)) {
+        State currState = State.START;
+        String token = "";
 
-            switch (state) {
+        while (currState != State.DONE) {
+
+            switch (currState) {
+
+                case START: {
+
+                    // tokens that begin with underscores are invalid
+                    if (scanner.nextChar == '_') {
+                        currState = State.ERROR;
+                    } else {
+                        currState = State.VALID_ID;
+                    }
+
+                    break;
+
+                }
+
+                case CHECK_RESERVED: {
+
+                    // if token is in reservedWords list, then accept it as reserved
+                    if (reservedWords.contains(token)) {
+                        currState = State.ACCEPT_RESERVED;
+                    } else {
+                        currState = State.ACCEPT_ID;
+                    }
+
+                    break;
+
+                }
 
                 case ACCEPT_ID: {
+
                     System.out.println("ID(" + token + ")");
+                    currState = State.DONE;
                     break;
+
                 }
 
                 case ACCEPT_RESERVED: {
+
                     System.out.println(token.toUpperCase());
+                    currState = State.DONE;
                     break;
+
                 }
 
                 case ERROR: {
+                    // loop until white space is reached
+                    while (Scanner.char_classes[scanner.nextChar] != Scanner.ClassType.SPACE &&
+                            (int) scanner.nextChar != -1) {
+                        scanner.nextChar = (char) scanner.fileReader.read();
+                    }
+
                     System.out.println("Illegal token.");
+                    currState = State.DONE;
+
                     break;
+                }
+
+                case VALID_ID: {
+
+                    // add current character to token
+                    token = token + scanner.nextChar;
+
+                    // read in the next byte
+                    scanner.nextChar = (char) scanner.fileReader.read();
+
+                    if ((int) scanner.nextChar == -1) {
+                        return;
+                    }
+
+                    // stop reading in identifier characters when these cases are reached
+                    if (Scanner.char_classes[scanner.nextChar] == Scanner.ClassType.SPACE ||
+                            Scanner.char_classes[scanner.nextChar] == Scanner.ClassType.SPECIAL) {
+
+                        currState = State.CHECK_RESERVED;
+
+                    } else if (Scanner.char_classes[scanner.nextChar] == Scanner.ClassType.INVALID) {
+
+                        currState = State.ERROR;
+
+                    }
+
+                    break;
+
                 }
 
                 default: {
+
                     break;
+
                 }
 
-            }
+            } // end switch
+
         }
 
     }
 
-    public static boolean isDone(int state) {
-        return state == ACCEPT_ID || state == ACCEPT_RESERVED || state == VALID_ID || state == ERROR;
+    public static boolean isDone(State state) {
+        return state == State.ACCEPT_ID || state == State.ACCEPT_RESERVED || state == State.ERROR;
     }
 
 }

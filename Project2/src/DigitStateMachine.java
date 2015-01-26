@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 /**
  * Created by rgries on 1/25/15.
  */
@@ -56,7 +58,7 @@ public class DigitStateMachine {
         stateMachine[IS_OCT_OR_HEX][CLASS_HEX] = ERROR;
     }
 
-    public static void handle(Scanner scanner) {
+    public static void handle(Scanner scanner) throws IOException {
         state = 0;
         token = "" + scanner.nextChar;
 
@@ -70,8 +72,8 @@ public class DigitStateMachine {
                 System.out.println("HEXADECIMAL_LITERAL(" + token + ")");
             }
 
-            scanner.nextChar = (char) scanner.fileScanner.nextByte();
-            if (Scanner.char_classes[scanner.nextChar] != Scanner.DIGITS) {
+            scanner.nextChar = (char) scanner.fileReader.read();
+            if (Scanner.char_classes[scanner.nextChar] != Scanner.ClassType.DIGITS) {
                 if (scanner.nextChar == 'x') continue;
                 else {
                     state = ERROR;
