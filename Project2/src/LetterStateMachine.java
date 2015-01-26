@@ -47,7 +47,8 @@ public class LetterStateMachine {
 
             switch (state) {
 
-                case START: {
+                case ACCEPT_ID: {
+                    System.out.println("ID(" + token + ")");
                     break;
                 }
 
@@ -62,7 +63,6 @@ public class LetterStateMachine {
                 }
 
                 default: {
-                    state = ERROR;
                     break;
                 }
 
@@ -74,4 +74,5 @@ public class LetterStateMachine {
     public static boolean isDone(int state) {
         return state == ACCEPT_ID || state == ACCEPT_RESERVED || state == VALID_ID || state == ERROR;
     }
+
 }
