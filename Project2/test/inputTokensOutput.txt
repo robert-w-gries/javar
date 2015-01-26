@@ -8,6 +8,7 @@ PLUS
 MINUS
 STAR
 FORWARDSLASH
+Illegal token.
 LESSTHAN
 GREATERTHAN
 EQUAL
@@ -23,6 +24,16 @@ LBRACE
 RBRACE
 COMMA
 PERIOD
+SEMICOLON
+Illegal token.
+Illegal token.
+Illegal token.
+Illegal token.
+Illegal token.
+Illegal token.
+Illegal token.
+Illegal token.
+Illegal token.
 CLASS
 PUBLIC
 STATIC
@@ -54,10 +65,10 @@ INTEGER_LITERAL(10)
 ID(identifier)
 OCTAL_LITERAL(01000)
 HEXADECIMAL_LITERAL(0x1000)
+Invalid character in number.
 Invalid character in hex number.
 String not terminated at end of line.
-ID(illegaltoken)
-COMP
-ID(desu)
+Illegal token.
+Invalid character in number.
 Comment not terminated at end of input.
 EOF
