@@ -74,5 +74,6 @@ identifier
 0xgunit
 "abba
 illegaltoken@desu
+abba
 1abba
 /*
