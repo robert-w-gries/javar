@@ -6,7 +6,7 @@
 
  @author Jake Chitel
  @author Rob Gries
- @author Luke Mivshak
+ @author Luke Mivshek
 
  @version 1.0
 
