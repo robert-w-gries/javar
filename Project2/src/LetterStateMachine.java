@@ -14,6 +14,7 @@ public class LetterStateMachine {
     }
 
     private static ArrayList<String> reservedWords = new ArrayList<String>();
+    private static ArrayList<String> xinuReservedWords = new ArrayList<String>();
 
     static {
         reservedWords.add("class");
@@ -35,12 +36,13 @@ public class LetterStateMachine {
         reservedWords.add("this");
         reservedWords.add("new");
         reservedWords.add("synchronized");
-        reservedWords.add("Xinu.print");
-        reservedWords.add("Xinu.println");
-        reservedWords.add("Xinu.readint");
-        reservedWords.add("Xinu.threadCreate");
-        reservedWords.add("Xinu.yield");
-        reservedWords.add("Xinu.sleep");
+        xinuReservedWords.add("Xinu.print");
+        xinuReservedWords.add("Xinu.println");
+        xinuReservedWords.add("Xinu.printint");
+        xinuReservedWords.add("Xinu.readint");
+        xinuReservedWords.add("Xinu.threadCreate");
+        xinuReservedWords.add("Xinu.yield");
+        xinuReservedWords.add("Xinu.sleep");
     }
 
     public static void handle(Scanner scanner) throws IOException {
@@ -68,7 +70,7 @@ public class LetterStateMachine {
                 case CHECK_RESERVED: {
 
                     // if token is in reservedWords list, then accept it as reserved
-                    if (reservedWords.contains(token)) {
+                    if (reservedWords.contains(token) || xinuReservedWords.contains(token)) {
                         currState = State.ACCEPT_RESERVED;
                     } else {
                         currState = State.ACCEPT_ID;
@@ -87,8 +89,11 @@ public class LetterStateMachine {
                 }
 
                 case ACCEPT_RESERVED: {
-
-                    System.out.println(token.toUpperCase());
+                    if (xinuReservedWords.contains(token)) {
+                        System.out.println(token.substring(5).toUpperCase());
+                    } else {
+                        System.out.println(token.toUpperCase());
+                    }
                     currState = State.DONE;
                     break;
 
@@ -117,6 +122,9 @@ public class LetterStateMachine {
 
                     if ((int) scanner.nextChar == -1) {
                         return;
+                    }
+                    if (token.equals("Xinu") && scanner.nextChar == '.') {
+                        break;
                     }
 
                     // stop reading in identifier characters when these cases are reached

@@ -1,38 +1,3 @@
-&&
-||
-&
-|
-^
-~
-+
--
-*
-/
-%
-<
->
-==
-!=
--1
-!
-(
-)
-[
-]
-{
-}
-,
-.
-;
-@
-#
-$
-_
-\
-:
-?
-`
-'
 class
 public
 static
@@ -60,6 +25,8 @@ Xinu.readint
 Xinu.threadCreate
 Xinu.yield
 Xinu.sleep
+
+        test.test
 
 "blah"
 10
