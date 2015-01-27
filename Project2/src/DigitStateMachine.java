@@ -1,88 +1,97 @@
 /**
- * Created by rgries on 1/25/15.
+ * Created by jchitel on 1/25/15.
  */
 public class DigitStateMachine {
-    private static int state;
+    private static State state;
     private static String token;
 
-    private static final int START = 0,
-            ACCEPT_INT = 1,
-            ACCEPT_OCTAL = 2,
-            ACCEPT_HEX = 3,
-            ERROR = 4,
-            IS_OCT_OR_HEX = 5,
-            INT = 6,
-            IS_HEX = 7,
-            HEX = 8,
-            OCTAL = 9;
+    private enum State {
+        START,
+        ACCEPT_INT,
+        ACCEPT_OCTAL,
+        ACCEPT_HEX,
+        ERROR,
+        IS_OCT_OR_HEX,
+        INT,
+        IS_HEX,
+        HEX,
+        OCTAL
+    }
 
-    private static final int CLASS_INVALID = 0,
-            CLASS_0 = 1,
-            CLASS_OCTAL = 2,
-            CLASS_HEX = 3,
-            CLASS_DIGITS = 4,
-            CLASS_X = 5;
+    private enum Class {
+        INVALID,
+        ZERO,
+        OCTAL,
+        HEX,
+        DIGIT,
+        X
+    }
 
-    private static final int[] char_classes = new int[128];
+    private static final Class[] char_classes = new Class[128];
 
     static {
-        char_classes['0'] = CLASS_0;
-        for (int i = 1; i <= 7; ++i) char_classes[i + '0'] = CLASS_OCTAL;
-        for (int i = 8; i <= 9; ++i) char_classes[i + '0'] = CLASS_DIGITS;
+        char_classes['0'] = Class.ZERO;
+        for (char i = '0'; i <= '7'; ++i) char_classes[i] = Class.OCTAL;
+        for (char i = '8'; i <= '9'; ++i) char_classes[i] = Class.DIGIT;
         for (char i = 'A'; i <= 'F'; ++i) {
-            char_classes[i] = CLASS_HEX;
-            char_classes[i + ('A' - 'a')] = CLASS_HEX;
+            char_classes[i] = Class.HEX;
+            char_classes[i + ('A' - 'a')] = Class.HEX;
         }
-        char_classes['x'] = CLASS_X;
-        char_classes['X'] = CLASS_X;
+        char_classes['x'] = Class.X;
+        char_classes['X'] = Class.X;
     }
 
     // [CURRENT STATE][CHARACTER CLASS] -> NEXT STATE
-    private static final int[][] stateMachine = new int[40][6];
+    private static final State[][] stateMachine = new State[40][6];
 
     static {
         //START STATE
-        stateMachine[START][CLASS_INVALID] = ERROR;
-        stateMachine[START][CLASS_0] = IS_OCT_OR_HEX;
-        stateMachine[START][CLASS_OCTAL] = INT;
-        stateMachine[START][CLASS_DIGITS] = INT;
-        stateMachine[START][CLASS_X] = ERROR;
-
+        stateMachine[State.START.ordinal()][Class.INVALID.ordinal()] = State.ERROR;
+        stateMachine[State.START.ordinal()][Class.ZERO.ordinal()] = State.IS_OCT_OR_HEX;
+        stateMachine[State.START.ordinal()][Class.OCTAL.ordinal()] = State.INT;
+        stateMachine[State.START.ordinal()][Class.DIGIT.ordinal()] = State.INT;
+        stateMachine[State.START.ordinal()][Class.HEX.ordinal()] = State.ERROR;
+        stateMachine[State.START.ordinal()][Class.X.ordinal()] = State.ERROR;
         //IS_OCT_OR_HEX STATE
-        stateMachine[IS_OCT_OR_HEX][CLASS_0] = OCTAL;
-        stateMachine[IS_OCT_OR_HEX][CLASS_X] = HEX;
-        stateMachine[IS_OCT_OR_HEX][CLASS_OCTAL] = OCTAL;
-        stateMachine[IS_OCT_OR_HEX][CLASS_DIGITS] = ERROR;
-        stateMachine[IS_OCT_OR_HEX][CLASS_HEX] = ERROR;
+        stateMachine[State.IS_OCT_OR_HEX.ordinal()][Class.ZERO.ordinal()] = State.OCTAL;
+        stateMachine[State.IS_OCT_OR_HEX.ordinal()][Class.X.ordinal()] = State.HEX;
+        stateMachine[State.IS_OCT_OR_HEX.ordinal()][Class.OCTAL.ordinal()] = State.OCTAL;
+        stateMachine[State.IS_OCT_OR_HEX.ordinal()][Class.DIGIT.ordinal()] = State.ERROR;
+        stateMachine[State.IS_OCT_OR_HEX.ordinal()][Class.HEX.ordinal()] = State.ERROR;
     }
 
     public static void handle(Scanner scanner) {
-        state = 0;
+        state = State.START;
         token = "" + scanner.nextChar;
-
         while (!isDone(state)) {
-            state = stateMachine[scanner.nextChar][state];
-            if (state == ACCEPT_INT) {
-                System.out.println("INTEGER_LITERAL(" + token + ")");
-            } else if (state == ACCEPT_OCTAL) {
-                System.out.println("OCTAL_LITERAL(" + token + ")");
-            } else if (state == ACCEPT_HEX) {
-                System.out.println("HEXADECIMAL_LITERAL(" + token + ")");
+            state = nextState(state, scanner.nextChar);
+            switch (state) {
+                case ACCEPT_INT:
+                    System.out.println("INTEGER_LITERAL(" + token + ")");
+                    break;
+                case ACCEPT_OCTAL:
+                    System.out.println("OCTAL_LITERAL(" + token + ")");
+                    break;
+                case ACCEPT_HEX:
+                    System.out.println("HEXADECIMAL_LITERAL(" + token + ")");
+                    break;
             }
-
-            scanner.nextChar = (char) scanner.fileScanner.nextByte();
+            scanner.nextChar = (char)scanner.fileScanner.nextByte();
             if (Scanner.char_classes[scanner.nextChar] != Scanner.DIGITS) {
                 if (scanner.nextChar == 'x') continue;
                 else {
-                    state = ERROR;
+                    state = State.ERROR;
                 }
             }
         }
-
     }
 
-    private static boolean isDone(int state) {
-        return state == ACCEPT_INT || state == ACCEPT_HEX ||
-                state == ACCEPT_OCTAL || state == ERROR;
+    private static State nextState(State currState, char nextChar) {
+        return stateMachine[currState.ordinal()][char_classes[nextChar].ordinal()];
+    }
+
+    private static boolean isDone(State state) {
+        return state == State.ACCEPT_INT || state == State.ACCEPT_HEX ||
+                state == State.ACCEPT_OCTAL || state == State.ERROR;
     }
 }
