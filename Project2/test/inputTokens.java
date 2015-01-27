@@ -66,6 +66,9 @@ Xinu.sleep
 //
 /* */
 identifier
+_identifier
+blah()
+if()
 
 01000
 0x1000
@@ -73,7 +76,7 @@ identifier
 0800
 0xgunit
 "abba
-illegaltoken@desu
+illegal@token
 abba
 1abba
 /*
