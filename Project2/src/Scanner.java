@@ -20,49 +20,60 @@ import java.io.IOException;
 public class Scanner {
 
     public enum ClassType {
-        LETTERS, DIGITS, SPECIAL, SPACE, INVALID
+        INVALID, LETTERS, DIGITS, SPECIAL, SPACE
     }
 
-    public static ClassType[] char_classes = new ClassType[256];
+    public static final char[] DIGITS = new char[]{
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
+    };
+
+    public static final char[] LETTERS = new char[]{
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            '_'
+    };
+
+    public static final char[] WHITE_SPACES = new char[]{
+            ' ', '\t', '\n', '\r'
+    };
+
+    public static final char[] SPECIAL_CHARS = new char[]{
+            '&', '|', '^', '~', '+', '-', '*', '/', '<', '>', '=', '!', '(', ')', '{', '}', '[', ']', ',', '.', ';'
+    };
+
+    public static final ClassType[] char_classes = new ClassType[128];
 
     public char nextChar;
     public BufferedReader fileReader;
 
     public void scan(String filePath) throws IOException {
-
-        FileReader inputFile;
-        try {
-            inputFile = new FileReader(filePath);
-        } catch (FileNotFoundException e) {
-            System.out.println(e.getMessage());
-            return;
-        }
-
-        fileReader = new BufferedReader(inputFile);
+        fileReader = new BufferedReader(new FileReader(filePath));
 
         // read in a char (no actual nextChar() available
         int input = fileReader.read();
         nextChar = (char) input;
 
         // read until EOF
-        while (input != -1) {
+        while (nextChar <= 127) {
 
             ClassType char_class = char_classes[nextChar];
             switch (char_class) {
 
                 case INVALID: {
                     invalidStateMachine();
-                    break;
+                    continue;
                 }
 
                 case LETTERS: {
                     LetterStateMachine.handle(this);
-                    break;
+                    continue;
                 }
 
                 case DIGITS: {
                     DigitStateMachine.handle(this);
-                    break;
+                    continue;
                 }
 
                 case SPECIAL: {
@@ -84,6 +95,7 @@ public class Scanner {
             nextChar = (char) input;
 
         }
+        System.out.println("EOF");
 
     }
 
@@ -106,52 +118,23 @@ public class Scanner {
     }
 
     private static void init_char_class() {
-
-        // initialize all characters to invalid
-        for (int i = 0; i < char_classes.length; i++) {
-            char_classes[i] = ClassType.INVALID;
+        for (int i = 0; i < 128; ++i) char_classes[i] = ClassType.INVALID;
+        // letters
+        for (char c : LETTERS) {
+            char_classes[c] = ClassType.LETTERS;
         }
-
-        // valid letters
-        for (char i = 'a'; i <= 'z'; i++) {
-            char_classes[i] = ClassType.LETTERS;
-            char_classes[i + ('A' - 'a')] = ClassType.LETTERS;
+        // digits
+        for (char c : DIGITS) {
+            char_classes[c] = ClassType.DIGITS;
         }
-        char_classes['_'] = ClassType.LETTERS;
-
-        // valid digits
-        for (char i = '0'; i <= '9'; i++) {
-            char_classes[i] = ClassType.DIGITS;
+        // white space characters
+        for (char c : WHITE_SPACES) {
+            char_classes[c] = ClassType.SPACE;
         }
-
-        // white space character class
-        char_classes[' '] = ClassType.SPACE;
-        char_classes['\t'] = ClassType.SPACE;
-        char_classes['\n'] = ClassType.SPACE;
-        char_classes['\r'] = ClassType.SPACE;
-
-        // Valid non-alphanumeric characters
-        char_classes['&'] = ClassType.SPECIAL;
-        char_classes['|'] = ClassType.SPECIAL;
-        char_classes['^'] = ClassType.SPECIAL;
-        char_classes['~'] = ClassType.SPECIAL;
-        char_classes['+'] = ClassType.SPECIAL;
-        char_classes['-'] = ClassType.SPECIAL;
-        char_classes['*'] = ClassType.SPECIAL;
-        char_classes['/'] = ClassType.SPECIAL;
-        char_classes['<'] = ClassType.SPECIAL;
-        char_classes['>'] = ClassType.SPECIAL;
-        char_classes['='] = ClassType.SPECIAL;
-        char_classes['!'] = ClassType.SPECIAL;
-        char_classes['('] = ClassType.SPECIAL;
-        char_classes[')'] = ClassType.SPECIAL;
-        char_classes['{'] = ClassType.SPECIAL;
-        char_classes['}'] = ClassType.SPECIAL;
-        char_classes['['] = ClassType.SPECIAL;
-        char_classes[']'] = ClassType.SPECIAL;
-        char_classes[','] = ClassType.SPECIAL;
-        char_classes['.'] = ClassType.SPECIAL;
-        char_classes[';'] = ClassType.SPECIAL;
+        // valid non-alphanumeric characters
+        for (char c : SPECIAL_CHARS) {
+            char_classes[c] = ClassType.SPECIAL;
+        }
 
     }
 
