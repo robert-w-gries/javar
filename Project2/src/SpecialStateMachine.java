@@ -190,6 +190,8 @@ public class SpecialStateMachine {
                     if(curr == '"'){
                         stringLiteral = false;
                         System.out.println("STRING_LITERAL(" + token + ")");
+                    }else if(curr == '\n'){
+                        System.out.println("String not terminated at end of line.");
                     }
                     currState = DONE;
                     setCurr(scanner);
