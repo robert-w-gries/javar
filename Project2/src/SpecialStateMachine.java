@@ -124,6 +124,7 @@ public class SpecialStateMachine {
                         newChar = false;
                         continue;
                     }
+                    setCurr(scanner);
                     break;
                 }
 
@@ -141,6 +142,7 @@ public class SpecialStateMachine {
                         newChar = false;
                         continue;
                     }
+                    setCurr(scanner);
                     break;
                 }
 
