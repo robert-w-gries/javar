@@ -17,7 +17,7 @@ public class SpecialStateMachine {
         AND,     // &
         OR,      // |
         QUOTE,   // "
-        COMMENT // /
+        COMMENT  // /
     }
 
     private static final Class[] char_classes = new Class[128];
@@ -77,6 +77,7 @@ public class SpecialStateMachine {
 
                 case OREQUAL: {
                     prev = curr;
+                    newChar = true;
                     prevPrint = true;
                     setCurr(scanner);
                     prevPrint = false;
@@ -104,6 +105,7 @@ public class SpecialStateMachine {
                     }else{
                         print(prev);
                         newChar = false;
+                        setCurr(scanner);
                         continue;
                     }
                     break;
@@ -160,7 +162,7 @@ public class SpecialStateMachine {
                     // Multiline comment terminated at */
                     } else if(curr == '*'){
                         multiComment = true;
-                        while(curr != '/' && !commentEnd){
+                        while(curr != '/' || !commentEnd){
                             setCurr(scanner);
                             if(curr == '*')
                                 commentEnd = true;
@@ -169,6 +171,7 @@ public class SpecialStateMachine {
                         }
                         multiComment = false;
                         currState = DONE;
+                        setCurr(scanner);
                     } else {
                         print(prev);
                         newChar = false;
