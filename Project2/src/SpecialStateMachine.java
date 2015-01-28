@@ -56,10 +56,6 @@ public class SpecialStateMachine {
             switch (char_classes[curr]) {
 
                 case INVALID: {
-                    //while(char_classes[curr] == Class.INVALID){
-                    //    setCurr(scanner);
-                    //}
-                    //System.out.println("Invalid token");
                     currState = DONE;
                     break;
                 }
@@ -192,6 +188,7 @@ public class SpecialStateMachine {
                         stringLiteral = false;
                         System.out.println("STRING_LITERAL(" + token + ")");
                     }else if(curr == '\n'){
+                        stringLiteral = false;
                         System.out.println("String not terminated at end of line.");
                     }
                     currState = DONE;
