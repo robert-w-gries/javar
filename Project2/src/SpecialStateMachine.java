@@ -3,367 +3,324 @@
  */
 public class SpecialStateMachine {
 
-    private static int currState = 0;
+    private static int currState = 1;
 
-    private static final int START  = 0,
-                            DONE  = 1,
-                            ERROR = 2,
-                            OREQ = 3,
-                            BAND = 4,
-                            BOR = 5,
-                            COMMENT_OPEN = 6,
-                            STRING_START = 7;
+    private static boolean prevPrint = false;
+    private static boolean newChar = false;
+    private static boolean commentEnd = false;
+    private static boolean multiComment = false;
+    private static boolean stringLiteral = false;
 
-    /*
-     *   There are only 4 blocks of special chars in the ASCII table,
-     *   33 '!' - 47 '/'    58 ':' - 64 '@'     91 '[' - 96 '`' and
-     *   123 '{' - 126 '~'      These blocks are taken and placed into
-     *   the array after cutting out the other chars. The 32nd index
-     *   just represents non-special chars.
-     *
-     *   ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-     *  | 0  | 1  | 2  | 3  | 4  | 5  | 6  | 7  | 8  | 9  | 10 | 11 | 12 |
-     *  | !  | "  | #  | $  | %  | &  | '  | (  | )  | *  | +  | ,  | -  |
-     *   ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-     *  | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 | 23 | 24 | 25 |
-     *  | .  | /  | :  | ;  | <  | =  | >  | ?  | @  | [  | \  | ]  | ^  |
-     *   ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----
-     *  | 26 | 27 | 28 | 29 | 30 | 31 | 32 | 33 |
-     *  | _  | `  | {  | |  | }  | ~  | '  |!Spc|
-     *   ---- ---- ---- ---- ---- ---- ---- ----
-     *
-     */
+    private enum Class{
+        INVALID, // Invalid chars
+        OTHER,   // Non special chars
+        NORMAL,  // Single special chars without other char matchings
+        OREQUAL, // = or ! could be != or ==
+        AND,     // &
+        OR,      // |
+        QUOTE,   // "
+        COMMENT // /
+    }
 
-    // Only have mappings from the start state, all other cases are handled
-    // in a separate method or are just one or two chars to worry about.
-    private static int[][] next_state = new int[1][34];
+    private static final Class[] char_classes = new Class[128];
+
+    private static final int DONE  = 0, START  = 1;
+
 
     static {
-        for (int i = 0; i < 33; i++) {
-            next_state[START][i] = DONE;
-            i++;
-        }
-        next_state[START][33] = ERROR;
-        next_state[START][0] = OREQ;
-        next_state[START][18] = OREQ;
-        next_state[START][5] = BAND;
-        next_state[START][29] = BOR;
-        next_state[START][14] = COMMENT_OPEN;
-        next_state[START][1] = STRING_START;
-
+        for (int i = 0; i < 128; ++i) char_classes[i] = Class.INVALID;
+        for (char c : Scanner.WHITE_SPACES) char_classes[c] = Class.OTHER;
+        for (char c : Scanner.SPECIAL_CHARS) char_classes[c] = Class.NORMAL;
+        for (char c : Scanner.DIGITS) char_classes[c] = Class.OTHER;
+        for (char c : Scanner.LETTERS) char_classes[c] = Class.OTHER;
+        char_classes['!'] = Class.OREQUAL;
+        char_classes['='] = Class.OREQUAL;
+        char_classes['&'] = Class.AND;
+        char_classes['|'] = Class.OR;
+        char_classes['"'] = Class.QUOTE;
+        char_classes['/'] = Class.COMMENT;
     }
 
     // One char buffer to check things like = vs ==
-    private static char next, prev;
+    private static char curr, prev;
 
     private static String token = "";
 
     public static void handle(Scanner scanner) {
 
-        try {
-            setNext(scanner);
-        }catch(Exception e){
-            System.out.println("EOF");
-        }
+        setCurr(scanner);
+        newChar = true;
 
-        switch(next_state[currState][next]){
-            case DONE:{
-                print(next);
-            }
+        while (currState != DONE) {
+            switch (char_classes[curr]) {
 
-            case OREQ:{
-                prev = next;
-                try {
-                    setNext(scanner);
-                }catch(Exception e){
-                    System.out.println("EOF");
+                case INVALID: {
+                    while(char_classes[curr] == Class.INVALID){
+                        setCurr(scanner);
+                    }
+                    System.out.println("Invalid token");
+                    currState = DONE;
+                    break;
                 }
-                // =
-                if(next == 18){
-                    eq_print(prev);
-                }else{
-                    print(prev);
-                    if(next != 33){
-                        print(next);
+
+                case OTHER: {
+                    currState = DONE;
+                    break;
+                }
+
+                case NORMAL: {
+                    print(curr);
+                    currState = DONE;
+                    break;
+                }
+
+                case OREQUAL: {
+                    prev = curr;
+                    prevPrint = true;
+                    setCurr(scanner);
+                    prevPrint = false;
+                    if(curr == '=') {
+                        switch (prev) {
+                            // !=
+                            case '!': {
+                                System.out.println("NOTEQUAL");
+                                break;
+                            }
+                            // ==
+                            case '=': {
+                                System.out.println("EQUAL");
+                                break;
+                            }
+                            // Other
+                            default: {
+                                //This should never happen
+                                System.out.println("Illegal Token");
+                                break;
+                            }
+                        }
+                        currState = DONE;
                     }else{
-                        // Return char to scanner buffer
+                        newChar = false;
+                        continue;
                     }
+                    break;
                 }
-            }
 
-            case BAND:{
-                prev = next;
-                try {
-                    setNext(scanner);
-                }catch(Exception e){
-                    System.out.println("EOF");
-                }
-                // &
-                if(next == 5){
-                    System.out.println("AND");
-                }else{
-                    print(prev);
-                    if(next != 33){
-                        print(next);
-                    }else{
-                        // Return char to scanner buffer
-                    }
-                }
-            }
 
-            case BOR:{
-                prev = next;
-                try {
-                    setNext(scanner);
-                }catch(Exception e){
-                    System.out.println("EOF");
-                }
-                // |
-                if(next == 29){
-                    System.out.println("OR");
-                }else{
-                    print(prev);
-                    if(next != 33){
-                        print(next);
-                    }else{
-                        // Return char to scanner buffer
+                case AND: {
+                    prev = curr;
+                    prevPrint = true;
+                    setCurr(scanner);
+                    prevPrint = false;
+                    // &
+                    if (curr == '&') {
+                        System.out.println("AND");
+                        currState = DONE;
+                    } else {
+                        print(prev);
+                        newChar = false;
+                        continue;
                     }
+                    break;
                 }
-            }
 
-            case COMMENT_OPEN:{
-                prev = next;
-                try {
-                    setNext(scanner);
-                }catch(Exception e){
-                    System.out.println("EOF");
-                }
-                // /
-                if(next == 14){
-                    singleWait(scanner);
-                // *
-                }else if (next == 9){
-                    multiWait(scanner);
-                }else{
-                    print(prev);
-                    if(next != 33){
-                        print(next);
-                    }else{
-                        // Return char to scanner buffer
+                case OR: {
+                    prev = curr;
+                    prevPrint = true;
+                    setCurr(scanner);
+                    prevPrint = false;
+                    // |
+                    if (curr == '|') {
+                        System.out.println("OR");
+                        currState = DONE;
+                    } else {
+                        print(prev);
+                        newChar = false;
+                        continue;
                     }
+                    break;
                 }
-            }
 
-            case STRING_START:{
-                boolean valid = true;
-                prev = next;
-                while(valid){
-                    try {
-                        next = scanner.nextChar;
-                    }catch(Exception e) {
-                        System.out.println("String not terminated at end of line.");
-                        System.out.println("EOF");
-                        break;
+                case COMMENT: {
+                    prev = curr;
+                    prevPrint = true;
+                    setCurr(scanner);
+                    prevPrint = false;
+                    // Single line comment terminated at newline
+                    if (curr == '/') {
+                        while(curr != '\n'){
+                            setCurr(scanner);
+                        }
+                        currState = DONE;
+                    // Multiline comment terminated at */
+                    } else if(curr == '*'){
+                        multiComment = true;
+                        while(curr != '/' && !commentEnd){
+                            setCurr(scanner);
+                            if(curr == '*')
+                                commentEnd = true;
+                            else if(curr != '/')
+                                commentEnd = false;
+                        }
+                        multiComment = false;
+                        currState = DONE;
+                    } else {
+                        print(prev);
+                        newChar = false;
+                        continue;
                     }
-                    if(next == '\n'){
-                        System.out.println("String not terminated at end of line.");
-                        valid = false;
-                    }else if(next == '"'){
-                        System.out.println("STRING_LITERAL(" + token + ")");
-                        valid = false;
-                    }else{
-                        token += next;
+                    break;
+                }
+
+                case QUOTE: {
+                    stringLiteral = true;
+                    while(curr != '\n'){
+                        setCurr(scanner);
+                        token += curr;
                     }
+                    System.out.println("STRING_LITERAL(" + token + ")");
+                    stringLiteral = false;
+                    currState = DONE;
+                    break;
                 }
             }
         }
     }
 
-    public static void print(int index){
+    private static void print(int index){
         switch (index){
             // !
-            case 0:{
+            case '!':{
                 System.out.println("BANG");
                 break;
             }
             // &
-            case 5:{
+            case '&':{
                 System.out.println("BWAND");
                 break;
             }
             // (
-            case 7:{
+            case '(':{
                 System.out.println("LPAREN");
                 break;
             }
             // )
-            case 8:{
+            case ')':{
                 System.out.println("RPAREN");
                 break;
             }
             // *
-            case 9:{
+            case '*':{
                 System.out.println("STAR");
                 break;
             }
             // +
-            case 10:{
+            case '+':{
                 System.out.println("PLUS");
                 break;
             }
             // ,
-            case 11:{
+            case ',':{
                 System.out.println("COMMA");
                 break;
             }
             // -
-            case 12:{
+            case '-':{
                 System.out.println("MINUS");
                 break;
             }
             // .
-            case 13:{
+            case '.':{
                 System.out.println("PERIOD");
                 break;
             }
             // /
-            case 14:{
+            case '/':{
                 System.out.println("FORWARDSLASH");
                 break;
             }
             // ;
-            case 16:{
+            case ';':{
                 System.out.println("SEMICOLON");
                 break;
             }
             // <
-            case 17:{
+            case '<':{
                 System.out.println("LESSTHAN");
                 break;
             }
             // =
-            case 18:{
+            case '=':{
                 System.out.println("ASSIGN");
                 break;
             }
             // >
-            case 19:{
+            case '>':{
                 System.out.println("GREATERTHAN");
                 break;
             }
             // [
-            case 22: {
+            case '[': {
                 System.out.println("LSQUARE");
                 break;
             }
             // ]
-            case 24:{
+            case ']':{
                 System.out.println("RSQUARE");
                 break;
             }
             // ^
-            case 25:{
+            case '^':{
                 System.out.println("XOR");
                 break;
             }
             // {
-            case 28:{
+            case '{':{
                 System.out.println("LBRACE");
                 break;
             }
             // |
-            case 29:{
+            case '|':{
                 System.out.println("BWOR");
                 break;
             }
             // }
-            case 30:{
+            case '}':{
                 System.out.println("RBRACE");
                 break;
             }
             // ~
-            case 31:{
+            case '~':{
                 System.out.println("COMP");
                 break;
             }
             // Other
             default: {
+                // This should never happen
                 System.out.println("Illegal Token");
-            }
-        }
-    }
-
-    public static void eq_print(int prev){
-
-        switch (prev) {
-            // !=
-            case 0: {
-                System.out.println("NOTEQUAL");
                 break;
             }
-            // ==
-            case 18: {
-                System.out.println("EQUAL");
-                break;
-            }
-            // Other
-            default: {
-                System.out.println("Illegal Token");
-            }
         }
     }
 
-    public static void setNext(Scanner scanner){
-
-        next = scanner.nextChar;
-
-        if(next >= '!' && next <= '/'){
-            next -= 33;
-        }else if(next >= ':'  && next <= '@'){
-            next -= 43;
-        }else if(next >= '[' && next <= '`'){
-            next -= 69;
-        }else if(next >= '{' && next <= '~'){
-            next -= 95;
-        }else{
-            next = 32;
-        }
-
-    }
-
-    public static void singleWait(Scanner scanner){
-        while(next != '\n'){
+    public static void setCurr(Scanner scanner){
+        if(newChar) {
             try {
-                next = scanner.nextChar;
-            }catch(Exception e){
-                System.out.println("EOF");
+                scanner.nextChar = (char) scanner.fileReader.read();
+            } catch (Exception e) {
+                System.out.println("IO Error");
             }
 
-        }
-    }
-
-    public static void multiWait(Scanner scanner){
-        boolean ready = false;
-        while(true){
-            try {
-                next = scanner.nextChar;
-            }catch(Exception e){
-                System.out.println("Comment not terminated at end of input.");
+            if ((int)scanner.nextChar == -1) {
+                if (prevPrint) print(prev);
+                if (multiComment) System.out.println("Comment not terminated at end of input.");
+                if (stringLiteral) System.out.println("String not terminated at end of line.");
                 System.out.println("EOF");
-                break;
-            }
-            if(next == '*'){
-                ready = true;
-            }else if((next == '/') && ready){
-                break;
-            }else{
-                ready = false;
+                System.exit(0);
             }
         }
+        curr = scanner.nextChar;
     }
 
-  /*  public static boolean isLetter(char c){
-        return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
-    }*/
 }
 
