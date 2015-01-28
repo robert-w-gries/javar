@@ -3,7 +3,7 @@
  */
 public class SpecialStateMachine {
 
-    private static int currState = 1;
+    private static int currState = 0;
 
     private static boolean prevPrint = false;
     private static boolean newChar = false;
@@ -24,7 +24,7 @@ public class SpecialStateMachine {
 
     private static final Class[] char_classes = new Class[128];
 
-    private static final int DONE  = 0, START  = 1;
+    private static final int START  = 0, DONE  = 1;
 
 
     static {
@@ -47,7 +47,9 @@ public class SpecialStateMachine {
     private static String token = "";
 
     public static void handle(Scanner scanner) {
-
+        token = "";
+        currState = START;
+        newChar = false;
         setCurr(scanner);
         newChar = true;
 
@@ -71,6 +73,7 @@ public class SpecialStateMachine {
                 case NORMAL: {
                     print(curr);
                     currState = DONE;
+                    setCurr(scanner);
                     break;
                 }
 
@@ -174,13 +177,17 @@ public class SpecialStateMachine {
 
                 case QUOTE: {
                     stringLiteral = true;
-                    while(curr != '\n'){
-                        setCurr(scanner);
+                    setCurr(scanner);
+                    while(curr != '"' && curr != '\n'){
                         token += curr;
+                        setCurr(scanner);
                     }
-                    System.out.println("STRING_LITERAL(" + token + ")");
-                    stringLiteral = false;
+                    if(curr == '"'){
+                        stringLiteral = false;
+                        System.out.println("STRING_LITERAL(" + token + ")");
+                    }
                     currState = DONE;
+                    setCurr(scanner);
                     break;
                 }
             }
@@ -310,8 +317,7 @@ public class SpecialStateMachine {
             } catch (Exception e) {
                 System.out.println("IO Error");
             }
-
-            if ((int)scanner.nextChar == -1) {
+            if ((int)scanner.nextChar  > 127 || (int)scanner.nextChar  < 0) {
                 if (prevPrint) print(prev);
                 if (multiComment) System.out.println("Comment not terminated at end of input.");
                 if (stringLiteral) System.out.println("String not terminated at end of line.");
@@ -320,6 +326,7 @@ public class SpecialStateMachine {
             }
         }
         curr = scanner.nextChar;
+        //System.out.println(curr);
     }
 
 }

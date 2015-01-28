@@ -40,7 +40,7 @@ public class Scanner {
     };
 
     public static final char[] SPECIAL_CHARS = new char[]{
-            '&', '|', '^', '~', '+', '-', '*', '/', '<', '>', '=', '!', '(', ')', '{', '}', '[', ']', ',', '.', ';'
+            '&', '|', '^', '~', '+', '-', '*', '/', '<', '>', '=', '!', '(', ')', '{', '}', '[', ']', ',', '.', ';', '"'
     };
 
     public static final ClassType[] char_classes = new ClassType[128];
@@ -78,7 +78,7 @@ public class Scanner {
 
                 case SPECIAL: {
                     SpecialStateMachine.handle(this);
-                    break;
+                    continue;
                 }
 
                 case SPACE: {
