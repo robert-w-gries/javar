@@ -1,6 +1,4 @@
-/**
- * Created by rgries on 1/25/15.
- */
+
 public class SpecialStateMachine {
 
     private static int currState = 0;
@@ -101,8 +99,10 @@ public class SpecialStateMachine {
                                 break;
                             }
                         }
+                        setCurr(scanner);
                         currState = DONE;
                     }else{
+                        print(prev);
                         newChar = false;
                         continue;
                     }
