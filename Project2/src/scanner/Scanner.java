@@ -1,4 +1,4 @@
-package scanner; /**
+/**
 
  scanner.Scanner.java
 

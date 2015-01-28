@@ -1,4 +1,4 @@
-package scanner; /**
+/**
  * Created by rgries on 1/25/15.
  */
 
