@@ -102,7 +102,7 @@ public class LetterStateMachine {
                 case ERROR: {
                     // loop until white space is reached
                     while (Scanner.char_classes[scanner.nextChar] != Scanner.ClassType.SPACE &&
-                            (int) scanner.nextChar != -1) {
+                            scanner.nextChar <= 127) {
                         scanner.nextChar = (char) scanner.fileReader.read();
                     }
 
@@ -119,9 +119,9 @@ public class LetterStateMachine {
 
                     // read in the next byte
                     scanner.nextChar = (char) scanner.fileReader.read();
-
-                    if ((int) scanner.nextChar == -1) {
-                        return;
+                    if (scanner.nextChar > 127) {
+                        currState = State.CHECK_RESERVED;
+                        break;
                     }
                     if (token.equals("Xinu") && scanner.nextChar == '.') {
                         break;
