@@ -105,7 +105,7 @@ public class Scanner {
         while (input != -1) {
 
             nextChar = (char) fileReader.read();
-            if (char_classes[nextChar] == ClassType.SPACE ||
+            if (nextChar > 127 || char_classes[nextChar] == ClassType.SPACE ||
                     char_classes[nextChar] == ClassType.SPECIAL) {
 
                 System.out.println("Illegal token.");
