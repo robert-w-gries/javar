@@ -55,10 +55,10 @@ public class SpecialStateMachine {
             switch (char_classes[curr]) {
 
                 case INVALID: {
-                    while(char_classes[curr] == Class.INVALID){
-                        setCurr(scanner);
-                    }
-                    System.out.println("Invalid token");
+                    //while(char_classes[curr] == Class.INVALID){
+                    //    setCurr(scanner);
+                    //}
+                    //System.out.println("Invalid token");
                     currState = DONE;
                     break;
                 }
