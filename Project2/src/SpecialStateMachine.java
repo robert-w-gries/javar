@@ -101,8 +101,6 @@ public class SpecialStateMachine {
                         currState = DONE;
                     }else{
                         print(prev);
-                        newChar = false;
-                        setCurr(scanner);
                         continue;
                     }
                     break;
@@ -120,7 +118,6 @@ public class SpecialStateMachine {
                         currState = DONE;
                     } else {
                         print(prev);
-                        newChar = false;
                         continue;
                     }
                     setCurr(scanner);
@@ -138,7 +135,6 @@ public class SpecialStateMachine {
                         currState = DONE;
                     } else {
                         print(prev);
-                        newChar = false;
                         continue;
                     }
                     setCurr(scanner);
