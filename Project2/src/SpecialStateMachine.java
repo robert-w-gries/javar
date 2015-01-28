@@ -77,6 +77,7 @@ public class SpecialStateMachine {
 
                 case OREQUAL: {
                     prev = curr;
+                    newChar = true;
                     prevPrint = true;
                     setCurr(scanner);
                     prevPrint = false;
@@ -104,6 +105,7 @@ public class SpecialStateMachine {
                     }else{
                         print(prev);
                         newChar = false;
+                        setCurr(scanner);
                         continue;
                     }
                     break;
