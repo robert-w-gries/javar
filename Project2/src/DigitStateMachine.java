@@ -24,7 +24,8 @@ public class DigitStateMachine {
         ACCEPT_OCTAL, // completed a valid octal number
         ACCEPT_HEX, // completed a valid hex number
         ILLEGAL, // illegal character found, results in "illegal token."
-        INVALID_NUM, // invalid character found in middle of octal/int, results in "Invalid character in number."
+        INVALID_NUM, // invalid character found in middle of int, results in "Invalid character in number."
+        INVALID_OCT, // invalid character found in middle of octal, results in "Invalid chracter in octal number."
         INVALID_HEX, // invalid character found in middle of hex, results in "Invalid character in hex number."
         SCAN, // error message to be printed, scan to end of token
         DONE // at end of token, print error message
@@ -60,7 +61,7 @@ public class DigitStateMachine {
     }
 
     // [CURRENT STATE][CHARACTER CLASS] -> NEXT STATE
-    private static final State[][] stateMachine = new State[14][8];
+    private static final State[][] stateMachine = new State[15][8];
 
     static {
         //START STATE
@@ -92,12 +93,12 @@ public class DigitStateMachine {
         setNextState(State.INT, Class.ACCEPT, State.ACCEPT_INT); // ### => completed Int
         //OCTAL STATE
         setNextState(State.OCTAL, Class.INVALID, State.ILLEGAL); // "Illegal token."
-        setNextState(State.OCTAL, Class.LETTERS, State.INVALID_NUM); // 0#g.. => "Invalid character in number."
+        setNextState(State.OCTAL, Class.LETTERS, State.INVALID_OCT); // 0#g.. => "Invalid character in octal number."
         setNextState(State.OCTAL, Class.ZERO, State.OCTAL); // 0#0# => Octal
         setNextState(State.OCTAL, Class.OCTAL, State.OCTAL); // 0### => Octal
-        setNextState(State.OCTAL, Class.DIGIT, State.INVALID_NUM); // 0#8.. => "Invalid character in number."
-        setNextState(State.OCTAL, Class.HEX, State.INVALID_NUM); // 0#a.. => "Invalid character in number."
-        setNextState(State.OCTAL, Class.X, State.INVALID_NUM); // 0#x.. => "Invalid character in number."
+        setNextState(State.OCTAL, Class.DIGIT, State.INVALID_OCT); // 0#8.. => "Invalid character in octal number."
+        setNextState(State.OCTAL, Class.HEX, State.INVALID_OCT); // 0#a.. => "Invalid character in octal number."
+        setNextState(State.OCTAL, Class.X, State.INVALID_OCT); // 0#x.. => "Invalid character in octal number."
         setNextState(State.OCTAL, Class.ACCEPT, State.ACCEPT_OCTAL); // 0###, => completed Octal
         //HEX STATE
         setNextState(State.HEX, Class.INVALID, State.ILLEGAL); // "Illegal token."
@@ -162,6 +163,15 @@ public class DigitStateMachine {
         setNextState(State.INVALID_NUM, Class.HEX, State.SCAN); // scan until end of token
         setNextState(State.INVALID_NUM, Class.X, State.SCAN); // scan until end of token
         setNextState(State.INVALID_NUM, Class.ACCEPT, State.DONE); // end of token, done
+        //INVALID_OCT STATE
+        setNextState(State.INVALID_OCT, Class.INVALID, State.SCAN); // scan until end of token
+        setNextState(State.INVALID_OCT, Class.LETTERS, State.SCAN); // scan until end of token
+        setNextState(State.INVALID_OCT, Class.ZERO, State.SCAN); // scan until end of token
+        setNextState(State.INVALID_OCT, Class.OCTAL, State.SCAN); // scan until end of token
+        setNextState(State.INVALID_OCT, Class.DIGIT, State.SCAN); // scan until end of token
+        setNextState(State.INVALID_OCT, Class.HEX, State.SCAN); // scan until end of token
+        setNextState(State.INVALID_OCT, Class.X, State.SCAN); // scan until end of token
+        setNextState(State.INVALID_OCT, Class.ACCEPT, State.DONE); // end of token, done
         //INVALID_HEX STATE
         setNextState(State.INVALID_HEX, Class.INVALID, State.SCAN); // scan until end of token
         setNextState(State.INVALID_HEX, Class.LETTERS, State.SCAN); // scan until end of token
@@ -217,6 +227,9 @@ public class DigitStateMachine {
                     break;
                 case INVALID_NUM:
                     System.out.println("Invalid character in number.");
+                    break;
+                case INVALID_OCT:
+                    System.out.println("Invalid character in octal number.");
                     break;
                 case INVALID_HEX:
                     System.out.println("Invalid character in hex number.");

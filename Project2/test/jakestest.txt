@@ -1,36 +1,3 @@
-~
-!
-^
-&
-&&
-*
-(
-)
--
-+
-=
-==
-!=
-{
-}
-[
-]
-|
-||
-;
-"`@#$%"
-<
-,
->
-.
-/
-//
-/* */
-public static void main(String[] args) {
-    int x = 0;
-    while (x < 45) {
-        Xinu.println(x);
-        x = x + 1;
-    }
-
-}
+089a
+078
+06a
