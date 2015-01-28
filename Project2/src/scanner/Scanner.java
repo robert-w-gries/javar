@@ -1,6 +1,6 @@
-/**
+package scanner; /**
 
- Scanner.java
+ scanner.Scanner.java
 
  Performs lexical analysis to convert MiniJava code into lexical tokens.
 
@@ -12,7 +12,6 @@
 
  */
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;

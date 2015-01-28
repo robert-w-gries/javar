@@ -1,3 +1,4 @@
+package scanner;
 
 public class SpecialStateMachine {
 

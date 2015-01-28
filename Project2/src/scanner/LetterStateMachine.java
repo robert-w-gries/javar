@@ -1,4 +1,4 @@
-/**
+package scanner; /**
  * Created by rgries on 1/25/15.
  */
 
@@ -10,7 +10,7 @@ public class LetterStateMachine {
     private enum State {
         START, VALID_ID, CHECK_RESERVED,    // non-terminal states
         ACCEPT_ID, ACCEPT_RESERVED, ERROR,  // terminal states
-        DONE                                // end state before exiting LetterStateMachine
+        DONE                                // end state before exiting scanner.LetterStateMachine
     }
 
     private static ArrayList<String> reservedWords = new ArrayList<String>();
