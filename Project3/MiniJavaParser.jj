@@ -179,7 +179,7 @@ void MainClassDeclaration(LinkedList<ClassDecl> classList) : {
 } {
 	name = ClassName() "{"
 		"public" "static" "void" "main" "(" "String" "[" "]" argsId = <ID> ")" "{"
-			LOOKAHEAD(2) ( VarDeclaration(localsList) )*
+			( LOOKAHEAD(2) VarDeclaration(localsList) )*
 			( Statement(statements) )*
 		"}"
 	"}"
@@ -249,7 +249,7 @@ void MethodDeclaration(LinkedList<MethodDecl> methods) : {
 	"public" returnType = Type() id = <ID> "(" [ "synchronized" { sync = true; } ] 
 		[ paramType = Type() paramId = <ID> { params.add(new Formal(paramType, paramId.image)); }
 		( "," paramType = Type() paramId = <ID> { params.add(new Formal(paramType, paramId.image)); } )* ] ")" "{"
-		LOOKAHEAD(2) ( VarDeclaration(locals) )*
+		( LOOKAHEAD(2) VarDeclaration(locals) )*
 		( Statement(statements) )*
 		"return" returnVal = Expression() ";"
 	"}"
@@ -264,7 +264,7 @@ void VoidDeclaration(LinkedList<MethodDecl> methods) : {
 	LinkedList<Stmt> statements = new LinkedList<Stmt>();
 } {
 	"public" "void" id = <ID> "(" ")" "{"
-		LOOKAHEAD(2) ( VarDeclaration(locals) )*
+		( LOOKAHEAD(2) VarDeclaration(locals) )*
 		( Statement(statements) )*
 	"}"
 	
