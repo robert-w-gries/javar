@@ -203,7 +203,7 @@ void ClassDeclaration(LinkedList<ClassDecl> classList) : {
 		( FieldDeclaration(fields) | MethodDeclaration(methods) | VoidDeclaration(methods) )*
 	"}"
 	
-	{ classList.add(new ClassDecl(name, parent == null ? null : parent.image, fields, methods); }
+	{ classList.add(new ClassDecl(name, parent == null ? null : parent.image, fields, methods)); }
 }
 
 // ThreadDeclaration ::= ClassName "extends" "Thread" "{" ( FieldDeclaration | MethodDeclaration | VoidDeclaration )* "}"
