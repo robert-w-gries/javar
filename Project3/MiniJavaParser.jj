@@ -35,6 +35,8 @@ TOKEN :
 | < ")" >
 | < "[" >
 | < "]" >
+| < "{" >
+| < "}" >
 | < "." >
 | < "-" >
 | < "!" >
@@ -57,6 +59,7 @@ TOKEN :
 | < "String" >
 | < "class" >
 | < "extends" >
+| < "Thread" >
 | < "synchronized" >
 | < "return" >
 | < "if" >
