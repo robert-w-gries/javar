@@ -518,13 +518,13 @@ Expr Expression7() : {
 	Token id;
 	LinkedList<Expr> params = new LinkedList<Expr>();
 } {
-	( left = Expression8() right = Expression7Prime(left) { type = "arrayindex"; }
+	( left = Expression8() right = Expression7Prime(left) { type = "arrayormember"; }
 	| "(" left = Expression() ")" { type = "paren"; } )
 	
 	{
-		if (type.equals("arrayindex")) {
+		if (type.equals("arrayormember")) {
 			if (right == null) return left;
-			else right;
+			else return right;
 		} else if (type.equals(paren)) return left;
 		else /* member */ {
 			if (params.size() == 0) return new FieldExpr(left, id.image);
@@ -533,20 +533,22 @@ Expr Expression7() : {
 	}
 }
 
-// Expression7'			::= "[" Expression "]" Expression7'
-// 						|   epsilon
+// Expression7' ::= "[" Expression "]" Expression7'
+//              |   ( "." Expression )? "." <ID> ( MethodCall )? Expression7'
+//              |   epsilon
 Expr Expression7Prime(Expr left) : {
 	Expr right = null;
 	String type;
+	Token id = null;
 } {
 	( "[" right = Expression() "]" Expression7Prime(null) { type = "arrayindex"; }
-	| "." right = Expression() [ MethodCall(params) ] Expression7Prime(null) { type = "member"; }
+	| [ "." right = Expression() ] "." id = <ID> [ MethodCall(params) ] Expression7Prime(null) { type = "member"; }
 	| epsilon() )
 	
 	{
 		if (right == null) return null;
 		else if (type.equals("arrayindex")) return new ArrayExpr(left, right);
-		else /* member */ return new FieldExpr(left, null);
+		else /* member */ return new FieldExpr(left, id.image);
 	}
 }
 
