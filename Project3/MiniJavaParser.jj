@@ -217,7 +217,7 @@ void ThreadDeclaration(LinkedList<ClassDecl> classList) : {
 	LinkedList<MethodDecl> methods = new LinkedList<MethodDecl>();
 } {
 	name = ClassName() "extends" "Thread" "{"
-		( LOOKAHEAD(2) FieldDeclaration(fields) | MethodDeclaration(methods) | VoidDeclaration(methods) )*
+		( FieldDeclaration(fields) | LOOKAHEAD(2) MethodDeclaration(methods) | VoidDeclaration(methods) )*
 	"}"
 	
 	{ classList.add(new ThreadDecl(name, fields, methods)); }
@@ -309,7 +309,7 @@ Type Type() : {
 int TypePrime() : {
 	int dimensions = 0;
 } {
-	( LOOKAHEAD(2) ( "[" "]" { dimensions++; } )+ TypePrime()
+	( ( LOOKAHEAD(2) "[" "]" { dimensions++; } )+ TypePrime()
 	| epsilon() )
 	
 	{ return dimensions; }
@@ -327,10 +327,10 @@ void Statement(LinkedList<Stmt> statements) : {
 	Token xinuId = null;
 	String type;
 } {
-	( LOOKAHEAD(3) "{" ( Statement(innerStatements) )* "}" { type = "block"; }
-	| "if" "(" innerExpr1 = Expression() ")" Statement(innerStatements) [ "else" Statement(innerStatements) ] { type = "if"; }
+	( "{" ( Statement(innerStatements) )* "}" { type = "block"; }
+	| "if" "(" innerExpr1 = Expression() ")" Statement(innerStatements) [ LOOKAHEAD(2) "else" Statement(innerStatements) ] { type = "if"; }
 	| "while" "(" innerExpr1 = Expression() ")" Statement(innerStatements) { type = "while"; }
-	| "Xinu" "." xinuId = <ID> MethodCall(innerExpressions) ";" { type = "xinu"; }
+	| LOOKAHEAD(3) "Xinu" "." xinuId = <ID> MethodCall(innerExpressions) ";" { type = "xinu"; }
 	| innerExpr1 = Expression() "=" innerExpr2 = Expression() ";" { type = "assign"; } )
 	
 	{
@@ -543,7 +543,7 @@ Expr Expression7Prime(Expr left) : {
 	Token id = null;
 } {
 	( "[" right = Expression() "]" Expression7Prime(null) { type = "arrayindex"; }
-	| LOOKAHEAD(2) [ "." right = Expression() ] "." id = <ID> [ MethodCall(params) ] Expression7Prime(null) { type = "member"; }
+	| [ LOOKAHEAD(2) "." right = Expression() ] "." id = <ID> [ MethodCall(params) ] Expression7Prime(null) { type = "member"; }
 	| epsilon() )
 	
 	{
@@ -579,7 +579,7 @@ Expr Expression8() : {
 	String exprType;
 } {
 	( LOOKAHEAD(3) type = NewDecl() "(" ")" { exprType = "newobj"; }
-	| type = NewDecl() "[" ( expr = Expression() { exprs.add(expr); } ) "]" ( "[" "]" )* { exprType = "newarr"; }
+	| type = NewDecl() "[" ( expr = Expression() { exprs.add(expr); } ) "]" ( LOOAHEAD(2) "[" "]" )* { exprType = "newarr"; }
 	| "Xinu" "." xinuId = <ID> MethodCall(exprs) { exprType = "xinu"; }
 	| terminal = <ID> { exprType = "id"; }
 	| terminal = <INT> { exprType = "int"; }
