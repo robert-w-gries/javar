@@ -204,7 +204,7 @@ void ClassDeclaration(LinkedList<ClassDecl> classList) : {
 	LinkedList<MethodDecl> methods = new LinkedList<MethodDecl>();
 } {
 	name = ClassName() [ "extends" parent = <ID> ] "{"
-		( FieldDeclaration(fields) | MethodDeclaration(methods) | VoidDeclaration(methods) )*
+		( FieldDeclaration(fields) | LOOKAHEAD(2) MethodDeclaration(methods) | VoidDeclaration(methods) )*
 	"}"
 	
 	{ classList.add(new ClassDecl(name, parent == null ? null : parent.image, fields, methods)); }
