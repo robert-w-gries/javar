@@ -154,7 +154,8 @@ Program Goal() : {
 	// Variable declarations go here
 	LinkedList<ClassDecl> classList = new LinkedList<ClassDecl>();
 } {
-	MainClassDeclaration(classList) ( ClassDeclaration(classList) | ThreadDeclaration(classList) )*
+	MainClassDeclaration(classList) 
+	( LOOKAHEAD(4) ClassDeclaration(classList) | ThreadDeclaration(classList) )*
 	<EOF>
 	
 	{ return new Program(classList); }
