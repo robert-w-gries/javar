@@ -1,0 +1,5 @@
+THINGS THAT NEED TO BE ADDRESSED
+--------------------------------
+
+- I have not yet found a way to handle dot notation properly. The problem is that a chain of dot expressions (ex. System.out.println) has to end in an <ID>, but you still need to capture all nested field expressions in the chain. I can capture indefinite dot expressions, but I will only end up creating one field expression for the left most expression and the last <ID>. I'm not sure how to fix this.
+- For those who weren't in class or were asleep during class, the visit() and accept() methods are part of a design pattern called the "visitor" pattern which separates out the asbtract syntax tree logic from the logic that will "handle" the tree. visit(thing) will call accept() on "thing"'s fields, and accept(vis) will call vis.visit(this). This pattern results in a switching between calls to visit() and accept(). Look at brylow's Demos/ directory for examples.
