@@ -179,7 +179,7 @@ void MainClassDeclaration(LinkedList<ClassDecl> classList) : {
 } {
 	name = ClassName() "{"
 		"public" "static" "void" "main" "(" "String" "[" "]" argsId = <ID> ")" "{"
-			( VarDeclaration(localsList) )*
+			LOOKAHEAD(2) ( VarDeclaration(localsList) )*
 			( Statement(statements) )*
 		"}"
 	"}"
@@ -204,7 +204,7 @@ void ClassDeclaration(LinkedList<ClassDecl> classList) : {
 	LinkedList<MethodDecl> methods = new LinkedList<MethodDecl>();
 } {
 	name = ClassName() [ "extends" parent = <ID> ] "{"
-		( FieldDeclaration(fields) | MethodDeclaration(methods) | VoidDeclaration(methods) )*
+		( LOOKAHEAD(2) FieldDeclaration(fields) | MethodDeclaration(methods) | VoidDeclaration(methods) )*
 	"}"
 	
 	{ classList.add(new ClassDecl(name, parent == null ? null : parent.image, fields, methods)); }
@@ -217,7 +217,7 @@ void ThreadDeclaration(LinkedList<ClassDecl> classList) : {
 	LinkedList<MethodDecl> methods = new LinkedList<MethodDecl>();
 } {
 	name = ClassName() "extends" "Thread" "{"
-		( FieldDeclaration(fields) | MethodDeclaration(methods) | VoidDeclaration(methods) )*
+		( LOOKAHEAD(2) FieldDeclaration(fields) | MethodDeclaration(methods) | VoidDeclaration(methods) )*
 	"}"
 	
 	{ classList.add(new ThreadDecl(name, fields, methods)); }
@@ -249,7 +249,7 @@ void MethodDeclaration(LinkedList<MethodDecl> methods) : {
 	"public" returnType = Type() id = <ID> "(" [ "synchronized" { sync = true; } ] 
 		[ paramType = Type() paramId = <ID> { params.add(new Formal(paramType, paramId.image)); }
 		( "," paramType = Type() paramId = <ID> { params.add(new Formal(paramType, paramId.image)); } )* ] ")" "{"
-		( VarDeclaration(locals) )*
+		LOOKAHEAD(2) ( VarDeclaration(locals) )*
 		( Statement(statements) )*
 		"return" returnVal = Expression() ";"
 	"}"
@@ -264,7 +264,7 @@ void VoidDeclaration(LinkedList<MethodDecl> methods) : {
 	LinkedList<Stmt> statements = new LinkedList<Stmt>();
 } {
 	"public" "void" id = <ID> "(" ")" "{"
-		( VarDeclaration(locals) )*
+		LOOKAHEAD(2) ( VarDeclaration(locals) )*
 		( Statement(statements) )*
 	"}"
 	
@@ -309,7 +309,7 @@ Type Type() : {
 int TypePrime() : {
 	int dimensions = 0;
 } {
-	( ( "[" "]" { dimensions++; } )+ TypePrime()
+	( LOOKAHEAD(2) ( "[" "]" { dimensions++; } )+ TypePrime()
 	| epsilon() )
 	
 	{ return dimensions; }
@@ -327,7 +327,7 @@ void Statement(LinkedList<Stmt> statements) : {
 	Token xinuId = null;
 	String type;
 } {
-	( "{" ( Statement(innerStatements) )* "}" { type = "block"; }
+	( LOOKAHEAD(3) "{" ( Statement(innerStatements) )* "}" { type = "block"; }
 	| "if" "(" innerExpr1 = Expression() ")" Statement(innerStatements) [ "else" Statement(innerStatements) ] { type = "if"; }
 	| "while" "(" innerExpr1 = Expression() ")" Statement(innerStatements) { type = "while"; }
 	| "Xinu" "." xinuId = <ID> MethodCall(innerExpressions) ";" { type = "xinu"; }
@@ -543,7 +543,7 @@ Expr Expression7Prime(Expr left) : {
 	Token id = null;
 } {
 	( "[" right = Expression() "]" Expression7Prime(null) { type = "arrayindex"; }
-	| [ "." right = Expression() ] "." id = <ID> [ MethodCall(params) ] Expression7Prime(null) { type = "member"; }
+	| LOOKAHEAD(2) [ "." right = Expression() ] "." id = <ID> [ MethodCall(params) ] Expression7Prime(null) { type = "member"; }
 	| epsilon() )
 	
 	{
@@ -578,7 +578,7 @@ Expr Expression8() : {
 	Token terminal = null;
 	String exprType;
 } {
-	( type = NewDecl() "(" ")" { exprType = "newobj"; }
+	( LOOKAHEAD(3) type = NewDecl() "(" ")" { exprType = "newobj"; }
 	| type = NewDecl() "[" ( expr = Expression() { exprs.add(expr); } ) "]" ( "[" "]" )* { exprType = "newarr"; }
 	| "Xinu" "." xinuId = <ID> MethodCall(exprs) { exprType = "xinu"; }
 	| terminal = <ID> { exprType = "id"; }
