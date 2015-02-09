@@ -1,0 +1,60 @@
+Goal					::=	MainClassDeclaration ( ClassDeclaration | ThreadDeclaration )* <EOF>
+ClassName				::= "class" <ID>
+MainClassDeclaration	::=	ClassName "{" "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")" "{" ( VarDeclaration )* ( Statement )* "}" "}"
+ClassDeclaration		::=	ClassName ( "extends" <ID> )? "{" ( FieldDeclaration | MethodDeclaration | VoidDeclaration )* "}"
+ThreadDeclaration		::=	ClassName "extends" "Thread" "{" ( FieldDeclaration | MethodDeclaration | VoidDeclaration )* "}"
+VarDeclaration			::=	Type <ID> ( "=" Expression )? ";"
+MethodDeclaration		::=	"public" Type <ID> "(" ( "synchronized" )? ( Type <ID> ( "," Type <ID> )* )? ")" "{" ( VarDeclaration )* ( Statement )* "return" Expression ";" "}"
+VoidDeclaration			::=	"public" "void" <ID> "(" ")" "{" ( VarDeclaration )* ( Statement )* "}"
+FieldDeclaration		::=	Type <ID> ";"
+Type					::=	Type ( "[" "]" )*
+						|	"boolean"
+						|	"int"
+						|	<ID>
+Statement				::=	"{" ( Statement )* "}"
+						|	"if" "(" Expression ")" Statement ( "else" Statement )?
+						|	"while" "(" Expression ")" Statement
+						|	"Xinu" "." <ID> "(" ( Expression ( "," Expression )* )? ")" ";"
+						|	Expression "=" Expression ";"
+Expression				::= Expression1 Expression'
+Expression'				::= "||" Expression1 Expression'
+						|   epsilon
+Expression1				::= Expression2 Expression1'
+Expression1'			::= "&&" Expression2 Expression1'
+						|   epsilon
+Expression2				::= Expression3 Expression2'
+Expression2'			::= "==" Expression3 Expression2'
+						|   "!=" Expression3 Expression2'
+						|   epsilon
+Expression3				::= Expression4 Expression3'
+Expression3'			::= "<" Expression4 Expression3'
+						|   ">" Expression4 Expression3'
+						|   epsilon
+Expression4				::= Expression5 Expression4'
+Expression4'			::= "+" Expression5 Expression4'
+						|   "-" Expression5 Expression4'
+						|   epsilon
+Expression5				::= Expression6 Expression5'
+Expression5'			::= "*" Expression6 Expression5'
+						|   "/" Expression6 Expression5'
+						|   epsilon
+Expression6				::=	"-" Expression
+						|	"!" Expression
+						|   Expression7
+Expression7				::=	Expression8 Expression7'
+						|	"(" Expression ")"
+						|	Expression "." <ID> ( MethodCall )?
+Expression7'			::= "[" Expression "]"
+						|   epsilon
+MethodCall				::= "(" ( Expression ( "," Expression )* )? ")"
+Expression8				::=	NewDecl "(" ")"
+						|	NewDecl "[" Expression "]" ( "[" "]" )*
+						|	"Xinu" "." <ID> "(" ( Expression ( "," Expression )* )? ")"
+						|	<ID>
+						|	<INT>
+						|	<STRING>
+						|	"true"
+						|	"false"
+						|	"this"
+						|	"null"
+NewDecl					::= "new" Type
