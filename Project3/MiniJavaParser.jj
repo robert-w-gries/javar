@@ -305,7 +305,7 @@ Type Type() : {
 int TypePrime() : {
 	int dimensions = 0;
 } {
-	( ( "[" "]" { dimensions++; } )* TypePrime()
+	( ( "[" "]" { dimensions++; } )+ TypePrime()
 	| epsilon() )
 	
 	{ return dimensions; }
@@ -508,7 +508,7 @@ Expr Expression6() : {
 
 // Expression7 ::=	Expression8 Expression7'
 //             |    "(" Expression ")"
-//             |    Expression "." <ID> ( MethodCall )?
+//             |    Expression8 "." Expression ( MethodCall )?
 Expr Expression7() : {
 	Expr left, right;
 	String type;
@@ -516,8 +516,7 @@ Expr Expression7() : {
 	LinkedList<Expr> params = new LinkedList<Expr>();
 } {
 	( left = Expression8() right = Expression7Prime(left) { type = "arrayindex"; }
-	| "(" left = Expression() ")" { type = "paren"; }
-	| left = Expression() "." id = <ID> [ MethodCall(params) ] { type = "member"; } )
+	| "(" left = Expression() ")" { type = "paren"; } )
 	
 	{
 		if (type.equals("arrayindex")) {
@@ -535,13 +534,16 @@ Expr Expression7() : {
 // 						|   epsilon
 Expr Expression7Prime(Expr left) : {
 	Expr right = null;
+	String type;
 } {
-	( "[" right = Expression() "]" Expression7Prime(null)
+	( "[" right = Expression() "]" Expression7Prime(null) { type = "arrayindex"; }
+	| "." right = Expression() [ MethodCall(params) ] Expression7Prime(null) { type = "member"; }
 	| epsilon() )
 	
 	{
 		if (right == null) return null;
-		else return new ArrayExpr(left, right);
+		else if (type.equals("arrayindex")) return new ArrayExpr(left, right);
+		else /* member */ return new FieldExpr(left, null);
 	}
 }
 
