@@ -1,7 +1,7 @@
 PARSER_BEGIN(MiniJavaParser)
 package Parser;
 import java.util.LinkedList;
-import Absyn.*;
+import absyn.*;
 public class MiniJavaParser {
 } 
 PARSER_END(MiniJavaParser)
@@ -281,16 +281,16 @@ void FieldDeclaration(LinkedList<VarDecl> fields) : {
 	{ fields.add(new VarDecl(type, id.image, null)); }
 }
 
-// Type ::= <ID> Type'
-//      |   "boolean" Type'
-//      |   "int" Type'
+// Type ::= <ID> ( "[" "]" )*
+//      |   "boolean" ( "[" "]" )*
+//      |   "int" ( "[" "]" )*
 Type Type() : {
 	Token id;
-	int arrayTypeDimensions;
+	int dimensions = 0;
 	boolean isBool = false, isInt = false;
 } {
 	( id = <ID> | "boolean" { isBool = true; } | "int" { isInt = true; } )
-	arrayTypeDimensions = TypePrime()
+	( LOOKAHEAD(2) "[" "]" { dimensions++; } )*
 	
 	{
 		Type t;
@@ -302,17 +302,6 @@ Type Type() : {
 		}
 		return t;
 	}
-}
-
-// Type' ::= ( "[" "]" )* Type'
-//       |   epsilon
-int TypePrime() : {
-	int dimensions = 0;
-} {
-	( ( LOOKAHEAD(2) "[" "]" { dimensions++; } )+ TypePrime()
-	| epsilon() )
-	
-	{ return dimensions; }
 }
 
 // Statement ::= "{" ( Statement )* "}"
@@ -344,163 +333,97 @@ void Statement(LinkedList<Stmt> statements) : {
 	}
 }
 
-// Expression ::= Expression1 Expression'
+// Expression ::= Expression1 ( "||" Expression1 )?
 Expr Expression() : {
-	Expr left, right;
+	Expr left, right = null;
 } {
-	left = Expression1() right = ExpressionPrime(left)
+	left = Expression1() [ "||" right = Expression1() ]
 	
-	{ if (right == null) return left; else return right; }
+	{ if (right == null) return left; else return new OrExpr(left, right); }
 }
 
-// Expression' ::= "||" Expression1 Expression'
-//             |   epsilon
-Expr ExpressionPrime(Expr left) : {
-	Expr right = null;
-} {
-	( "||" right = Expression1() ExpressionPrime(null)
-	| epsilon() )
-	
-	{ if (right == null) return null; else return new OrExpr(left, right); }
-}
-
-// Expression1 ::= Expression2 Expression1'
+// Expression1 ::= Expression2 ( "&&" Expression2 )?
 Expr Expression1() : {
-	Expr left, right;
+	Expr left, right = null;
 } {
-	left = Expression2() right = Expression1Prime(left)
+	left = Expression2() [ "&&" right = Expression2() ]
 	
-	{ if (right == null) return left; else return right; }
+	{ if (right == null) return left; else return new AndExpr(left, right); }
 }
 
-// Expression1' ::= "&&" Expression2 Expression1'
-//              |   epsilon
-Expr Expression1Prime(Expr left) : {
-	Expr right = null;
-} {
-	( "&&" right = Expression2() Expression1Prime(null)
-	| epsilon() )
-	
-	{ if (right == null) return null; else return new AndExpr(left, right); }
-}
-
-// Expression2 ::= Expression3 Expression2'
+// Expression2 ::= Expression3 ( "==" Expression3 )?
+//			   |   Expression3 ( "!=" Expression3 )?
 Expr Expression2() : {
-	Expr left, right;
-} {
-	left = Expression3() right = Expression2Prime(left)
-	
-	{ if (right == null) return left; else return right; }
-}
-
-// Expression2' ::= "==" Expression3 Expression2'
-//              |   "!=" Expression3 Expression2'
-//              |   epsilon
-Expr Expression2Prime(Expr left) : {
-	Expr right = null;
+	Expr left, right = null;
 	String type;
 } {
-	( "==" right = Expression3() Expression2Prime(null) { type = "equal"; }
-	| "!=" right = Expression3() Expression2Prime(null) { type = "notequal"; }
-	| epsilon() )
+	( left = Expression3() [ "==" right = Expression3() { type = "equal"; } ]
+	| left = Expression3() [ "!=" right = Expression3() { type = "notequal"; } ] )
 	
-	{ 
-		if (right == null) return null; 
-		else if (type.equals("equal")) return new EqualExpr(left, right); 
+	{
+		if (right == null) return left;
+		else if (type.equals("equal")) return new EqualExpr(left, right);
 		else /* notequal */ return new NotEqExpr(left, right);
 	}
 }
 
-// Expression3 ::= Expression4 Expression3'
+// Expression3 ::= Expression4 ( "<" Expression4 )?
+//			   |   Expression4 ( ">" Expression4 )?
 Expr Expression3() : {
-	Expr left, right;
-} {
-	left = Expression4() right = Expression3Prime(left)
-	
-	{ if (right == null) return left; else return right; }
-}
-
-// Expression3' ::= "<" Expression4 Expression3'
-//              |   ">" Expression4 Expression3'
-//              |   epsilon
-Expr Expression3Prime(Expr left) : {
-	Expr right = null;
+	Expr left, right = null;
 	String type;
 } {
-	( "<" right = Expression4() Expression3Prime(null) { type = "less"; }
-	| ">" right = Expression4() Expression3Prime(null) { type = "greater"; }
-	| epsilon() )
+	( left = Expression4() [ "<" right = Expression4() { type = "less"; } ]
+	| left = Expression4() [ ">" right = Expression4() { type = "greater"; } ] )
 	
-	{ 
-		if (right == null) return null; 
-		else if (type.equals("less")) return new LesserExpr(left, right); 
+	{
+		if (right == null) return left;
+		else if (type.equals("less")) return new LesserExpr(left, right);
 		else /* greater */ return new GreaterExpr(left, right);
 	}
 }
 
-// Expression4 ::= Expression5 Expression4'
+// Expression4 ::= Expression5 ( "+" Expression5 )?
+//			   |   Expression5 ( "-" Expression5 )?
 Expr Expression4() : {
-	Expr left, right;
-} {
-	left = Expression5() right = Expression4Prime(left)
-	
-	{ if (right == null) return left; else return right; }
-}
-
-// Expression4' ::= "+" Expression5 Expression4'
-//              |   "-" Expression5 Expression4'
-//              |   epsilon
-Expr Expression4Prime(Expr left) : {
-	Expr right = null;
+	Expr left, right = null;
 	String type;
 } {
-	( "+" right = Expression5() Expression4Prime(null) { type = "plus"; }
-	| "-" right = Expression5() Expression4Prime(null) { type = "minus"; }
-	| epsilon() )
+	( left = Expression5() [ "+" right = Expression5() { type = "plus"; } ]
+	| left = Expression5() [ "-" right = Expression5() { type = "minus"; } ] )
 	
-	{ 
-		if (right == null) return null; 
-		else if (type.equals("plus")) return new AddExpr(left, right); 
+	{
+		if (right == null) return left;
+		else if (type.equals("plus")) return new AddExpr(left, right);
 		else /* minus */ return new SubExpr(left, right);
 	}
 }
 
-// Expression5 ::= Expression6 Expression5'
+// Expression5 ::= Expression6 ( "*" Expression6 )?
+//			   |   Expression6 ( "/" Expression6 )?
 Expr Expression5() : {
-	Expr left, right;
-} {
-	left = Expression6() right = Expression5Prime(left)
-	
-	{ if (right == null) return left; else return right; }
-}
-
-// Expression5' ::= "*" Expression6 Expression5'
-//              |   "/" Expression6 Expression5'
-//              |   epsilon
-Expr Expression5Prime(Expr left) : {
-	Expr right = null;
+	Expr left, right = null;
 	String type;
 } {
-	( "*" right = Expression6() Expression5Prime(null) { type = "times"; }
-	| "/" right = Expression6() Expression5Prime(null) { type = "div"; }
-	| epsilon() )
-	
-	{ 
-		if (right == null) return null; 
-		else if (type.equals("times")) return new MulExpr(left, right); 
-		else /* div */ return new DivExpr(left, right);
-	}
+	( left = Expression6() [ "*" right = Expression6() { type = "times"; } ]
+    | left = Expression6() [ "/" right = Expression6() { type = "div"; } ] )
+
+    {
+    	if (right == null) return left;
+    	else if (type.equals("times")) return new MulExpr(left, right);
+    	else /* div */ return new DivExpr(left, right);
+    }
 }
 
-// Expression6 ::=	"-" Expression
-//             |	"!" Expression
+// Expression6 ::=	"-" Expression7
+//             |	"!" Expression7
 //             |   Expression7
 Expr Expression6() : {
 	Expr expr;
 	String type;
 } {
-	( "-" expr = Expression() { type = "neg"; }
-	| "!" expr = Expression() { type = "not"; }
+	( "-" expr = Expression7() { type = "neg"; }
+	| "!" expr = Expression7() { type = "not"; }
 	| expr = Expression7() { type = "none"; } )
 	
 	{
@@ -510,46 +433,28 @@ Expr Expression6() : {
 	}
 }
 
-// Expression7 ::=	Expression8 Expression7'
+// Expression7 ::=	Expression8 ( "[" Expression "]" )*
+//             |    Expression8 ( "." Expression8 )* ( "." <ID> ( MethodCall )? )?
 //             |    "(" Expression ")"
-//             |    Expression8 "." Expression ( MethodCall )?
 Expr Expression7() : {
-	Expr left, right;
-	String type;
-	Token id;
+	Expr left, right = null;
+	Token id = null;
+	LinkedList<Expr> exprs = new LinkedList<Expr>();
 	LinkedList<Expr> params = new LinkedList<Expr>();
 } {
-	( left = Expression8() right = Expression7Prime(left) { type = "arrayormember"; }
-	| "(" left = Expression() ")" { type = "paren"; } )
+	( left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )*
+	| left = Expression8() ( "." right = Expression8() { exprs.add(right); } )* [ "." id = <ID> [ MethodCall(params) ] ]
+	| "(" left = Expression() ")" )
 	
 	{
-		if (type.equals("arrayormember")) {
-			if (right == null) return left;
-			else return right;
-		} else if (type.equals(paren)) return left;
-		else /* member */ {
-			if (params.size() == 0) return new FieldExpr(left, id.image);
-			else return new CallExpr(left, id.image, params);
+		if (right == null) return left;
+		else if (params.size() == 0 && id == null) {
+			//create array expression
+		} else if (params.size() == 0) {
+			//create field expr
+		} else {
+			//create call expr
 		}
-	}
-}
-
-// Expression7' ::= "[" Expression "]" Expression7'
-//              |   ( "." Expression )? "." <ID> ( MethodCall )? Expression7'
-//              |   epsilon
-Expr Expression7Prime(Expr left) : {
-	Expr right = null;
-	String type;
-	Token id = null;
-} {
-	( "[" right = Expression() "]" Expression7Prime(null) { type = "arrayindex"; }
-	| [ LOOKAHEAD(2) "." right = Expression() ] "." id = <ID> [ MethodCall(params) ] Expression7Prime(null) { type = "member"; }
-	| epsilon() )
-	
-	{
-		if (right == null) return null;
-		else if (type.equals("arrayindex")) return new ArrayExpr(left, right);
-		else /* member */ return new FieldExpr(left, id.image);
 	}
 }
 
@@ -611,6 +516,3 @@ Type NewDecl() : {
 	
 	{ return type; }
 }
-
-// epsilon production
-void epsilon() : {} { {} } 
