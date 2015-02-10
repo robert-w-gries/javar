@@ -357,7 +357,7 @@ Expr Expression2() : {
 	Expr left, right = null;
 	String type;
 } {
-	( left = Expression3() [ "==" right = Expression3() { type = "equal"; } ]
+	( LOOKAHEAD(3) left = Expression3() [ "==" right = Expression3() { type = "equal"; } ]
 	| left = Expression3() [ "!=" right = Expression3() { type = "notequal"; } ] )
 	
 	{
@@ -373,7 +373,7 @@ Expr Expression3() : {
 	Expr left, right = null;
 	String type;
 } {
-	( left = Expression4() [ "<" right = Expression4() { type = "less"; } ]
+	( LOOKAHEAD(3) left = Expression4() [ "<" right = Expression4() { type = "less"; } ]
 	| left = Expression4() [ ">" right = Expression4() { type = "greater"; } ] )
 	
 	{
@@ -389,7 +389,7 @@ Expr Expression4() : {
 	Expr left, right = null;
 	String type;
 } {
-	( left = Expression5() [ "+" right = Expression5() { type = "plus"; } ]
+	( LOOKAHEAD(3) left = Expression5() [ "+" right = Expression5() { type = "plus"; } ]
 	| left = Expression5() [ "-" right = Expression5() { type = "minus"; } ] )
 	
 	{
@@ -405,7 +405,7 @@ Expr Expression5() : {
 	Expr left, right = null;
 	String type;
 } {
-	( left = Expression6() [ "*" right = Expression6() { type = "times"; } ]
+	( LOOKAHEAD(3) left = Expression6() [ "*" right = Expression6() { type = "times"; } ]
     | left = Expression6() [ "/" right = Expression6() { type = "div"; } ] )
 
     {
@@ -442,8 +442,8 @@ Expr Expression7() : {
 	LinkedList<Expr> exprs = new LinkedList<Expr>();
 	LinkedList<Expr> params = new LinkedList<Expr>();
 } {
-	( left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )*
-	| left = Expression8() ( "." right = Expression8() { exprs.add(right); } )* [ "." id = <ID> [ MethodCall(params) ] ]
+	( LOOKAHEAD(3) left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )*
+	| left = Expression8() ( LOOKAHEAD(2) "." right = Expression8() { exprs.add(right); } )* [ "." id = <ID> [ MethodCall(params) ] ]
 	| "(" left = Expression() ")" )
 	
 	{
