@@ -3,7 +3,7 @@ package Absyn;
 /**
  * Addition Expressions.
  */
-public class AddExpr extends Absyn.BinOpExpr{
+public class AddExpr extends Absyn.BinOpExprb {
 
     public Absyn.Expr leftExpr;
     public Absyn.Expr rightExpr;
