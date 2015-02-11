@@ -5,9 +5,7 @@ package Absyn;
  */
 public class BooleanType extends Type{
 
-    public BooleanType(){
-         
-    }
+    public BooleanType(){}
 
     /**
      * Visitor pattern dispatch.
