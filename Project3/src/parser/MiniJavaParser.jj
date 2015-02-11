@@ -593,7 +593,7 @@ Expr Expression8() : {
 }
 
 Expr AssignableExpression() : {
-	AssignableExpr expr;
+	Expr expr;
 	Token id;
 } {
 	( LOOKAHEAD(2) expr = ArrayExpression()
