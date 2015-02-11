@@ -10,7 +10,8 @@ public class IntegerType extends Type {
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Visitor v) {
-        return; //TODO codavaj!!
+    public void accept(Visitor v){
+        v.visit(this);
+        return;
     }
 }
