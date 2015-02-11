@@ -3,10 +3,12 @@ package Absyn;
  * Goal ::= MainClass ( ClassDeclaration )*
  */
 public class Program extends Absyn{
+
     public java.util.AbstractList<ClassDecl> classes;
 
     public Program(java.util.AbstractList<ClassDecl> classes){
-         //TODO codavaj!!
+        super();
+        this.classes = classes;
     }
 
     /**
