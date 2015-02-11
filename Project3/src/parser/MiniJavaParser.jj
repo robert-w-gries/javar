@@ -206,7 +206,7 @@ void MainClassDeclaration(LinkedList<ClassDecl> classList) : {
 	{
 		LinkedList<MethodDecl> methods = new LinkedList<MethodDecl>();
 		LinkedList<Formal> params = new LinkedList<Formal>();
-		Formal args = new Formal(new IdentifierType("String"), argsId.image);
+		Formal args = new Formal(new ArrayType(new IdentifierType("String")), argsId.image);
 		params.add(args);
 		IdentifierType pub_stat_void = new IdentifierType("public_static_void");
 		MethodDecl mainMethod = new MethodDecl(pub_stat_void, false, "main", params, localsList, statements, new IntegerLiteral(0));
@@ -434,16 +434,16 @@ Expr Expression5() : {
     }
 }
 
-// Expression6 ::=	"-" Expression7
-//             |	"!" Expression7
-//             |   Expression7
+// Expression6 ::=	"-" DotExpression
+//             |	"!" DotExpression
+//             |   DotExpression
 Expr Expression6() : {
 	Expr expr;
 	String type;
 } {
-	( "-" expr = Expression7() { type = "neg"; }
-	| "!" expr = Expression7() { type = "not"; }
-	| expr = Expression7() { type = "none"; } )
+	( "-" expr = DotExpression() { type = "neg"; }
+	| "!" expr = DotExpression() { type = "not"; }
+	| expr = DotExpression() { type = "none"; } )
 	
 	{
 		if (type.equals("neg")) return new NegExpr(expr);
@@ -452,29 +452,42 @@ Expr Expression6() : {
 	}
 }
 
+// DotExpression ::= Expression7 ( "." <ID> ( MethodCall )? )*
+Expr DotExpression() : {
+	Expr left;
+	Token id = null;
+	LinkedList<Token> ids = new LinkedList<Token>();
+	LinkedList<LinkedList<Expr>> paramses = new LinkedList<LinkedList<Expr>>();
+} {
+	left = Expression7() ( LOOKAHEAD(2) "." id = <ID> { ids.add(id); paramses.add(new LinkedList<Expr>()); }
+		[ MethodCall(paramses.getLast()) ] )*
+
+	{
+		for (int i = 0; i < ids.size(); ++i) {
+			if (paramses.get(i).size() == 0) {
+				left = new CallExpr(left, ids.get(i).image, paramses.get(i));
+			} else {
+				left = new FieldExpr(left, ids.get(i).image);
+			}
+		}
+		return left;
+	}
+}
+
 // Expression7 ::=	Expression8 ( "[" Expression "]" )*
-//             |    Expression8 ( "." Expression8 )* ( "." <ID> ( MethodCall )? )?
 //             |    "(" Expression ")"
 Expr Expression7() : {
 	Expr left, right = null;
-	Token id = null;
 	LinkedList<Expr> exprs = new LinkedList<Expr>();
-	LinkedList<Expr> params = new LinkedList<Expr>();
-	String type = null;
 } {
-	( LOOKAHEAD(3) left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )* { type = "array"; }
-	| left = Expression8() ( LOOKAHEAD(2) "." right = Expression8() { exprs.add(right); } )* [ "." id = <ID> [ MethodCall(params) { type = "method"; } ] ]
+	( LOOKAHEAD(3) left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )*
 	| "(" left = Expression() ")" )
 	
 	{
-		if (right == null) return left;
-		else if (params.size() == 0 && id == null) {
-			//create array expression
-		} else if (params.size() == 0) {
-			//create field expr
-		} else {
-			//create call expr
+		for (Expr expr : exprs) {
+			left = new ArrayExpr(left, expr);
 		}
+		return left;
 	}
 }
 
