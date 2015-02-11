@@ -18,13 +18,19 @@ public class PrintVisitor implements Visitor{
          printOut = out;
     }
 
-    private void printClass(String className) {
+    private void printTabs() {
 
         // print the indents
         for (int i = 0; i < numTabs; i++) {
             printOut.print(" ");
 
         }
+
+    }
+
+    private void printClass(String className) {
+
+        printTabs();
 
         printOut.print(className + "(");
         numTabs++;
@@ -33,11 +39,7 @@ public class PrintVisitor implements Visitor{
 
     private void printClassLine(String className) {
 
-        // print the indents
-        for (int i = 0; i < numTabs; i++) {
-            printOut.print(" ");
-
-        }
+        printTabs();
 
         printOut.println(className + "(");
         numTabs++;
@@ -193,6 +195,8 @@ public class PrintVisitor implements Visitor{
         ast.type.accept(this);
         printOut.print(" " + ast.name);
 
+        decrementTab();
+
         return;
 
     }
@@ -218,18 +222,25 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(IntegerLiteral ast){
-        return; //TODO codavaj!!
+
+        printTabs();
+        printOut.print("IntegerLiteral(" + ast.value + ")");
+
+        return;
     }
 
     public void visit(IntegerType ast){
-        return; //TODO codavaj!!
+
+        printOut.print("IntegerType");
+        return;
+
     }
 
     public void visit(LesserExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(MethodDecl ast){
+    public void visit(MethodDecl ast) {
 
         printClass("MethodDecl");
 
@@ -246,6 +257,8 @@ public class PrintVisitor implements Visitor{
 
         visit(ast.stmts);
         printOut.println();
+
+        ast.returnVal.accept(this);
 
         decrementTab();
 
@@ -324,7 +337,18 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(VarDecl ast){
-        return; //TODO codavaj!!
+
+        printTabs();
+        printOut.print("VarDecl(");
+
+        ast.type.accept(this);
+        printOut.println(" " + ast.name);
+
+        ast.init.accept(this);
+
+        printOut.print(")");
+
+        return;
     }
 
     public void visit(VoidDecl ast){
