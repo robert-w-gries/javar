@@ -445,7 +445,7 @@ Expr Expression6() : {
 	Expr expr;
 	String type = "none";
 } {
-	( LOOKAHEAD(2) "-" { type = "neg"; } | "-" { type = "not"; } )
+	[ ( LOOKAHEAD(2) "-" { type = "neg"; } | "!" { type = "not"; } ) ]
 	expr = DotExpression()
 	
 	{
