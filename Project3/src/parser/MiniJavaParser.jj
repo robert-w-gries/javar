@@ -9,7 +9,12 @@ public class MiniJavaParser {
 
 	public static void main(String[] args) {
 		PrintVisitor visitor = new PrintVisitor();
-		jj_input_stream = new SimpleCharStream(new FileReader(args[0]));
+		
+		try {
+			jj_input_stream = new SimpleCharStream(new FileReader(args[0]));
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
 
 		try {
 			visitor.visit(Goal());
