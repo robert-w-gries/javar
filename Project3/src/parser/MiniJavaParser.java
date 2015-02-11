@@ -1059,7 +1059,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   }
 
   static final public Expr AssignableExpression() throws ParseException {
-        AssignableExpr expr;
+        Expr expr;
         Token id;
     if (jj_2_16(2)) {
       expr = ArrayExpression();
