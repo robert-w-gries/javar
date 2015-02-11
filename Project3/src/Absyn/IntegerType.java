@@ -4,7 +4,9 @@ package Absyn;
  * Integer types.
  */
 public class IntegerType extends Type {
+
     public IntegerType() {
+
     }
 
     /**
@@ -14,4 +16,5 @@ public class IntegerType extends Type {
         v.visit(this);
         return;
     }
+
 }
