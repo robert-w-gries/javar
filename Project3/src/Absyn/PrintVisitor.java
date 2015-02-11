@@ -1,14 +1,29 @@
 package Absyn;
+
+import java.io.PrintWriter;
+
 /**
  * Visitor prints AST in reparseable form.
  */
 public class PrintVisitor implements Visitor{
+
+    private java.io.PrintWriter printOut;
+    private int numTabs = 0;
+
     public PrintVisitor(){
-         //TODO codavaj!!
+         printOut = new PrintWriter(System.out);
     }
 
     public PrintVisitor(java.io.PrintWriter out){
-         //TODO codavaj!!
+         printOut = out;
+    }
+
+    private void printClass(String className) {
+
+        printOut.printf("%-" + numTabs);
+        printOut.print(className + "(");
+        numTabs++;
+
     }
 
     /**
@@ -16,19 +31,43 @@ public class PrintVisitor implements Visitor{
      * Visitor pattern dispatch.
      */
     public void visit(java.util.AbstractList list){
-        return; //TODO codavaj!!
+
+        printClass("AbstractList");
+
+        for (int i = 0; i < list.size(); i++) {
+            ((Absyn)list.get(i)).accept(this);
+        }
+
+        printOut.println(")");
+
+        return;
     }
 
-    public void visit(AddExpr ast){
-        return; //TODO codavaj!!
+    public void visit(AddExpr ast) {
+
+        printClass("AddExpr");
+
+        ast.accept(this);
+        printOut.println();
+
+        return;
+
     }
 
     public void visit(AndExpr ast){
-        return; //TODO codavaj!!
+
+        printClass("AndExpr");
+
+        ast.accept(this);
+        printOut.println();
+
+        return;
     }
 
     public void visit(ArrayExpr ast){
-        return; //TODO codavaj!!
+
+        printClass("ArrayExpr");
+        return;
     }
 
     public void visit(ArrayType ast){
