@@ -454,7 +454,10 @@ Expr Expression6() : {
 
 // DotExpression ::= Expression7 ( "." <ID> ( MethodCall )? )*
 Expr DotExpression() : {
-
+	Expr left;
+	Token id = null;
+	LinkedList<Token> ids = new LinkedList<Token>();
+	LinkedList<LinkedList<Expr>> paramses = new LinkedList<LinkedList<Expr>>();
 } {
 	left = Expression7() ( LOOKAHEAD(2) "." id = <ID> { ids.add(id); paramses.add(new LinkedList<Expr>()); }
 		[ MethodCall(params.getLast()) ] )*
