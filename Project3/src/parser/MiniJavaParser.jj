@@ -459,8 +459,8 @@ Expr Expression5() : {
     LinkedList<String> types = new LinkedList<String>();
 } {
 	left = Expression6()
-	( "+" right = Expression6() { exprs.add(right); types.add("times"); }
-	| "-" right = Expression6() { exprs.add(right); types.add("div"); } )*
+	( "*" right = Expression6() { exprs.add(right); types.add("times"); }
+	| "/" right = Expression6() { exprs.add(right); types.add("div"); } )*
 
     {
     	for (int i = 0; i < exprs.size(); ++i) {
