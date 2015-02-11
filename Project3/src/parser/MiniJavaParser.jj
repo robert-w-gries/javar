@@ -339,7 +339,7 @@ void Statement(LinkedList<Stmt> statements) : {
 	| "if" "(" innerExpr1 = Expression() ")" Statement(innerStatements) [ LOOKAHEAD(2) "else" Statement(innerStatements) ] { type = "if"; }
 	| "while" "(" innerExpr1 = Expression() ")" Statement(innerStatements) { type = "while"; }
 	| LOOKAHEAD(3) "Xinu" "." xinuId = <ID> MethodCall(innerExpressions) ";" { type = "xinu"; }
-	| innerExpr1 = Identifier() "=" innerExpr2 = Expression() ";" { type = "assign"; } )
+	| innerExpr1 = AssignableExpression() "=" innerExpr2 = Expression() ";" { type = "assign"; } )
 	
 	{
 		if (type.equals("block")) statements.add(new BlockStmt(innerStatements));
@@ -518,18 +518,29 @@ Expr DotExpression() : {
 // Expression7 ::=	Expression8 ( "[" Expression "]" )*
 //             |    "(" Expression ")"
 Expr Expression7() : {
+	Expr left;
+} {
+	( LOOKAHEAD(3) left = ArrayExpression()
+	| "(" left = Expression() ")"
+	| left = Expression8() )
+	
+	{
+		return left;
+	}
+}
+
+Expr ArrayExpression() : {
 	Expr left, right = null;
 	LinkedList<Expr> exprs = new LinkedList<Expr>();
 } {
-	( LOOKAHEAD(3) left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )*
-	| "(" left = Expression() ")" )
-	
+	left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )+
+
 	{
-		for (Expr expr : exprs) {
-			left = new ArrayExpr(left, expr);
-		}
-		return left;
-	}
+    	for (Expr expr : exprs) {
+    		left = new ArrayExpr(left, expr);
+    	}
+    	return left;
+    }
 }
 
 // MethodCall ::= "(" ( Expression ( "," Expression )* )? ")"
@@ -582,11 +593,14 @@ Expr Expression8() : {
 	}
 }
 
-Expr Identifier() : {
+Expr AssignableExpression() : {
+	Expr expr;
 	Token id;
 } {
-	id = <ID>
-	{ return new IdentifierExpr(id.image); }
+	( LOOKAHEAD(2) expr = ArrayExpression()
+	| id = <ID> { expr = new IdentifierExpr(id.image); } )
+
+	{ return expr; }
 }
 
 // NewDecl ::= "new" Type
