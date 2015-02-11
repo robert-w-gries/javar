@@ -11,7 +11,8 @@ public class TrueExpr extends Expr{
      * Visitor pattern dispatch.
      */
     public void accept(Visitor v){
-        return; //TODO codavaj!!
+        v.visit(this);
+        return;
     }
 
 }

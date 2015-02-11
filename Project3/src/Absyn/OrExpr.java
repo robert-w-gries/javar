@@ -11,7 +11,8 @@ public class OrExpr extends BinOpExpr{
      * Visitor pattern dispatch.
      */
     public void accept(Visitor v){
-        return; //TODO codavaj!!
+        v.visit(this);
+        return;
     }
 
 }

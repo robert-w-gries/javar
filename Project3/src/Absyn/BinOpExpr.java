@@ -16,9 +16,6 @@ public abstract class BinOpExpr extends Expr {
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
-        v.visit(this);
-        return;
-    }
+    public abstract void accept(Visitor v);
 
 }

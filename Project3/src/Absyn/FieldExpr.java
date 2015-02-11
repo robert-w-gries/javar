@@ -15,7 +15,8 @@ public class FieldExpr extends AssignableExpr{
      * Visitor pattern dispatch.
      */
     public void accept(Visitor v){
-        return; //TODO codavaj!!
+        v.visit(this);
+        return;
     }
 
 }
