@@ -11,7 +11,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
                 PrintVisitor visitor = new PrintVisitor();
 
                 try {
-                        jj_input_stream = new SimpleCharStream(new FileReader(args[0]));
+                        MiniJavaParser parser = new MiniJavaParser(new FileReader(args[0]));
                 } catch (IOException e) {
                         System.err.println(e.getMessage());
                 }
