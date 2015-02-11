@@ -105,7 +105,7 @@ public class PrintVisitor implements Visitor{
 
     public void visit(ArrayType ast){
 
-        printClassLine("ArrayType");
+        printClass("ArrayType");
 
         ast.baseType.accept(this);
         decrementTab();
@@ -160,13 +160,11 @@ public class PrintVisitor implements Visitor{
         printOut.print(ast.name + " " + ast.parent);
         printOut.println();
 
-        for (int i = 0; i < ast.fields.size(); i++) {
-            ast.fields.get(i).accept(this);
-        }
+        visit(ast.fields);
+        printOut.println();
 
-        for (int i = 0; i < ast.methods.size(); i++) {
-            ast.methods.get(i).accept(this);
-        }
+        visit(ast.methods);
+        printOut.println();
 
         decrementTab();
 
@@ -190,7 +188,13 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(Formal ast){
-        return; //TODO codavaj!!
+
+        printClass("Formal");
+        ast.type.accept(this);
+        printOut.print(" " + ast.name);
+
+        return;
+
     }
 
     public void visit(GreaterExpr ast){
@@ -202,7 +206,11 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(IdentifierType ast){
+
+        printOut.print(ast.id);
+
         return;
+
     }
 
     public void visit(IfStmt ast){
@@ -224,11 +232,20 @@ public class PrintVisitor implements Visitor{
     public void visit(MethodDecl ast){
 
         printClass("MethodDecl");
-        printOut.print(ast.returnType + ast.name);
 
-        for (int i = 0; i < ast.params.size(); i++) {
-            ast.params.get(i).accept(this);
-        }
+        ast.returnType.accept(this);
+
+        printOut.print(" " + ast.name);
+        printOut.println();
+
+        visit(ast.params);
+        printOut.println();
+
+        visit(ast.locals);
+        printOut.println();
+
+        visit(ast.stmts);
+        printOut.println();
 
         decrementTab();
 
@@ -275,9 +292,12 @@ public class PrintVisitor implements Visitor{
         printClassLine("Program");
 
         visit(ast.classes);
+        printOut.println();
 
         decrementTab();
+
         printOut.flush();
+        printOut.close();
 
         return;
 
