@@ -870,6 +870,10 @@ public class MiniJavaParser implements MiniJavaParserConstants {
 
 // DotExpression ::= Expression7 ( "." <ID> ( MethodCall )? )*
   static final public Expr DotExpression() throws ParseException {
+        Expr left;
+        Token id = null;
+        LinkedList<Token> ids = new LinkedList<Token>();
+        LinkedList<LinkedList<Expr>> paramses = new LinkedList<LinkedList<Expr>>();
     left = Expression7();
     label_13:
     while (true) {
@@ -1229,14 +1233,14 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_59() {
-    if (jj_scan_token(46)) return true;
-    return false;
-  }
-
   static private boolean jj_3R_31() {
     if (jj_scan_token(45)) return true;
     if (jj_3R_35()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_59() {
+    if (jj_scan_token(46)) return true;
     return false;
   }
 
@@ -1267,6 +1271,11 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
+  static private boolean jj_3R_54() {
+    if (jj_scan_token(44)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_20() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1283,11 +1292,6 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
     }
     }
-    return false;
-  }
-
-  static private boolean jj_3R_54() {
-    if (jj_scan_token(44)) return true;
     return false;
   }
 
@@ -1346,11 +1350,6 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_58() {
-    if (jj_scan_token(47)) return true;
-    return false;
-  }
-
   static private boolean jj_3R_29() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1382,6 +1381,11 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
     }
     }
+    return false;
+  }
+
+  static private boolean jj_3R_58() {
+    if (jj_scan_token(47)) return true;
     return false;
   }
 
@@ -1477,12 +1481,6 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_19() {
-    if (jj_scan_token(27)) return true;
-    if (jj_3R_35()) return true;
-    return false;
-  }
-
   static private boolean jj_3R_63() {
     if (jj_3R_67()) return true;
     Token xsp;
@@ -1490,6 +1488,12 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       xsp = jj_scanpos;
       if (jj_3_14()) { jj_scanpos = xsp; break; }
     }
+    return false;
+  }
+
+  static private boolean jj_3R_19() {
+    if (jj_scan_token(27)) return true;
+    if (jj_3R_35()) return true;
     return false;
   }
 
