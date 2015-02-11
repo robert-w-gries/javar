@@ -339,7 +339,7 @@ void Statement(LinkedList<Stmt> statements) : {
 	| "if" "(" innerExpr1 = Expression() ")" Statement(innerStatements) [ LOOKAHEAD(2) "else" Statement(innerStatements) ] { type = "if"; }
 	| "while" "(" innerExpr1 = Expression() ")" Statement(innerStatements) { type = "while"; }
 	| LOOKAHEAD(3) "Xinu" "." xinuId = <ID> MethodCall(innerExpressions) ";" { type = "xinu"; }
-	| innerExpr1 = Expression() "=" innerExpr2 = Expression() ";" { type = "assign"; } )
+	| innerExpr1 = Identifier() "=" innerExpr2 = Expression() ";" { type = "assign"; } )
 	
 	{
 		if (type.equals("block")) statements.add(new BlockStmt(innerStatements));
@@ -352,106 +352,144 @@ void Statement(LinkedList<Stmt> statements) : {
 	}
 }
 
-// Expression ::= Expression1 ( "||" Expression1 )?
+// Expression ::= Expression1 ( "||" Expression1 )*
 Expr Expression() : {
 	Expr left, right = null;
+	LinkedList<Expr> exprs = new LinkedList<Expr>();
 } {
-	left = Expression1() [ "||" right = Expression1() ]
+	left = Expression1() ( "||" right = Expression1() { expr.add(right); } )*
 	
-	{ if (right == null) return left; else return new OrExpr(left, right); }
+	{
+		for (Expr expr : exprs) {
+			left = new OrExpr(left, right);
+		}
+		return left;
+	}
 }
 
-// Expression1 ::= Expression2 ( "&&" Expression2 )?
+// Expression1 ::= Expression2 ( "&&" Expression2 )*
 Expr Expression1() : {
 	Expr left, right = null;
+	LinkedList<Expr> exprs = new LinkedList<Expr>();
 } {
-	left = Expression2() [ "&&" right = Expression2() ]
-	
-	{ if (right == null) return left; else return new AndExpr(left, right); }
-}
-
-// Expression2 ::= Expression3 ( "==" Expression3 )?
-//			   |   Expression3 ( "!=" Expression3 )?
-Expr Expression2() : {
-	Expr left, right = null;
-	String type = null;
-} {
-	left = Expression3()
-	[ ( "==" right = Expression3() { type = "equal"; }
-	| "!=" right = Expression3() { type = "notequal"; } ) ]
-	
-	{
-		if (right == null) return left;
-		else if (type.equals("equal")) return new EqualExpr(left, right);
-		else /* notequal */ return new NotEqExpr(left, right);
-	}
-}
-
-// Expression3 ::= Expression4 ( "<" Expression4 )?
-//			   |   Expression4 ( ">" Expression4 )?
-Expr Expression3() : {
-	Expr left, right = null;
-	String type = null;
-} {
-	left = Expression4()
-    [ ( "<" right = Expression4() { type = "less"; }
-    | ">" right = Expression4() { type = "greater"; } ) ]
-	
-	{
-		if (right == null) return left;
-		else if (type.equals("less")) return new LesserExpr(left, right);
-		else /* greater */ return new GreaterExpr(left, right);
-	}
-}
-
-// Expression4 ::= Expression5 ( "+" Expression5 )?
-//			   |   Expression5 ( "-" Expression5 )?
-Expr Expression4() : {
-	Expr left, right = null;
-	String type = null;
-} {
-	left = Expression5()
-	[ ( "+" right = Expression5() { type = "plus"; }
-	| "-" right = Expression5() { type = "minus"; } ) ]
-	
-	{
-		if (right == null) return left;
-		else if (type.equals("plus")) return new AddExpr(left, right);
-		else /* minus */ return new SubExpr(left, right);
-	}
-}
-
-// Expression5 ::= Expression6 ( "*" Expression6 )?
-//			   |   Expression6 ( "/" Expression6 )?
-Expr Expression5() : {
-	Expr left, right = null;
-	String type = null;
-} {
-	left = Expression6()
-	[ ( "*" right = Expression6() { type = "times"; }
-	| "/" right = Expression6() { type = "div"; } ) ]
+	left = Expression2() ( "&&" right = Expression2() { expr.add(right); } )*
 
     {
-    	if (right == null) return left;
-    	else if (type.equals("times")) return new MulExpr(left, right);
-    	else /* div */ return new DivExpr(left, right);
+    	for (Expr expr : exprs) {
+    		left = new AndExpr(left, right);
+    	}
+    	return left;
     }
 }
 
-// Expression6 ::=	"-" DotExpression
-//             |	"!" DotExpression
+// Expression2 ::= Expression3 ( "==" Expression3 )*
+//			   |   Expression3 ( "!=" Expression3 )*
+Expr Expression2() : {
+	Expr left, right = null;
+	LinkedList<Expr> exprs = new LinkedList<Expr>();
+	LinkedList<String> types = new LinkedList<String>();
+} {
+	left = Expression3()
+	( "==" right = Expression3() { exprs.add(right); types.add("equal"); }
+	| "!=" right = Expression3() { exprs.add(right); types.add("notequal"); } )*
+
+    {
+    	for (int i = 0; i < exprs.size(); ++i) {
+    		if (types.get(i).equals("equal")) {
+    			left = new EqualExpr(left, right);
+    		} else if (types.get(i).equals("notequal")) {
+    			left = new NotEqExpr(left, right);
+    		}
+    	}
+    	return left;
+    }
+}
+
+// Expression3 ::= Expression4 ( "<" Expression4 )*
+//			   |   Expression4 ( ">" Expression4 )*
+Expr Expression3() : {
+	Expr left, right = null;
+    LinkedList<Expr> exprs = new LinkedList<Expr>();
+    LinkedList<String> types = new LinkedList<String>();
+} {
+	left = Expression4()
+	( "<" right = Expression4() { exprs.add(right); types.add("less"); }
+	| ">" right = Expression4() { exprs.add(right); types.add("greater"); } )*
+
+    {
+    	for (int i = 0; i < exprs.size(); ++i) {
+    		if (types.get(i).equals("less")) {
+    			left = new LesserExpr(left, right);
+    		} else if (types.get(i).equals("greater")) {
+    			left = new GreaterExpr(left, right);
+    		}
+    	}
+    	return left;
+    }
+}
+
+// Expression4 ::= Expression5 ( "+" Expression5 )*
+//			   |   Expression5 ( "-" Expression5 )*
+Expr Expression4() : {
+	Expr left, right = null;
+    LinkedList<Expr> exprs = new LinkedList<Expr>();
+    LinkedList<String> types = new LinkedList<String>();
+} {
+	left = Expression5()
+	( "+" right = Expression5() { exprs.add(right); types.add("plus"); }
+	| "-" right = Expression5() { exprs.add(right); types.add("minus"); } )*
+
+    {
+    	for (int i = 0; i < exprs.size(); ++i) {
+    		if (types.get(i).equals("plus")) {
+    			left = new AddExpr(left, right);
+    		} else if (types.get(i).equals("minus")) {
+    			left = new SubExpr(left, right);
+    		}
+    	}
+    	return left;
+    }
+}
+
+// Expression5 ::= Expression6 ( "*" Expression6 )*
+//			   |   Expression6 ( "/" Expression6 )*
+Expr Expression5() : {
+	Expr left, right = null;
+    LinkedList<Expr> exprs = new LinkedList<Expr>();
+    LinkedList<String> types = new LinkedList<String>();
+} {
+	left = Expression6()
+	( "+" right = Expression6() { exprs.add(right); types.add("times"); }
+	| "-" right = Expression6() { exprs.add(right); types.add("div"); } )*
+
+    {
+    	for (int i = 0; i < exprs.size(); ++i) {
+    		if (types.get(i).equals("times")) {
+    			left = new MulExpr(left, right);
+    		} else if (types.get(i).equals("div")) {
+    			left = new DivExpr(left, right);
+    		}
+    	}
+    	return left;
+    }
+}
+
+// Expression6 ::=	( "-" )+ DotExpression
+//             |	( "!" )+ DotExpression
 //             |   DotExpression
 Expr Expression6() : {
 	Expr expr;
-	String type = "none";
+    LinkedList<String> types = new LinkedList<String>();
 } {
-	[ ( LOOKAHEAD(2) "-" { type = "neg"; } | "!" { type = "not"; } ) ]
+	( LOOKAHEAD(2) "-" { types.add("neg"); } | "!" { types.add("not"); } )*
 	expr = DotExpression()
 	
 	{
-		if (type.equals("neg")) return new NegExpr(expr);
-		else if (type.equals("not")) return new NotExpr(expr);
-		else /* none */ return expr;
+		for (String type : types) {
+			if (type.equals("neg")) expr = new NegExpr(expr);
+			else if (type.equals("not")) expr = new NotExpr(expr);
+		}
+		return expr;
 	}
 }
 
@@ -468,9 +506,9 @@ Expr DotExpression() : {
 	{
 		for (int i = 0; i < ids.size(); ++i) {
 			if (paramses.get(i).size() == 0) {
-				left = new CallExpr(left, ids.get(i).image, paramses.get(i));
-			} else {
 				left = new FieldExpr(left, ids.get(i).image);
+			} else {
+				left = new CallExpr(left, ids.get(i).image, paramses.get(i));
 			}
 		}
 		return left;
@@ -542,6 +580,13 @@ Expr Expression8() : {
 		else if (exprType.equals("this")) return new ThisExpr();
 		else /* null */ return new NullExpr();
 	}
+}
+
+Expression Identifier() : {
+	Expr expr;
+} {
+	expr = <ID>
+	{ return expr; }
 }
 
 // NewDecl ::= "new" Type
