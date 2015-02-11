@@ -887,7 +887,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
                                                             ids.add(id); paramses.add(new LinkedList<Expr>());
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 6:
-        MethodCall(paramess.getLast());
+        MethodCall(paramses.getLast());
         break;
       default:
         jj_la1[35] = jj_gen;
