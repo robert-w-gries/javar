@@ -886,6 +886,17 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         left = Expression();
         jj_consume_token(7);
         break;
+      case 40:
+      case 41:
+      case 42:
+      case 43:
+      case 44:
+      case 45:
+      case INT:
+      case STRING:
+      case ID:
+        left = Expression8();
+        break;
       default:
         jj_la1[33] = jj_gen;
         jj_consume_token(-1);
@@ -902,6 +913,10 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     left = Expression8();
     label_21:
     while (true) {
+      jj_consume_token(8);
+      right = Expression();
+                                                          exprs.add(right);
+      jj_consume_token(9);
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 8:
         ;
@@ -910,10 +925,6 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         jj_la1[34] = jj_gen;
         break label_21;
       }
-      jj_consume_token(8);
-      right = Expression();
-                                                          exprs.add(right);
-      jj_consume_token(9);
     }
         for (Expr expr : exprs) {
                 left = new ArrayExpr(left, expr);
@@ -1246,6 +1257,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   static private boolean jj_3R_28() {
     if (jj_3R_38()) return true;
     Token xsp;
+    if (jj_3R_39()) return true;
     while (true) {
       xsp = jj_scanpos;
       if (jj_3R_39()) { jj_scanpos = xsp; break; }
@@ -1310,6 +1322,11 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
+  static private boolean jj_3R_68() {
+    if (jj_3R_38()) return true;
+    return false;
+  }
+
   static private boolean jj_3R_65() {
     if (jj_scan_token(14)) return true;
     return false;
@@ -1336,7 +1353,10 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     xsp = jj_scanpos;
     if (jj_3_12()) {
     jj_scanpos = xsp;
-    if (jj_3R_67()) return true;
+    if (jj_3R_67()) {
+    jj_scanpos = xsp;
+    if (jj_3R_68()) return true;
+    }
     }
     return false;
   }
@@ -1463,6 +1483,11 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
+  static private boolean jj_3R_52() {
+    if (jj_scan_token(44)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_63() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1473,8 +1498,8 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_52() {
-    if (jj_scan_token(44)) return true;
+  static private boolean jj_3R_51() {
+    if (jj_scan_token(43)) return true;
     return false;
   }
 
@@ -1488,8 +1513,8 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_51() {
-    if (jj_scan_token(43)) return true;
+  static private boolean jj_3R_50() {
+    if (jj_scan_token(42)) return true;
     return false;
   }
 
@@ -1500,11 +1525,6 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       if (jj_3R_63()) { jj_scanpos = xsp; break; }
     }
     if (jj_3R_64()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_50() {
-    if (jj_scan_token(42)) return true;
     return false;
   }
 
@@ -1547,11 +1567,6 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_55() {
-    if (jj_scan_token(27)) return true;
-    return false;
-  }
-
   static private boolean jj_3R_38() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1583,6 +1598,11 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
     }
     }
+    return false;
+  }
+
+  static private boolean jj_3R_55() {
+    if (jj_scan_token(27)) return true;
     return false;
   }
 
@@ -1636,7 +1656,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       jj_la1_0 = new int[] {0x0,0x0,0x400,0x0,0x8000000,0x0,0x8000000,0x8000000,0x0,0x8000000,0x100000,0x0,0x2000000,0x0,0x400,0x400,0x0,0x400,0x400,0x0,0x1000000,0x800000,0x600000,0x600000,0xc0000,0xc0000,0x22000,0x22000,0x18000,0x18000,0x6000,0x4000,0x40,0x40,0x100,0x2000000,0x6040,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x1,0x1,0xc803fa0,0x2,0x800c000,0x800c000,0x0,0x800c000,0x800c000,0x0,0x0,0x8,0x0,0x800c000,0xc803fa0,0xc803fa0,0x800c000,0xc803fa0,0xa0,0xc803f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc803f00,0xc801f00,0x8000000,};
+      jj_la1_1 = new int[] {0x1,0x1,0xc803fa0,0x2,0x800c000,0x800c000,0x0,0x800c000,0x800c000,0x0,0x0,0x8,0x0,0x800c000,0xc803fa0,0xc803fa0,0x800c000,0xc803fa0,0xa0,0xc803f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc803f00,0x0,0x0,0xc803f00,0xc801f00,0x8000000,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[16];
   static private boolean jj_rescan = false;
