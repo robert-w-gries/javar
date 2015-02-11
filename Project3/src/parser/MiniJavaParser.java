@@ -539,7 +539,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       }
       jj_consume_token(24);
       right = Expression1();
-                                                            expr.add(right);
+                                                            exprs.add(right);
     }
                 for (Expr expr : exprs) {
                         left = new OrExpr(left, right);
@@ -565,7 +565,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       }
       jj_consume_token(23);
       right = Expression2();
-                                                            expr.add(right);
+                                                            exprs.add(right);
     }
         for (Expr expr : exprs) {
                 left = new AndExpr(left, right);
@@ -1015,7 +1015,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-  static final public Expression Identifier() throws ParseException {
+  static final public Expr Identifier() throws ParseException {
         Expr expr;
     expr = jj_consume_token(ID);
           {if (true) return expr;}
