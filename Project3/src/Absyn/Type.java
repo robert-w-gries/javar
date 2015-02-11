@@ -9,9 +9,6 @@ public abstract class Type extends Absyn.Absyn{
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
-        v.visit(this);
-        return;
-    }
+    abstract void accept(Absyn.Visitor v);
 
 }

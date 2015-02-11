@@ -5,9 +5,7 @@ package Absyn;
  */
 public abstract class Absyn implements Absyn.Visitable {
 
-    public Absyn(){
-
-    }
+    public Absyn(){}
 
     /**
      * Visitor pattern dispatch.

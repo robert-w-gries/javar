@@ -1,48 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="dfe25ac2-6007-45ec-b2d9-0c83af4c4a0c" name="Default" comment="Created and assigned class vars and created accept methods">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/AssignableExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/AssignableExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/BinOpExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/BinOpExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/BooleanType.java" afterPath="$PROJECT_DIR$/src/Absyn/BooleanType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/ClassDecl.java" afterPath="$PROJECT_DIR$/src/Absyn/ClassDecl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/DivExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/DivExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/EqualExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/EqualExpr.java" />
+    <list default="true" id="dfe25ac2-6007-45ec-b2d9-0c83af4c4a0c" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/Absyn.java" afterPath="$PROJECT_DIR$/src/Absyn/Absyn.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/Expr.java" afterPath="$PROJECT_DIR$/src/Absyn/Expr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/FalseExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/FalseExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/FieldExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/FieldExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/Formal.java" afterPath="$PROJECT_DIR$/src/Absyn/Formal.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/GreaterExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/GreaterExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/IdentifierExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/IdentifierExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/IdentifierType.java" afterPath="$PROJECT_DIR$/src/Absyn/IdentifierType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/IfStmt.java" afterPath="$PROJECT_DIR$/src/Absyn/IfStmt.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/IntegerLiteral.java" afterPath="$PROJECT_DIR$/src/Absyn/IntegerLiteral.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/IntegerType.java" afterPath="$PROJECT_DIR$/src/Absyn/IntegerType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/LesserExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/LesserExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/MethodDecl.java" afterPath="$PROJECT_DIR$/src/Absyn/MethodDecl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/MulExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/MulExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/NegExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/NegExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/NewArrayExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/NewArrayExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/NewObjectExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/NewObjectExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/NotEqExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/NotEqExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/NotExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/NotExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/NullExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/NullExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/OrExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/OrExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/Program.java" afterPath="$PROJECT_DIR$/src/Absyn/Program.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/Stmt.java" afterPath="$PROJECT_DIR$/src/Absyn/Stmt.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/StringLiteral.java" afterPath="$PROJECT_DIR$/src/Absyn/StringLiteral.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/SubExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/SubExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/ThisExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/ThisExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/ThreadDecl.java" afterPath="$PROJECT_DIR$/src/Absyn/ThreadDecl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/TrueExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/TrueExpr.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/Type.java" afterPath="$PROJECT_DIR$/src/Absyn/Type.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/VarDecl.java" afterPath="$PROJECT_DIR$/src/Absyn/VarDecl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/VoidDecl.java" afterPath="$PROJECT_DIR$/src/Absyn/VoidDecl.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/WhileStmt.java" afterPath="$PROJECT_DIR$/src/Absyn/WhileStmt.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/XinuCallExpr.java" afterPath="$PROJECT_DIR$/src/Absyn/XinuCallExpr.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Absyn/XinuCallStmt.java" afterPath="$PROJECT_DIR$/src/Absyn/XinuCallStmt.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Project3.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -67,11 +31,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="Absyn.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Absyn.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Absyn/Absyn.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="345">
-              <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.48701298" vertical-offset="0" max-vertical-offset="462">
+              <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -87,61 +51,61 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BlockStmt.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="BlockStmt.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Absyn/BlockStmt.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.16233766" vertical-offset="0" max-vertical-offset="462">
-              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="XinuCallStmt.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Absyn/XinuCallStmt.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="405">
-              <caret line="10" column="100" selection-start-line="10" selection-start-column="32" selection-end-line="10" selection-end-column="100" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IdentifierExpr.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Absyn/IdentifierExpr.java">
-          <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="390">
-              <caret line="14" column="4" selection-start-line="14" selection-start-column="4" selection-end-line="17" selection-end-column="5" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="DivExpr.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Absyn/DivExpr.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="405">
-              <caret line="5" column="0" selection-start-line="5" selection-start-column="0" selection-end-line="5" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="CallExpr.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Absyn/CallExpr.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="480">
               <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="BooleanType.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Absyn/BooleanType.java">
+      <file leaf-file-name="Visitable.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Absyn/Visitable.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="360">
-              <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
+              <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="42" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Expr.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Absyn/Expr.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="285">
+              <caret line="10" column="42" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BinOpExpr.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Absyn/BinOpExpr.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+              <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Type.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Absyn/Type.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="300">
+              <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Stmt.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Absyn/Stmt.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="300">
+              <caret line="11" column="42" selection-start-line="11" selection-start-column="42" selection-end-line="11" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -158,11 +122,9 @@
         <option value="$PROJECT_DIR$/src/Absyn/AssignableExpr.java" />
         <option value="$PROJECT_DIR$/src/Absyn/BinOpExpr.java" />
         <option value="$PROJECT_DIR$/src/Absyn/BooleanType.java" />
-        <option value="$PROJECT_DIR$/src/Absyn/Type.java" />
         <option value="$PROJECT_DIR$/src/Absyn/TrueExpr.java" />
         <option value="$PROJECT_DIR$/src/Absyn/ThisExpr.java" />
         <option value="$PROJECT_DIR$/src/Absyn/SubExpr.java" />
-        <option value="$PROJECT_DIR$/src/Absyn/Stmt.java" />
         <option value="$PROJECT_DIR$/src/Absyn/Program.java" />
         <option value="$PROJECT_DIR$/src/Absyn/StringLiteral.java" />
         <option value="$PROJECT_DIR$/src/Absyn/VarDecl.java" />
@@ -190,10 +152,13 @@
         <option value="$PROJECT_DIR$/src/Absyn/Formal.java" />
         <option value="$PROJECT_DIR$/src/Absyn/FieldExpr.java" />
         <option value="$PROJECT_DIR$/src/Absyn/FalseExpr.java" />
-        <option value="$PROJECT_DIR$/src/Absyn/Expr.java" />
         <option value="$PROJECT_DIR$/src/Absyn/EqualExpr.java" />
         <option value="$PROJECT_DIR$/src/Absyn/DivExpr.java" />
         <option value="$PROJECT_DIR$/src/Absyn/ClassDecl.java" />
+        <option value="$PROJECT_DIR$/src/Absyn/Expr.java" />
+        <option value="$PROJECT_DIR$/src/Absyn/Type.java" />
+        <option value="$PROJECT_DIR$/src/Absyn/Stmt.java" />
+        <option value="$PROJECT_DIR$/src/Absyn/Absyn.java" />
       </list>
     </option>
   </component>
@@ -404,11 +369,18 @@
       <option name="number" value="Default" />
       <updated>1423604272654</updated>
     </task>
+    <task id="LOCAL-00001" summary="Created and assigned class vars and created accept methods">
+      <created>1423613670701</created>
+      <option name="number" value="00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1423613670701</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
@@ -463,14 +435,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/Absyn/Visitable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.08571429" vertical-offset="0" max-vertical-offset="700">
-          <caret line="4" column="17" selection-start-line="4" selection-start-column="17" selection-end-line="4" selection-end-column="17" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Absyn/ArrayType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="390">
@@ -503,14 +467,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Absyn/BinOpExpr.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
-          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="21" selection-end-column="5" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Absyn/Visitor.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.08547009" vertical-offset="0" max-vertical-offset="1485">
@@ -523,14 +479,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.10683761" vertical-offset="0" max-vertical-offset="702">
           <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Absyn/Absyn.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="345">
-          <caret line="1" column="0" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
           <folding />
         </state>
       </provider>
@@ -575,14 +523,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Absyn/Type.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.08547009" vertical-offset="0" max-vertical-offset="702">
-          <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Absyn/TrueExpr.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.08547009" vertical-offset="0" max-vertical-offset="702">
@@ -611,14 +551,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.08547009" vertical-offset="0" max-vertical-offset="702">
           <caret line="4" column="13" selection-start-line="4" selection-start-column="13" selection-end-line="4" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Absyn/Stmt.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.08547009" vertical-offset="0" max-vertical-offset="702">
-          <caret line="4" column="22" selection-start-line="4" selection-start-column="22" selection-end-line="4" selection-end-column="22" />
           <folding />
         </state>
       </provider>
@@ -783,14 +715,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Absyn/Expr.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="330">
-          <caret line="7" column="7" selection-start-line="7" selection-start-column="7" selection-end-line="7" selection-end-column="7" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Absyn/OrExpr.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="405">
@@ -839,14 +763,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Absyn/CallExpr.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="480">
-          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Absyn/BooleanType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="360">
@@ -855,10 +771,66 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/Absyn/CallExpr.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.16233766" vertical-offset="0" max-vertical-offset="480">
+          <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Absyn/BlockStmt.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.16233766" vertical-offset="0" max-vertical-offset="462">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="390">
           <caret line="5" column="13" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Absyn/Visitable.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
+          <caret line="8" column="4" selection-start-line="8" selection-start-column="4" selection-end-line="8" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Absyn/Type.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="300">
+          <caret line="14" column="0" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Absyn/Stmt.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="300">
+          <caret line="11" column="42" selection-start-line="11" selection-start-column="42" selection-end-line="11" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Absyn/Expr.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="285">
+          <caret line="10" column="42" selection-start-line="10" selection-start-column="42" selection-end-line="10" selection-end-column="42" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Absyn/BinOpExpr.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
+          <caret line="5" column="22" selection-start-line="5" selection-start-column="22" selection-end-line="5" selection-end-column="22" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Absyn/Absyn.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.48701298" vertical-offset="0" max-vertical-offset="462">
+          <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
           <folding />
         </state>
       </provider>
