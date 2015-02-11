@@ -2,7 +2,7 @@ package Absyn;
 /**
  * Expression abstract class.
  */
-public abstract class Expr extends Absyn.Absyn{
+public abstract class Expr extends Absyn {
     public Expr(){
          //TODO codavaj!!
     }
@@ -10,6 +10,6 @@ public abstract class Expr extends Absyn.Absyn{
     /**
      * Visitor pattern dispatch.
      */
-    public abstract void accept(Absyn.Visitor v);
+    public abstract void accept(Visitor v);
 
 }

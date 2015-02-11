@@ -3,20 +3,16 @@ package Absyn;
 /**
  * Addition Expressions.
  */
-public class AddExpr extends Absyn.BinOpExprb {
+public class AddExpr extends BinOpExpr {
 
-    public Absyn.Expr leftExpr;
-    public Absyn.Expr rightExpr;
-
-    public AddExpr(Absyn.Expr e1, Absyn.Expr e2){
-        leftExpr = e1;
-        rightExpr = e2;
+    public AddExpr(Expr e1, Expr e2){
+        super(e1, e2);
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         v.visit(this);
         return;
     }

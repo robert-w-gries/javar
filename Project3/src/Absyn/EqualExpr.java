@@ -2,15 +2,15 @@ package Absyn;
 /**
  * Boolean (Logical) Equality Expressions.
  */
-public class EqualExpr extends Absyn.BinOpExpr{
-    public EqualExpr(Absyn.Expr e1, Absyn.Expr e2){
-         //TODO codavaj!!
+public class EqualExpr extends BinOpExpr{
+    public EqualExpr(Expr e1, Expr e2){
+         super(e1, e2);
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

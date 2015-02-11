@@ -1,17 +1,23 @@
 package Absyn;
+
+import java.util.LinkedList;
+
 /**
  * Array Allocation.
  */
-public class NewArrayExpr extends Absyn.Expr{
-    public NewArrayExpr(Absyn.Type type, java.util.LinkedList<Absyn.Expr> dimensions){
-         //TODO codavaj!!
+public class NewArrayExpr extends Expr {
+    public Type type;
+    public LinkedList<Expr> dimensions;
+
+    public NewArrayExpr(Type type, java.util.LinkedList<Expr> dimensions) {
+        this.type = type;
+        this.dimensions = dimensions;
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v) {
         return; //TODO codavaj!!
     }
-
 }

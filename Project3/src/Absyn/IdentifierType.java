@@ -2,15 +2,17 @@ package Absyn;
 /**
  * Class types.
  */
-public class IdentifierType extends Absyn.Type{
+public class IdentifierType extends Type{
+    public String id;
+
     public IdentifierType(java.lang.String id){
-         //TODO codavaj!!
+         this.id = id;
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

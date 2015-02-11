@@ -3,20 +3,20 @@ package Absyn;
 /**
  * Expression indexing into an Array.
  */
-public class ArrayExpr extends Absyn.AssignableExpr{
+public class ArrayExpr extends AssignableExpr{
 
-    public Absyn.Expr targetExpr;
-    public Absyn.Expr index;
+    public Expr targetExpr;
+    public Expr index;
 
-    public ArrayExpr(Absyn.Expr target, Absyn.Expr index){
-        targetExpr = target;
-        indexExpr = index; 
+    public ArrayExpr(Expr target, Expr index){
+        this.targetExpr = target;
+        this.index = index;
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         v.visit(this);
         return;
     }

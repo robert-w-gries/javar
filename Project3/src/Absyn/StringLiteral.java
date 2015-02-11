@@ -2,15 +2,17 @@ package Absyn;
 /**
  * String Literals.
  */
-public class StringLiteral extends Absyn.Expr{
+public class StringLiteral extends Expr{
+    public String value;
+
     public StringLiteral(java.lang.String value){
-         //TODO codavaj!!
+        this.value = value;
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

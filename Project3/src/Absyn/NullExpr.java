@@ -1,17 +1,17 @@
 package Absyn;
+
 /**
  * The "null" expression.
  */
-public class NullExpr extends Absyn.Expr{
-    public NullExpr(){
-         //TODO codavaj!!
+public class NullExpr extends Expr {
+    public NullExpr() {
+        //TODO codavaj!!
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v) {
         return; //TODO codavaj!!
     }
-
 }

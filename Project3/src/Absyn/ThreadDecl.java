@@ -2,15 +2,15 @@ package Absyn;
 /**
  * Thread Class Declaration Blocks
  */
-public class ThreadDecl extends Absyn.ClassDecl{
-    public ThreadDecl(java.lang.String name, java.util.LinkedList<Absyn.VarDecl> fields, java.util.LinkedList<Absyn.MethodDecl> methods){
-         //TODO codavaj!!
+public class ThreadDecl extends ClassDecl{
+    public ThreadDecl(java.lang.String name, java.util.LinkedList<VarDecl> fields, java.util.LinkedList<MethodDecl> methods){
+         super(name, "Thread", fields, methods);
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

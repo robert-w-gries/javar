@@ -2,15 +2,20 @@ package Absyn;
 /**
  * If Statements.
  */
-public class IfStmt extends Absyn.Stmt{
-    public IfStmt(Absyn.Expr test, Absyn.Stmt thenStm, Absyn.Stmt elseStm){
-         //TODO codavaj!!
+public class IfStmt extends Stmt{
+    public Expr test;
+    public Stmt thenStm, elseStm;
+
+    public IfStmt(Expr test, Stmt thenStm, Stmt elseStm){
+        this.test = test;
+        this.thenStm = thenStm;
+        this.elseStm = elseStm;
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

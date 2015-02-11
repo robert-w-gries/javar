@@ -2,15 +2,15 @@ package Absyn;
 /**
  * Multiplication Expressions.
  */
-public class MulExpr extends Absyn.BinOpExpr{
-    public MulExpr(Absyn.Expr e1, Absyn.Expr e2){
-         //TODO codavaj!!
+public class MulExpr extends BinOpExpr{
+    public MulExpr(Expr e1, Expr e2){
+         super(e1, e2);
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

@@ -3,12 +3,12 @@ package Absyn;
 /**
  * Assignment Statements.
  */
-public class AssignStmt extends Absyn.Stmt{
+public class AssignStmt extends Stmt{
 
-    public Absyn.AssignableExpr leftExpr;
-    public Absyn.Expr rightExpr;
+    public AssignableExpr leftExpr;
+    public Expr rightExpr;
 
-    public AssignStmt(Absyn.AssignableExpr lhs, Absyn.Expr rhs){
+    public AssignStmt(AssignableExpr lhs, Expr rhs){
         leftExpr = lhs;
         rightExpr = rhs; 
     }
@@ -16,7 +16,7 @@ public class AssignStmt extends Absyn.Stmt{
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         v.visit(this);
         return; 
     }

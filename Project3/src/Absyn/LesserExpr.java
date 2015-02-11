@@ -2,15 +2,15 @@ package Absyn;
 /**
  * Less-Then Comparison Expressions.
  */
-public class LesserExpr extends Absyn.BinOpExpr{
-    public LesserExpr(Absyn.Expr e1, Absyn.Expr e2){
-         //TODO codavaj!!
+public class LesserExpr extends BinOpExpr{
+    public LesserExpr(Expr e1, Expr e2){
+         super(e1, e2);
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

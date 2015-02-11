@@ -2,15 +2,17 @@ package Absyn;
 /**
  * Unary Negation Expressions.
  */
-public class NegExpr extends Absyn.Expr{
-    public NegExpr(Absyn.Expr e1){
-         //TODO codavaj!!
+public class NegExpr extends Expr{
+    public Expr expr;
+
+    public NegExpr(Expr e1){
+         this.expr = e1;
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

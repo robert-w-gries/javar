@@ -6,6 +6,6 @@ public interface Visitable{
     /**
      * Visitor pattern dispatch.
      */
-    abstract void accept(Absyn.Visitor v);
+    abstract void accept(Visitor v);
 
 }

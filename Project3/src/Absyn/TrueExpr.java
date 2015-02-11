@@ -2,7 +2,7 @@ package Absyn;
 /**
  * Boolean TRUE
  */
-public class TrueExpr extends Absyn.Expr{
+public class TrueExpr extends Expr{
     public TrueExpr(){
          //TODO codavaj!!
     }
@@ -10,7 +10,7 @@ public class TrueExpr extends Absyn.Expr{
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

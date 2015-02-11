@@ -1,17 +1,16 @@
 package Absyn;
+
 /**
  * Integer types.
  */
-public class IntegerType extends Absyn.Type{
-    public IntegerType(){
-         //TODO codavaj!!
+public class IntegerType extends Type {
+    public IntegerType() {
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v) {
         return; //TODO codavaj!!
     }
-
 }

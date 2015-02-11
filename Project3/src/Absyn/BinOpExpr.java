@@ -3,12 +3,12 @@ package Absyn;
 /**
  * Expressions with two operands.
  */
-public abstract class BinOpExpr extends Absyn.Expr{
+public abstract class BinOpExpr extends Expr {
 
-    public Absyn.Expr leftExpr;
-    public Absyn.Expr rightExpr;
+    public Expr leftExpr;
+    public Expr rightExpr;
 
-    public BinOpExpr(Absyn.Expr e1, Absyn.Expr e2){
+    public BinOpExpr(Expr e1, Expr e2){
         leftExpr = e1;
         rightExpr = e2; 
     }

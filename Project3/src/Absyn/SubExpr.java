@@ -2,15 +2,15 @@ package Absyn;
 /**
  * Subtraction Expressions.
  */
-public class SubExpr extends Absyn.BinOpExpr{
-    public SubExpr(Absyn.Expr e1, Absyn.Expr e2){
-         //TODO codavaj!!
+public class SubExpr extends BinOpExpr{
+    public SubExpr(Expr e1, Expr e2){
+        super(e1, e2);
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

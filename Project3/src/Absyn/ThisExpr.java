@@ -1,17 +1,17 @@
 package Absyn;
+
 /**
  * The "this" reference.
  */
-public class ThisExpr extends Absyn.Expr{
-    public ThisExpr(){
-         //TODO codavaj!!
+public class ThisExpr extends Expr {
+    public ThisExpr() {
+        //TODO codavaj!!
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v) {
         return; //TODO codavaj!!
     }
-
 }

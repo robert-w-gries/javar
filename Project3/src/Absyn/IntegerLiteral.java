@@ -2,19 +2,21 @@ package Absyn;
 /**
  * Integer Literals.
  */
-public class IntegerLiteral extends Absyn.Expr{
+public class IntegerLiteral extends Expr{
+    public int value;
+
     public IntegerLiteral(int value){
-         //TODO codavaj!!
+         this.value = value;
     }
 
     public IntegerLiteral(java.lang.Integer value){
-         //TODO codavaj!!
+         this.value = value;
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

@@ -1,16 +1,19 @@
 package Absyn;
+
+import java.util.LinkedList;
+
 /**
  * Run (Void) Method Declaration structure.
  */
-public class VoidDecl extends Absyn.MethodDecl{
-    public VoidDecl(java.lang.String name, java.util.LinkedList<Absyn.VarDecl> locals, java.util.LinkedList<Absyn.Stmt> stmts){
-         //TODO codavaj!!
+public class VoidDecl extends MethodDecl{
+    public VoidDecl(java.lang.String name, java.util.LinkedList<VarDecl> locals, java.util.LinkedList<Stmt> stmts){
+        super(null, false, name, new LinkedList<Formal>(), locals, stmts, null);
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

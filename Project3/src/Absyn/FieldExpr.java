@@ -2,15 +2,19 @@ package Absyn;
 /**
  * Field lookup on object reference.
  */
-public class FieldExpr extends Absyn.AssignableExpr{
-    public FieldExpr(Absyn.Expr target, java.lang.String field){
-         //TODO codavaj!!
+public class FieldExpr extends AssignableExpr{
+    public Expr target;
+    public String field;
+
+    public FieldExpr(Expr target, java.lang.String field){
+         this.target = target;
+        this.field = field;
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

@@ -3,7 +3,7 @@ package Absyn;
 /**
  * Boolean types.
  */
-public class BooleanType extends Absyn.Type{
+public class BooleanType extends Type{
 
     public BooleanType(){
          
@@ -12,7 +12,7 @@ public class BooleanType extends Absyn.Type{
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         v.visit(this);
         return; 
     }

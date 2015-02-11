@@ -189,7 +189,7 @@ void MainClassDeclaration(LinkedList<ClassDecl> classList) : {
 	{
 		LinkedList<MethodDecl> methods = new LinkedList<MethodDecl>();
 		LinkedList<Formal> params = new LinkedList<Formal>();
-		Formal args = new Formal(new IdentifierType("String"), argsId);
+		Formal args = new Formal(new IdentifierType("String"), argsId.image);
 		params.add(args);
 		IdentifierType pub_stat_void = new IdentifierType("public_static_void");
 		MethodDecl mainMethod = new MethodDecl(pub_stat_void, false, "main", params, localsList, statements, new IntegerLiteral(0));
@@ -287,7 +287,7 @@ void FieldDeclaration(LinkedList<VarDecl> fields) : {
 //      |   "boolean" ( "[" "]" )*
 //      |   "int" ( "[" "]" )*
 Type Type() : {
-	Token id;
+	Token id = null;
 	int dimensions = 0;
 	boolean isBool = false, isInt = false;
 } {
@@ -299,7 +299,7 @@ Type Type() : {
 		if (isBool) t = new BooleanType();
 		else if (isInt) t = new IntegerType();
 		else t = new IdentifierType(id.image);
-		for (int i = 0; i < arrayTypeDimensions; ++i) {
+		for (int i = 0; i < dimensions; ++i) {
 			t = new ArrayType(t);
 		}
 		return t;
@@ -314,7 +314,7 @@ Type Type() : {
 void Statement(LinkedList<Stmt> statements) : {
 	LinkedList<Stmt> innerStatements = new LinkedList<Stmt>();
 	Expr innerExpr1 = null, innerExpr2 = null;
-	LinkedList<Expr> innerExpressions = new LinkedList<Stmt>();
+	LinkedList<Expr> innerExpressions = new LinkedList<Expr>();
 	Token xinuId = null;
 	String type;
 } {
@@ -330,7 +330,7 @@ void Statement(LinkedList<Stmt> statements) : {
 			if (innerStatements.size() == 1) statements.add(new IfStmt(innerExpr1, innerStatements.get(0), null));
 			else statements.add(new IfStmt(innerExpr1, innerStatements.get(0), innerStatements.get(1)));
 		} else if (type.equals("while")) statements.add(new WhileStmt(innerExpr1, statements.get(0)));
-		else if (type.equals("xinu")) statements.add(new XinuCallStmt(xinuId, innerExpressions));
+		else if (type.equals("xinu")) statements.add(new XinuCallStmt(xinuId.image, innerExpressions));
 		else if (type.equals("assign")) statements.add(new AssignStmt((AssignableExpr)innerExpr1, innerExpr2));
 	}
 }
@@ -357,7 +357,7 @@ Expr Expression1() : {
 //			   |   Expression3 ( "!=" Expression3 )?
 Expr Expression2() : {
 	Expr left, right = null;
-	String type;
+	String type = null;
 } {
 	( LOOKAHEAD(3) left = Expression3() [ "==" right = Expression3() { type = "equal"; } ]
 	| left = Expression3() [ "!=" right = Expression3() { type = "notequal"; } ] )
@@ -373,7 +373,7 @@ Expr Expression2() : {
 //			   |   Expression4 ( ">" Expression4 )?
 Expr Expression3() : {
 	Expr left, right = null;
-	String type;
+	String type = null;
 } {
 	( LOOKAHEAD(3) left = Expression4() [ "<" right = Expression4() { type = "less"; } ]
 	| left = Expression4() [ ">" right = Expression4() { type = "greater"; } ] )
@@ -389,7 +389,7 @@ Expr Expression3() : {
 //			   |   Expression5 ( "-" Expression5 )?
 Expr Expression4() : {
 	Expr left, right = null;
-	String type;
+	String type = null;
 } {
 	( LOOKAHEAD(3) left = Expression5() [ "+" right = Expression5() { type = "plus"; } ]
 	| left = Expression5() [ "-" right = Expression5() { type = "minus"; } ] )
@@ -405,7 +405,7 @@ Expr Expression4() : {
 //			   |   Expression6 ( "/" Expression6 )?
 Expr Expression5() : {
 	Expr left, right = null;
-	String type;
+	String type = null;
 } {
 	( LOOKAHEAD(3) left = Expression6() [ "*" right = Expression6() { type = "times"; } ]
     | left = Expression6() [ "/" right = Expression6() { type = "div"; } ] )
@@ -443,9 +443,10 @@ Expr Expression7() : {
 	Token id = null;
 	LinkedList<Expr> exprs = new LinkedList<Expr>();
 	LinkedList<Expr> params = new LinkedList<Expr>();
+	String type = null;
 } {
-	( LOOKAHEAD(3) left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )*
-	| left = Expression8() ( LOOKAHEAD(2) "." right = Expression8() { exprs.add(right); } )* [ "." id = <ID> [ MethodCall(params) ] ]
+	( LOOKAHEAD(3) left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )* { type = "array"; }
+	| left = Expression8() ( LOOKAHEAD(2) "." right = Expression8() { exprs.add(right); } )* [ "." id = <ID> [ MethodCall(params) { type = "method"; } ] ]
 	| "(" left = Expression() ")" )
 	
 	{
@@ -499,7 +500,7 @@ Expr Expression8() : {
 	{
 		if (exprType.equals("newobj")) return new NewObjectExpr(type);
 		else if (exprType.equals("newarr")) return new NewArrayExpr(type, exprs);
-		else if (exprType.equals("xinu")) return new XinuCallExpr(xinuId, exprs);
+		else if (exprType.equals("xinu")) return new XinuCallExpr(xinuId.image, exprs);
 		else if (exprType.equals("id")) return new IdentifierExpr(terminal.image);
 		else if (exprType.equals("int")) return new IntegerLiteral(new Integer(terminal.toString()));
 		else if (exprType.equals("string")) return new StringLiteral(terminal.toString());

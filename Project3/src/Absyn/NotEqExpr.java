@@ -2,15 +2,15 @@ package Absyn;
 /**
  * Boolean (Logical) NOT Expressions.
  */
-public class NotEqExpr extends Absyn.BinOpExpr{
-    public NotEqExpr(Absyn.Expr e1, Absyn.Expr e2){
-         //TODO codavaj!!
+public class NotEqExpr extends BinOpExpr{
+    public NotEqExpr(Expr e1, Expr e2){
+        super(e1, e2);
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

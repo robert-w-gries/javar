@@ -2,15 +2,19 @@ package Absyn;
 /**
  * While Statements.
  */
-public class WhileStmt extends Absyn.Stmt{
-    public WhileStmt(Absyn.Expr test, Absyn.Stmt body){
-         //TODO codavaj!!
+public class WhileStmt extends Stmt{
+    public Expr test;
+    public Stmt body;
+
+    public WhileStmt(Expr test, Stmt body){
+        this.test = test;
+        this.body = body;
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

@@ -1,16 +1,23 @@
 package Absyn;
+
+import java.util.LinkedList;
+
 /**
  * Xinu Statements.
  */
-public class XinuCallStmt extends Absyn.Stmt{
-    public XinuCallStmt(java.lang.String method, java.util.LinkedList<Absyn.Expr> args){
-         //TODO codavaj!!
+public class XinuCallStmt extends Stmt{
+    public String method;
+    public LinkedList<Expr> args;
+
+    public XinuCallStmt(java.lang.String method, java.util.LinkedList<Expr> args){
+        this.method = method;
+        this.args = args;
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void accept(Absyn.Visitor v){
+    public void accept(Visitor v){
         return; //TODO codavaj!!
     }
 

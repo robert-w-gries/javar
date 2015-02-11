@@ -3,7 +3,7 @@ package Absyn;
 /**
  * Parent class of all abstract syntax tree nodes.
  */
-public abstract class Absyn implements Absyn.Visitable {
+public abstract class Absyn implements Visitable {
 
     public Absyn(){
 
@@ -12,6 +12,6 @@ public abstract class Absyn implements Absyn.Visitable {
     /**
      * Visitor pattern dispatch.
      */
-    public abstract void accept(Absyn.Visitor v);
+    public abstract void accept(Visitor v);
 
 }

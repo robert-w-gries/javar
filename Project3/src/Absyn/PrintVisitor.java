@@ -2,7 +2,7 @@ package Absyn;
 /**
  * Visitor prints AST in reparseable form.
  */
-public class PrintVisitor implements Absyn.Visitor{
+public class PrintVisitor implements Visitor{
     public PrintVisitor(){
          //TODO codavaj!!
     }
@@ -19,170 +19,170 @@ public class PrintVisitor implements Absyn.Visitor{
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.AddExpr ast){
+    public void visit(AddExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.AndExpr ast){
+    public void visit(AndExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.ArrayExpr ast){
+    public void visit(ArrayExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.ArrayType ast){
+    public void visit(ArrayType ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.AssignStmt ast){
+    public void visit(AssignStmt ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.BlockStmt ast){
+    public void visit(BlockStmt ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.BooleanType ast){
+    public void visit(BooleanType ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.CallExpr ast){
+    public void visit(CallExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.ClassDecl ast){
+    public void visit(ClassDecl ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.DivExpr ast){
+    public void visit(DivExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.EqualExpr ast){
+    public void visit(EqualExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.FalseExpr ast){
+    public void visit(FalseExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.FieldExpr ast){
+    public void visit(FieldExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.Formal ast){
+    public void visit(Formal ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.GreaterExpr ast){
+    public void visit(GreaterExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.IdentifierExpr ast){
+    public void visit(IdentifierExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.IdentifierType ast){
+    public void visit(IdentifierType ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.IfStmt ast){
+    public void visit(IfStmt ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.IntegerLiteral ast){
+    public void visit(IntegerLiteral ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.IntegerType ast){
+    public void visit(IntegerType ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.LesserExpr ast){
+    public void visit(LesserExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.MethodDecl ast){
+    public void visit(MethodDecl ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.MulExpr ast){
+    public void visit(MulExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.NegExpr ast){
+    public void visit(NegExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.NewArrayExpr ast){
+    public void visit(NewArrayExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.NewObjectExpr ast){
+    public void visit(NewObjectExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.NotEqExpr ast){
+    public void visit(NotEqExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.NotExpr ast){
+    public void visit(NotExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.NullExpr ast){
+    public void visit(NullExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.OrExpr ast){
+    public void visit(OrExpr ast){
         return; //TODO codavaj!!
     }
 
     /**
      * Visitor pattern dispatch.
      */
-    public void visit(Absyn.Program ast){
+    public void visit(Program ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.StringLiteral ast){
+    public void visit(StringLiteral ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.SubExpr ast){
+    public void visit(SubExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.ThisExpr ast){
+    public void visit(ThisExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.ThreadDecl ast){
+    public void visit(ThreadDecl ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.TrueExpr ast){
+    public void visit(TrueExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.VarDecl ast){
+    public void visit(VarDecl ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.VoidDecl ast){
+    public void visit(VoidDecl ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.WhileStmt ast){
+    public void visit(WhileStmt ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.XinuCallExpr ast){
+    public void visit(XinuCallExpr ast){
         return; //TODO codavaj!!
     }
 
-    public void visit(Absyn.XinuCallStmt ast){
+    public void visit(XinuCallStmt ast){
         return; //TODO codavaj!!
     }
 
