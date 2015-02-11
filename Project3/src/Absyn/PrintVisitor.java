@@ -57,10 +57,13 @@ public class PrintVisitor implements Visitor{
      * Description copied from interface:
      * Visitor pattern dispatch.
      */
-    public void visit(java.util.AbstractList list){
+    public void visit(java.util.AbstractList list) {
 
+        // print abstract list without newline
+        // AbstractList can have multiple closing parentheses
         printClass("AbstractList");
 
+        // loop through elements of abstract list and accept them
         for (int i = 0; i < list.size(); i++) {
             printOut.println();
             ((Absyn)list.get(i)).accept(this);
@@ -76,120 +79,160 @@ public class PrintVisitor implements Visitor{
         printClassLine("AddExpr");
 
         ast.leftExpr.accept(this);
+        printOut.println();
         ast.rightExpr.accept(this);
+
         decrementTab();
 
         return;
 
     }
 
-    public void visit(AndExpr ast){
+    public void visit(AndExpr ast) {
 
         printClassLine("AndExpr");
 
         ast.leftExpr.accept(this);
+        printOut.println();
         ast.rightExpr.accept(this);
+
         decrementTab();
 
         return;
     }
 
-    public void visit(ArrayExpr ast){
+    //TODO: test
+    public void visit(ArrayExpr ast) {
 
         printClassLine("ArrayExpr");
 
         ast.index.accept(this);
         ast.targetExpr.accept(this);
+
         decrementTab();
 
         return;
     }
 
-    public void visit(ArrayType ast){
+    //TODO: test
+    public void visit(ArrayType ast) {
 
-        printClass("ArrayType");
+        printOut.print("ArrayType(");
 
         ast.baseType.accept(this);
+
         decrementTab();
 
         return;
     }
 
-    public void visit(AssignStmt ast){
+    public void visit(AssignStmt ast) {
 
         printClassLine("AssignStmt");
 
         ast.leftExpr.accept(this);
+        printOut.println();
         ast.rightExpr.accept(this);
+
         decrementTab();
 
         return;
     }
 
-    public void visit(BlockStmt ast){
+    public void visit(BlockStmt ast) {
 
         printClassLine("BlockStmt");
 
-        for (int i = 0; i < ast.stmtList.size(); i++) {
-            ast.stmtList.get(i).accept(this);
-        }
+        visit(ast.stmtList);
 
         decrementTab();
 
         return;
     }
 
-    public void visit(BooleanType ast){
+    public void visit(BooleanType ast) {
 
-        printClassLine("BooleanType");
-
-        ast.accept(this);
-        decrementTab();
+        printOut.print("BooleanType");
 
         return;
     }
 
-    public void visit(CallExpr ast){
+    //TODO: test
+    public void visit(CallExpr ast) {
 
         printClass("CallExpr");
 
+        ast.targetExpr.accept(this);
+        printOut.println(ast.methodString);
+        visit(ast.argsList);
+
         return;
+
     }
 
-    public void visit(ClassDecl ast){
+    //TODO: test fields
+    public void visit(ClassDecl ast) {
 
+        // print classdecl without newline
+        // ClassDecl prints name of class and its parent on same line
         printClass("ClassDecl");
         printOut.print(ast.name + " " + ast.parent);
         printOut.println();
 
+        // print all fields of the class
         visit(ast.fields);
         printOut.println();
 
+        // print all methods of the class
         visit(ast.methods);
-        printOut.println();
 
         decrementTab();
 
         return;
     }
 
-    public void visit(DivExpr ast){
-        return; //TODO codavaj!!
+    // TODO: test multiple division signs in a row
+    public void visit(DivExpr ast) {
+
+        printClassLine("DivExpr");
+
+        ast.leftExpr.accept(this);
+        printOut.println();
+        ast.rightExpr.accept(this);
+
+        decrementTab();
+
+        return;
+
     }
 
-    public void visit(EqualExpr ast){
-        return; //TODO codavaj!!
+    public void visit(EqualExpr ast) {
+
+        printClassLine("EqualExpr");
+
+        ast.leftExpr.accept(this);
+        printOut.println();
+        ast.rightExpr.accept(this);
+
+        decrementTab();
+
+        return;
     }
 
     public void visit(FalseExpr ast){
-        return; //TODO codavaj!!
+
+        printTabs();
+        printOut.print("FalseExpr");
+
+        return;
     }
 
     public void visit(FieldExpr ast){
-        return; //TODO codavaj!!
+        //printClass("FieldExpr");
+        return;
     }
 
-    public void visit(Formal ast){
+    public void visit(Formal ast) {
 
         printClass("Formal");
         ast.type.accept(this);
@@ -206,12 +249,17 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(IdentifierExpr ast){
-        return; //TODO codavaj!!
+
+        printTabs();
+        printOut.print("IdentiferExpr(" + ast.id + ")");
+
+        return;
+
     }
 
     public void visit(IdentifierType ast){
 
-        printOut.print(ast.id);
+        printOut.print("IdentiferType(" + ast.id + ")");
 
         return;
 
@@ -242,22 +290,30 @@ public class PrintVisitor implements Visitor{
 
     public void visit(MethodDecl ast) {
 
+        // print methodecl without newline
+        // MethodDecl prints return type and name of method on same line
         printClass("MethodDecl");
 
+        // print return type
         ast.returnType.accept(this);
 
+        // print method name and start new line
         printOut.print(" " + ast.name);
         printOut.println();
 
+        // print all the parameters of the method
         visit(ast.params);
         printOut.println();
 
+        // print all local variables
         visit(ast.locals);
         printOut.println();
 
+        // print all statements
         visit(ast.stmts);
         printOut.println();
 
+        // print the return value
         ast.returnVal.accept(this);
 
         decrementTab();
@@ -302,13 +358,16 @@ public class PrintVisitor implements Visitor{
      */
     public void visit(Program ast){
 
+        // print the visited class
         printClassLine("Program");
 
+        // visit all the classes
         visit(ast.classes);
-        printOut.println();
 
+        // print closing parenthesis and decrement indent
         decrementTab();
 
+        // flush output to console/file and close the printwriter
         printOut.flush();
         printOut.close();
 
@@ -332,8 +391,12 @@ public class PrintVisitor implements Visitor{
         return; //TODO codavaj!!
     }
 
-    public void visit(TrueExpr ast){
-        return; //TODO codavaj!!
+    public void visit(TrueExpr ast) {
+
+        printTabs();
+        printOut.print("TrueExpr");
+        return;
+
     }
 
     public void visit(VarDecl ast){
@@ -342,9 +405,14 @@ public class PrintVisitor implements Visitor{
         printOut.print("VarDecl(");
 
         ast.type.accept(this);
-        printOut.println(" " + ast.name);
+        printOut.print(" " + ast.name);
 
-        ast.init.accept(this);
+        if (ast.init == null) {
+            printOut.print(" null");
+        } else {
+            printOut.println();
+            ast.init.accept(this);
+        }
 
         printOut.print(")");
 
