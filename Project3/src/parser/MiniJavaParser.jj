@@ -2,12 +2,14 @@ PARSER_BEGIN(MiniJavaParser)
 package parser;
 
 import java.util.LinkedList;
-import absyn.*;
+import Absyn.*;
+import java.io.*;
 
 public class MiniJavaParser {
 
 	public static void main(String[] args) {
 		PrintVisitor visitor = new PrintVisitor();
+		jj_input_stream = new SimpleCharStream(new FileReader(args[0]));
 
 		try {
 			visitor.visit(Goal());
