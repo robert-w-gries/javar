@@ -357,7 +357,7 @@ Expr Expression() : {
 	Expr left, right = null;
 	LinkedList<Expr> exprs = new LinkedList<Expr>();
 } {
-	left = Expression1() ( "||" right = Expression1() { expr.add(right); } )*
+	left = Expression1() ( "||" right = Expression1() { exprs.add(right); } )*
 	
 	{
 		for (Expr expr : exprs) {
@@ -372,7 +372,7 @@ Expr Expression1() : {
 	Expr left, right = null;
 	LinkedList<Expr> exprs = new LinkedList<Expr>();
 } {
-	left = Expression2() ( "&&" right = Expression2() { expr.add(right); } )*
+	left = Expression2() ( "&&" right = Expression2() { exprs.add(right); } )*
 
     {
     	for (Expr expr : exprs) {
@@ -582,7 +582,7 @@ Expr Expression8() : {
 	}
 }
 
-Expression Identifier() : {
+Expr Identifier() : {
 	Expr expr;
 } {
 	expr = <ID>
