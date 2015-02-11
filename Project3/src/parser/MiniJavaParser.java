@@ -2,12 +2,14 @@
 package parser;
 
 import java.util.LinkedList;
-import absyn.*;
+import Absyn.*;
+import java.io.*;
 
 public class MiniJavaParser implements MiniJavaParserConstants {
 
         public static void main(String[] args) {
                 PrintVisitor visitor = new PrintVisitor();
+                jj_input_stream = new SimpleCharStream(new FileReader(args[0]));
 
                 try {
                         visitor.visit(Goal());
@@ -1217,22 +1219,6 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     finally { jj_save(16, xla); }
   }
 
-  static private boolean jj_3R_69() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_10()) {
-    jj_scanpos = xsp;
-    if (jj_3R_71()) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_32() {
-    if (jj_scan_token(32)) return true;
-    if (jj_scan_token(ID)) return true;
-    return false;
-  }
-
   static private boolean jj_3_1() {
     if (jj_3R_17()) return true;
     return false;
@@ -1767,6 +1753,22 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3R_22()) jj_scanpos = xsp;
+    return false;
+  }
+
+  static private boolean jj_3R_69() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_10()) {
+    jj_scanpos = xsp;
+    if (jj_3R_71()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_32() {
+    if (jj_scan_token(32)) return true;
+    if (jj_scan_token(ID)) return true;
     return false;
   }
 
