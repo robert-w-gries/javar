@@ -376,8 +376,9 @@ Expr Expression2() : {
 	Expr left, right = null;
 	String type = null;
 } {
-	( LOOKAHEAD(3) left = Expression3() [ "==" right = Expression3() { type = "equal"; } ]
-	| LOOKAHEAD(3) left = Expression3() [ "!=" right = Expression3() { type = "notequal"; } ] )
+	left = Expression3()
+	[ ( "==" right = Expression3() { type = "equal"; }
+	| "!=" right = Expression3() { type = "notequal"; } ) ]
 	
 	{
 		if (right == null) return left;
@@ -392,8 +393,9 @@ Expr Expression3() : {
 	Expr left, right = null;
 	String type = null;
 } {
-	( LOOKAHEAD(3) left = Expression4() [ "<" right = Expression4() { type = "less"; } ]
-	| LOOKAHEAD(3) left = Expression4() [ ">" right = Expression4() { type = "greater"; } ] )
+	left = Expression4()
+    [ ( "<" right = Expression4() { type = "less"; }
+    | ">" right = Expression4() { type = "greater"; } ) ]
 	
 	{
 		if (right == null) return left;
@@ -408,8 +410,9 @@ Expr Expression4() : {
 	Expr left, right = null;
 	String type = null;
 } {
-	( LOOKAHEAD(3) left = Expression5() [ "+" right = Expression5() { type = "plus"; } ]
-	| LOOKAHEAD(3) left = Expression5() [ "-" right = Expression5() { type = "minus"; } ] )
+	left = Expression5()
+	[ ( "+" right = Expression5() { type = "plus"; }
+	| "-" right = Expression5() { type = "minus"; } ) ]
 	
 	{
 		if (right == null) return left;
@@ -424,8 +427,9 @@ Expr Expression5() : {
 	Expr left, right = null;
 	String type = null;
 } {
-	( LOOKAHEAD(3) left = Expression6() [ "*" right = Expression6() { type = "times"; } ]
-    | LOOKAHEAD(3) left = Expression6() [ "/" right = Expression6() { type = "div"; } ] )
+	left = Expression6()
+	[ ( "*" right = Expression6() { type = "times"; }
+	| "/" right = Expression6() { type = "div"; } ) ]
 
     {
     	if (right == null) return left;
@@ -439,11 +443,10 @@ Expr Expression5() : {
 //             |   DotExpression
 Expr Expression6() : {
 	Expr expr;
-	String type;
+	String type = "none";
 } {
-	( "-" expr = DotExpression() { type = "neg"; }
-	| "!" expr = DotExpression() { type = "not"; }
-	| expr = DotExpression() { type = "none"; } )
+	( "-" { type = "neg"; } | "-" { type = "not"; } )
+	expr = DotExpression()
 	
 	{
 		if (type.equals("neg")) return new NegExpr(expr);
