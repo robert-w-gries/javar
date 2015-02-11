@@ -101,11 +101,21 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 6:
       case 10:
       case 13:
+      case 14:
       case 37:
       case 39:
       case 40:
+      case 41:
+      case 42:
+      case 43:
+      case 44:
+      case 45:
+      case INT:
+      case STRING:
+      case ID:
         ;
         break;
       default:
@@ -317,11 +327,21 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 6:
       case 10:
       case 13:
+      case 14:
       case 37:
       case 39:
       case 40:
+      case 41:
+      case 42:
+      case 43:
+      case 44:
+      case 45:
+      case INT:
+      case STRING:
+      case ID:
         ;
         break;
       default:
@@ -360,11 +380,21 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     label_10:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+      case 6:
       case 10:
       case 13:
+      case 14:
       case 37:
       case 39:
       case 40:
+      case 41:
+      case 42:
+      case 43:
+      case 44:
+      case 45:
+      case INT:
+      case STRING:
+      case ID:
         ;
         break;
       default:
@@ -450,11 +480,21 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       label_12:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 6:
         case 10:
         case 13:
+        case 14:
         case 37:
         case 39:
         case 40:
+        case 41:
+        case 42:
+        case 43:
+        case 44:
+        case 45:
+        case INT:
+        case STRING:
+        case ID:
           ;
           break;
         default:
@@ -499,7 +539,18 @@ public class MiniJavaParser implements MiniJavaParserConstants {
                                                                                    type = "xinu";
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 6:
         case 13:
+        case 14:
+        case 40:
+        case 41:
+        case 42:
+        case 43:
+        case 44:
+        case 45:
+        case INT:
+        case STRING:
+        case ID:
           innerExpr1 = Expression();
           jj_consume_token(20);
           innerExpr2 = Expression();
@@ -706,20 +757,28 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   static final public Expr Expression6() throws ParseException {
         Expr expr;
         String type = "none";
-    if (jj_2_10(2)) {
-      jj_consume_token(13);
-                             type = "neg";
-    } else {
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 13:
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 13:
+    case 14:
+      if (jj_2_10(2)) {
         jj_consume_token(13);
-                                                     type = "not";
-        break;
-      default:
-        jj_la1[30] = jj_gen;
-        jj_consume_token(-1);
-        throw new ParseException();
+                               type = "neg";
+      } else {
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 14:
+          jj_consume_token(14);
+                                                       type = "not";
+          break;
+        default:
+          jj_la1[30] = jj_gen;
+          jj_consume_token(-1);
+          throw new ParseException();
+        }
       }
+      break;
+    default:
+      jj_la1[31] = jj_gen;
+      ;
     }
     expr = DotExpression();
                 if (type.equals("neg")) {if (true) return new NegExpr(expr);}
@@ -750,7 +809,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         MethodCall(paramses.getLast());
         break;
       default:
-        jj_la1[31] = jj_gen;
+        jj_la1[32] = jj_gen;
         ;
       }
     }
@@ -779,7 +838,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
           ;
           break;
         default:
-          jj_la1[32] = jj_gen;
+          jj_la1[33] = jj_gen;
           break label_14;
         }
         jj_consume_token(8);
@@ -795,7 +854,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         jj_consume_token(7);
         break;
       default:
-        jj_la1[33] = jj_gen;
+        jj_la1[34] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -812,7 +871,18 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         Expr expr;
     jj_consume_token(6);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 6:
     case 13:
+    case 14:
+    case 40:
+    case 41:
+    case 42:
+    case 43:
+    case 44:
+    case 45:
+    case INT:
+    case STRING:
+    case ID:
       expr = Expression();
                                     exprs.add(expr);
       label_15:
@@ -822,7 +892,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
           ;
           break;
         default:
-          jj_la1[34] = jj_gen;
+          jj_la1[35] = jj_gen;
           break label_15;
         }
         jj_consume_token(25);
@@ -831,7 +901,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       }
       break;
     default:
-      jj_la1[35] = jj_gen;
+      jj_la1[36] = jj_gen;
       ;
     }
     jj_consume_token(7);
@@ -914,7 +984,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
                    exprType = "null";
         break;
       default:
-        jj_la1[36] = jj_gen;
+        jj_la1[37] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1046,6 +1116,11 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     finally { jj_save(14, xla); }
   }
 
+  static private boolean jj_3R_54() {
+    if (jj_3R_56()) return true;
+    return false;
+  }
+
   static private boolean jj_3_1() {
     if (jj_3R_17()) return true;
     return false;
@@ -1078,23 +1153,31 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
+  static private boolean jj_3_10() {
+    if (jj_scan_token(13)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_44() {
     if (jj_scan_token(46)) return true;
     return false;
   }
 
-  static private boolean jj_3_10() {
-    if (jj_scan_token(13)) return true;
+  static private boolean jj_3R_53() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_10()) {
+    jj_scanpos = xsp;
+    if (jj_3R_55()) return true;
+    }
     return false;
   }
 
   static private boolean jj_3R_52() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_10()) {
-    jj_scanpos = xsp;
-    if (jj_3R_53()) return true;
-    }
+    if (jj_3R_53()) jj_scanpos = xsp;
+    if (jj_3R_54()) return true;
     return false;
   }
 
@@ -1347,6 +1430,16 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
+  static private boolean jj_3R_57() {
+    if (jj_scan_token(6)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_55() {
+    if (jj_scan_token(14)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_46() {
     if (jj_3R_27()) return true;
     return false;
@@ -1368,8 +1461,13 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_53() {
-    if (jj_scan_token(13)) return true;
+  static private boolean jj_3R_56() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_12()) {
+    jj_scanpos = xsp;
+    if (jj_3R_57()) return true;
+    }
     return false;
   }
 
@@ -1416,7 +1514,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   static private Token jj_scanpos, jj_lastpos;
   static private int jj_la;
   static private int jj_gen;
-  static final private int[] jj_la1 = new int[37];
+  static final private int[] jj_la1 = new int[38];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static {
@@ -1424,10 +1522,10 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x2400,0x0,0x8000000,0x0,0x8000000,0x8000000,0x0,0x8000000,0x100000,0x0,0x2000000,0x0,0x2400,0x2400,0x0,0x2400,0x400,0x2000,0x1000000,0x800000,0x600000,0x600000,0xc0000,0xc0000,0x22000,0x22000,0x18000,0x18000,0x2000,0x40,0x100,0x40,0x2000000,0x2000,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x6440,0x0,0x8000000,0x0,0x8000000,0x8000000,0x0,0x8000000,0x100000,0x0,0x2000000,0x0,0x6440,0x6440,0x0,0x6440,0x400,0x6040,0x1000000,0x800000,0x600000,0x600000,0xc0000,0xc0000,0x22000,0x22000,0x18000,0x18000,0x4000,0x6000,0x40,0x100,0x40,0x2000000,0x6040,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x1,0x1,0x1a0,0x2,0x800c000,0x800c000,0x0,0x800c000,0x800c000,0x0,0x0,0x8,0x0,0x800c000,0x1a0,0x1a0,0x800c000,0x1a0,0xa0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc801f00,};
+      jj_la1_1 = new int[] {0x1,0x1,0xc803fa0,0x2,0x800c000,0x800c000,0x0,0x800c000,0x800c000,0x0,0x0,0x8,0x0,0x800c000,0xc803fa0,0xc803fa0,0x800c000,0xc803fa0,0xa0,0xc803f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc803f00,0xc801f00,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[15];
   static private boolean jj_rescan = false;
@@ -1451,7 +1549,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1466,7 +1564,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1484,7 +1582,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1495,7 +1593,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1512,7 +1610,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1522,7 +1620,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 37; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 38; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1639,7 +1737,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 37; i++) {
+    for (int i = 0; i < 38; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
