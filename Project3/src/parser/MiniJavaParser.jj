@@ -460,7 +460,7 @@ Expr DotExpression() : {
 	LinkedList<LinkedList<Expr>> paramses = new LinkedList<LinkedList<Expr>>();
 } {
 	left = Expression7() ( LOOKAHEAD(2) "." id = <ID> { ids.add(id); paramses.add(new LinkedList<Expr>()); }
-		[ MethodCall(params.getLast()) ] )*
+		[ MethodCall(paramess.getLast()) ] )*
 
 	{
 		for (int i = 0; i < ids.size(); ++i) {
