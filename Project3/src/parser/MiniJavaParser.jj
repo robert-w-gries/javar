@@ -583,10 +583,10 @@ Expr Expression8() : {
 }
 
 Expr Identifier() : {
-	Expr expr;
+	Token id;
 } {
-	expr = <ID>
-	{ return expr; }
+	id = <ID>
+	{ return new IdentifierExpr(id.image); }
 }
 
 // NewDecl ::= "new" Type
