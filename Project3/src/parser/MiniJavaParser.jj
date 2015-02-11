@@ -521,7 +521,8 @@ Expr Expression7() : {
 	Expr left;
 } {
 	( LOOKAHEAD(3) left = ArrayExpression()
-	| "(" left = Expression() ")" )
+	| "(" left = Expression() ")"
+	| left = Expression8() )
 	
 	{
 		return left;
@@ -532,7 +533,7 @@ Expr ArrayExpression() : {
 	Expr left, right = null;
 	LinkedList<Expr> exprs = new LinkedList<Expr>();
 } {
-	left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )*
+	left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )+
 
 	{
     	for (Expr expr : exprs) {
