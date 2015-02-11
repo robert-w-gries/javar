@@ -3,15 +3,20 @@ package Absyn;
  * Declarations for variables and fields.
  */
 public class VarDecl extends Absyn.Absyn{
-    public VarDecl(Absyn.Type type, java.lang.String name, Absyn.Expr init){
-         //TODO codavaj!!
-    }
+
+    public Absyn.Type type;
+    public java.lang.String name;
+    public Absyn.Expr init;
+
+    public VarDecl(Absyn.Type type, java.lang.String name, Absyn.Expr init)
+    {   this.type = type;   this.name = name;   this.init = init;   }
 
     /**
      * Visitor pattern dispatch.
      */
     public void accept(Absyn.Visitor v){
-        return; //TODO codavaj!!
+        v.visit(this);
+        return;
     }
 
 }

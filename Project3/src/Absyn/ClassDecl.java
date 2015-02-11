@@ -21,7 +21,8 @@ public class ClassDecl extends Absyn.Absyn{
      * Visitor pattern dispatch.
      */
     public void accept(Absyn.Visitor v){
-        return; //TODO codavaj!!
+        v.visit(this);
+        return;
     }
 
 }

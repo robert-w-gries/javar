@@ -3,13 +3,15 @@ package Absyn;
  * Statement abstract class.
  */
 public abstract class Stmt extends Absyn.Absyn{
-    public Stmt(){
-         //TODO codavaj!!
-    }
+
+    public Stmt(){}
 
     /**
      * Visitor pattern dispatch.
      */
-    public abstract void accept(Absyn.Visitor v);
+    public void accept(Absyn.Visitor v){
+        v.visit(this);
+        return;
+    }
 
 }

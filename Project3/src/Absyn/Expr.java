@@ -3,13 +3,14 @@ package Absyn;
  * Expression abstract class.
  */
 public abstract class Expr extends Absyn.Absyn{
-    public Expr(){
-         //TODO codavaj!!
-    }
+    public Expr(){}
 
     /**
      * Visitor pattern dispatch.
      */
-    public abstract void accept(Absyn.Visitor v);
+    public void accept(Absyn.Visitor v){
+        v.visit(this);
+        return;
+    }
 
 }

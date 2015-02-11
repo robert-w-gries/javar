@@ -3,15 +3,18 @@ package Absyn;
  * Boolean (Logical) Not Expressions.
  */
 public class NotExpr extends Absyn.Expr{
-    public NotExpr(Absyn.Expr e1){
-         //TODO codavaj!!
-    }
+
+    public Absyn.Expr expr;
+
+    public NotExpr(Absyn.Expr e1)
+    {   expr = e1;   }
 
     /**
      * Visitor pattern dispatch.
      */
     public void accept(Absyn.Visitor v){
-        return; //TODO codavaj!!
+        v.visit(this);
+        return;
     }
 
 }

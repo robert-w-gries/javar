@@ -3,13 +3,15 @@ package Absyn;
  * Type abstract class.
  */
 public abstract class Type extends Absyn.Absyn{
-    public Type(){
-         //TODO codavaj!!
-    }
+
+    public Type(){}
 
     /**
      * Visitor pattern dispatch.
      */
-    public abstract void accept(Absyn.Visitor v);
+    public void accept(Absyn.Visitor v){
+        v.visit(this);
+        return;
+    }
 
 }

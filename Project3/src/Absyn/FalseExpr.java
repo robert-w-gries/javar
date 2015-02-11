@@ -3,15 +3,15 @@ package Absyn;
  * Boolean FALSE.
  */
 public class FalseExpr extends Absyn.Expr{
-    public FalseExpr(){
-         //TODO codavaj!!
-    }
+
+    public FalseExpr(){}
 
     /**
      * Visitor pattern dispatch.
      */
     public void accept(Absyn.Visitor v){
-        return; //TODO codavaj!!
+        v.visit(this);
+        return;
     }
 
 }
