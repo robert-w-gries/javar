@@ -377,7 +377,7 @@ Expr Expression2() : {
 	String type = null;
 } {
 	( LOOKAHEAD(3) left = Expression3() [ "==" right = Expression3() { type = "equal"; } ]
-	| left = Expression3() [ "!=" right = Expression3() { type = "notequal"; } ] )
+	| LOOKAHEAD(3) left = Expression3() [ "!=" right = Expression3() { type = "notequal"; } ] )
 	
 	{
 		if (right == null) return left;
@@ -393,7 +393,7 @@ Expr Expression3() : {
 	String type = null;
 } {
 	( LOOKAHEAD(3) left = Expression4() [ "<" right = Expression4() { type = "less"; } ]
-	| left = Expression4() [ ">" right = Expression4() { type = "greater"; } ] )
+	| LOOKAHEAD(3) left = Expression4() [ ">" right = Expression4() { type = "greater"; } ] )
 	
 	{
 		if (right == null) return left;
@@ -409,7 +409,7 @@ Expr Expression4() : {
 	String type = null;
 } {
 	( LOOKAHEAD(3) left = Expression5() [ "+" right = Expression5() { type = "plus"; } ]
-	| left = Expression5() [ "-" right = Expression5() { type = "minus"; } ] )
+	| LOOKAHEAD(3) left = Expression5() [ "-" right = Expression5() { type = "minus"; } ] )
 	
 	{
 		if (right == null) return left;
@@ -425,7 +425,7 @@ Expr Expression5() : {
 	String type = null;
 } {
 	( LOOKAHEAD(3) left = Expression6() [ "*" right = Expression6() { type = "times"; } ]
-    | left = Expression6() [ "/" right = Expression6() { type = "div"; } ] )
+    | LOOKAHEAD(3) left = Expression6() [ "/" right = Expression6() { type = "div"; } ] )
 
     {
     	if (right == null) return left;
@@ -517,7 +517,7 @@ Expr Expression8() : {
 	String exprType;
 } {
 	( LOOKAHEAD(3) type = NewDecl() "(" ")" { exprType = "newobj"; }
-	| type = NewDecl() "[" ( expr = Expression() { exprs.add(expr); } ) "]" ( LOOKAHEAD(2) "[" "]" )* { exprType = "newarr"; }
+	| LOOKAHEAD(3) type = NewDecl() "[" ( expr = Expression() { exprs.add(expr); } ) "]" ( LOOKAHEAD(2) "[" "]" )* { exprType = "newarr"; }
 	| "Xinu" "." xinuId = <ID> MethodCall(exprs) { exprType = "xinu"; }
 	| terminal = <ID> { exprType = "id"; }
 	| terminal = <INT> { exprType = "int"; }
