@@ -1016,9 +1016,9 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   }
 
   static final public Expr Identifier() throws ParseException {
-        Expr expr;
-    expr = jj_consume_token(ID);
-          {if (true) return expr;}
+        Token id;
+    id = jj_consume_token(ID);
+          {if (true) return new IdentifierExpr(id.image);}
     throw new Error("Missing return statement in function");
   }
 
