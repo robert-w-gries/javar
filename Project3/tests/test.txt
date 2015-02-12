@@ -2,7 +2,11 @@ class Test {
 
     public static void main(String[] args) {
 
-        boolean z = false;
+        if (a) {
+
+            a = 0;
+
+        }
 
     }
 

@@ -228,7 +228,16 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(FieldExpr ast){
-        //printClass("FieldExpr");
+
+        printClassLine("FieldExpr");
+
+        ast.target.accept(this);
+
+        printTabs();
+        printOut.print(ast.field);
+
+        decrementTab();
+
         return;
     }
 
@@ -245,13 +254,22 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(GreaterExpr ast){
-        return; //TODO codavaj!!
+
+        printClassLine("GreaterExpr");
+
+        ast.leftExpr.accept(this);
+        printOut.println();
+        ast.rightExpr.accept(this);
+
+        decrementTab();
+
+        return;
     }
 
     public void visit(IdentifierExpr ast){
 
         printTabs();
-        printOut.print("IdentiferExpr(" + ast.id + ")");
+        printOut.print("IdentifierExpr(" + ast.id + ")");
 
         return;
 
@@ -259,14 +277,36 @@ public class PrintVisitor implements Visitor{
 
     public void visit(IdentifierType ast){
 
-        printOut.print("IdentiferType(" + ast.id + ")");
+        if (ast.id.equals("public_static_void")) {
+            printOut.print(ast.id);
+        } else {
+            printOut.print("IdentifierType(" + ast.id + ")");
+        }
 
         return;
 
     }
 
     public void visit(IfStmt ast){
-        return; //TODO codavaj!!
+
+        printClassLine("IfStmt");
+
+        ast.test.accept(this);
+        printOut.println();
+
+        ast.thenStm.accept(this);
+        printOut.println();
+
+        if (ast.elseStm == null) {
+            printTabs();
+            printOut.print("null");
+        } else {
+            ast.elseStm.accept(this);
+        }
+
+        decrementTab();
+
+        return;
     }
 
     public void visit(IntegerLiteral ast){
@@ -380,11 +420,25 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(SubExpr ast){
-        return; //TODO codavaj!!
+
+        printClassLine("SubExpr");
+
+        ast.leftExpr.accept(this);
+        printOut.println();
+        ast.rightExpr.accept(this);
+
+        decrementTab();
+
+        return;
+
     }
 
     public void visit(ThisExpr ast){
-        return; //TODO codavaj!!
+
+        printTabs();
+        printOut.println("ThisExpr");
+        return;
+
     }
 
     public void visit(ThreadDecl ast){
@@ -419,8 +473,19 @@ public class PrintVisitor implements Visitor{
         return;
     }
 
-    public void visit(VoidDecl ast){
-        return; //TODO codavaj!!
+    public void visit(VoidDecl ast) {
+
+        printClass("VoidDecl");
+
+        printOut.println(ast.name);
+
+        visit(ast.locals);
+        printOut.println();
+        visit(ast.params);
+
+        decrementTab();
+
+        return;
     }
 
     public void visit(WhileStmt ast){
