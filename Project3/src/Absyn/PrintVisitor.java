@@ -492,6 +492,8 @@ public class PrintVisitor implements Visitor{
         // print closing parenthesis and decrement indent
         decrementTab();
 
+        printOut.println();
+
         // flush output to console/file and close the printwriter
         printOut.flush();
         printOut.close();

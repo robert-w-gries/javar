@@ -274,7 +274,7 @@ public class ParserUtils extends AbstractLogger {
              and then the constant itself
             <TR>
               <A/>
-              <TD>public  static  final  java.lang.String</TD>
+              <TD>publicï¿½ staticï¿½ finalï¿½ java.lang.String</TD>
               <TD>
                 <A href="org/codavaj/process/antrunner/AntRunner.html#PROPERTY_ANTRUNNER_TARGET">PROPERTY_ANTRUNNER_TARGET</A>
               </TD>
@@ -604,11 +604,11 @@ public class ParserUtils extends AbstractLogger {
 
         /* javadoc pre 1.5
         <TR>
-        <TD>  
+        <TD> ï¿½
           <A href="../../../../org/codavaj/javadoc/input/DefaultInterface.html">DefaultInterface</A>[]
         </TD>
         <TD>
-          <A href="../../../../org/codavaj/javadoc/input/ClassWithFields.html#defintarray_">defintarray_</A>             
+          <A href="../../../../org/codavaj/javadoc/input/ClassWithFields.html#defintarray_">defintarray_</A>  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         </TD>
         </TR>
          */
@@ -701,10 +701,10 @@ public class ParserUtils extends AbstractLogger {
 
         /* Javadoc pre 1.5
         <TR>
-        <TD>  </TD>
+        <TD> ï¿½</TD>
         <TD>
           <A href="../../../../org/codavaj/javadoc/input/ClassWithConstructors.html#ClassWithConstructors(org.codavaj.javadoc.input.ArrayReturnClass)">ClassWithConstructors</A>(
-          <A href="../../../../org/codavaj/javadoc/input/ArrayReturnClass.html">ArrayReturnClass</A> p1)            
+          <A href="../../../../org/codavaj/javadoc/input/ArrayReturnClass.html">ArrayReturnClass</A>ï¿½p1) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         </TD>
         </TR>
          */
@@ -947,13 +947,13 @@ public class ParserUtils extends AbstractLogger {
 
         /* Javadoc pre 1.5
         <TR>
-        <TD>  
+        <TD> ï¿½
           <A href="../../../java/lang/String.html">String</A>[]
         </TD>
         <TD>
           <A href="../../../org/w3c/dom/Element.html#getAttributeNS(java.lang.String, java.lang.String)">getAttributeNS</A>(
-          <A href="../../../java/lang/String.html">String</A> namespaceURI,
-          <A href="../../../java/lang/String.html">String</A> localName)            Retrieves an attribute value by local name and namespace URI.
+          <A href="../../../java/lang/String.html">String</A>ï¿½namespaceURI,
+          <A href="../../../java/lang/String.html">String</A>ï¿½localName) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Retrieves an attribute value by local name and namespace URI.
         </TD>
         </TR>
          */
@@ -983,7 +983,7 @@ public class ParserUtils extends AbstractLogger {
 	          </TABLE> 
 	        </TD>  
 	        <TD>
-	          <A href="../../../../org/codavaj/javadoc/input/KillerGenericsStuff.html#max(java.util.Collection)">max</A>(java.util.Collection< ? extends T>  coll)            Returns the maximum element of the given collection, according to the 
+	          <A href="../../../../org/codavaj/javadoc/input/KillerGenericsStuff.html#max(java.util.Collection)">max</A>(java.util.Collection< ? extends T>ï¿½ coll) ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Returns the maximum element of the given collection, according to the 
 	          <I>natural ordering</I> of its elements.
 	        </TD> 
 	      </TR>  
@@ -1039,14 +1039,14 @@ public class ParserUtils extends AbstractLogger {
     <TABLE> 
       <TR>Required Element Summary</TR>  
       <TR> 
-        <TD>  
+        <TD> ï¿½
           <A href="../../../../org/codavaj/javadoc/input/AnnotationDefault.html">AnnotationDefault</A>
         </TD>  
         <TD>
-          <A href="../../../../org/codavaj/javadoc/input/AnnotationParameterized.html#annotParam()">annotParam</A>             
+          <A href="../../../../org/codavaj/javadoc/input/AnnotationParameterized.html#annotParam()">annotParam</A>  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         </TD> 
       </TR>...  
-    </TABLE>     
+    </TABLE>  ï¿½  
     	 */
     	
    		String methodXpath = "//TR[contains(parent::TABLE/TR,'Required Element Summary')][position()>1]";
@@ -1474,7 +1474,7 @@ public class ParserUtils extends AbstractLogger {
         throws SAXException, IOException, DocumentException {
         org.cyberneko.html.parsers.DOMParser parser = new org.cyberneko.html.parsers.DOMParser();
 
-        //XMLParserConfiguration parser = new HTMLConfiguration();
+        //XMLParserConfiguration Parse = new HTMLConfiguration();
         parser.setFeature("http://cyberneko.org/html/features/augmentations",
             true);
         parser.setFeature("http://cyberneko.org/html/features/report-errors",

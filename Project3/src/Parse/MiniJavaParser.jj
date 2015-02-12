@@ -1,27 +1,11 @@
 PARSER_BEGIN(MiniJavaParser)
-package parser;
+package Parse;
 
 import java.util.LinkedList;
 import Absyn.*;
 import java.io.*;
 
 public class MiniJavaParser {
-
-	public static void main(String[] args) {
-		PrintVisitor visitor = new PrintVisitor();
-
-		try {
-			MiniJavaParser parser = new MiniJavaParser(new FileReader(args[0]));
-		} catch (IOException e) {
-			System.err.println(e.getMessage());
-		}
-
-		try {
-			visitor.visit(Goal());
-		} catch (ParseException e) {
-			System.err.println(e.getMessage());
-		}
-	}
 } 
 PARSER_END(MiniJavaParser)
 
