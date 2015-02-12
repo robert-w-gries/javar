@@ -580,7 +580,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
                                                             exprs.add(right);
     }
                 for (Expr expr : exprs) {
-                        left = new OrExpr(left, right);
+                        left = new OrExpr(left, expr);
                 }
                 {if (true) return left;}
     throw new Error("Missing return statement in function");
@@ -606,7 +606,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
                                                             exprs.add(right);
     }
         for (Expr expr : exprs) {
-                left = new AndExpr(left, right);
+                left = new AndExpr(left, expr);
         }
         {if (true) return left;}
     throw new Error("Missing return statement in function");
@@ -649,9 +649,9 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
         for (int i = 0; i < exprs.size(); ++i) {
                 if (types.get(i).equals("equal")) {
-                        left = new EqualExpr(left, right);
+                        left = new EqualExpr(left, exprs.get(i));
                 } else if (types.get(i).equals("notequal")) {
-                        left = new NotEqExpr(left, right);
+                        left = new NotEqExpr(left, exprs.get(i));
                 }
         }
         {if (true) return left;}
@@ -695,9 +695,9 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
         for (int i = 0; i < exprs.size(); ++i) {
                 if (types.get(i).equals("less")) {
-                        left = new LesserExpr(left, right);
+                        left = new LesserExpr(left, exprs.get(i));
                 } else if (types.get(i).equals("greater")) {
-                        left = new GreaterExpr(left, right);
+                        left = new GreaterExpr(left, exprs.get(i));
                 }
         }
         {if (true) return left;}
@@ -741,9 +741,9 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
         for (int i = 0; i < exprs.size(); ++i) {
                 if (types.get(i).equals("plus")) {
-                        left = new AddExpr(left, right);
+                        left = new AddExpr(left, exprs.get(i));
                 } else if (types.get(i).equals("minus")) {
-                        left = new SubExpr(left, right);
+                        left = new SubExpr(left, exprs.get(i));
                 }
         }
         {if (true) return left;}
@@ -787,9 +787,9 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
         for (int i = 0; i < exprs.size(); ++i) {
                 if (types.get(i).equals("times")) {
-                        left = new MulExpr(left, right);
+                        left = new MulExpr(left, exprs.get(i));
                 } else if (types.get(i).equals("div")) {
-                        left = new DivExpr(left, right);
+                        left = new DivExpr(left, exprs.get(i));
                 }
         }
         {if (true) return left;}
