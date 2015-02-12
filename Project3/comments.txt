@@ -28,3 +28,5 @@ THINGS THAT NEED TO BE ADDRESSED
 	           IdentifierExpr(n)
 	           IdentifierExpr(n))
 	          IntegerLiteral(1)))))
+
+- methods with no parameters are identified as fields

@@ -503,14 +503,16 @@ Expr DotExpression() : {
 	LinkedList<LinkedList<Expr>> paramses = new LinkedList<LinkedList<Expr>>();
 } {
 	left = Expression7() ( LOOKAHEAD(2) "." id = <ID> { ids.add(id); paramses.add(new LinkedList<Expr>()); }
-		[ MethodCall(paramses.getLast()) ] )*
+		[ MethodCall(paramses.getLast()) { if (paramses.getLast().size() == 0) paramses.getLast().add(null); } ] )*
 
 	{
 		for (int i = 0; i < ids.size(); ++i) {
 			if (paramses.get(i).size() == 0) {
 				left = new FieldExpr(left, ids.get(i).image);
 			} else {
-				left = new CallExpr(left, ids.get(i).image, paramses.get(i));
+				LinkedList<Expr> params = paramses.get(i);
+				if (params.get(0) == null) params = new LinkedList<Expr>();
+				left = new CallExpr(left, ids.get(i).image, params);
 			}
 		}
 		return left;
