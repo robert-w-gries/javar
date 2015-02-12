@@ -605,9 +605,9 @@ Expr AssignableExpression() : {
 
 // NewDecl ::= "new" Type
 Type NewDecl() : {
-	Type type;
+	Token id;
 } {
-	"new" type = Type()
+	"new" id = <ID>
 	
-	{ return type; }
+	{ return new IdentifierType(id.image); }
 }

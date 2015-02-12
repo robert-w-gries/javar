@@ -1092,10 +1092,10 @@ public class MiniJavaParser implements MiniJavaParserConstants {
 
 // NewDecl ::= "new" Type
   static final public Type NewDecl() throws ParseException {
-        Type type;
+        Token id;
     jj_consume_token(45);
-    type = Type();
-          {if (true) return type;}
+    id = jj_consume_token(ID);
+          {if (true) return new IdentifierType(id.image);}
     throw new Error("Missing return statement in function");
   }
 
@@ -1390,7 +1390,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
 
   static private boolean jj_3R_29() {
     if (jj_scan_token(45)) return true;
-    if (jj_3R_33()) return true;
+    if (jj_scan_token(ID)) return true;
     return false;
   }
 
