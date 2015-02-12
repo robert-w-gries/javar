@@ -161,9 +161,13 @@ public class PrintVisitor implements Visitor{
 
         printClass("CallExpr");
 
+        printOut.println();
         ast.targetExpr.accept(this);
+        printOut.println();
+        printTabs();
         printOut.println(ast.methodString);
         visit(ast.argsList);
+        decrementTab();
 
         return;
 
