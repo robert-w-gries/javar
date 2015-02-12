@@ -1,11 +1,4 @@
 THINGS THAT NEED TO BE ADDRESSED
 --------------------------------
 
-- Arrays not implemented properly
-    - code:  int[] a = new int[22];
-    - output: Encountered "[" at line 5, column 26.  Was expecting "("
-
-- We need to make it so that only certain kinds of expressions can be on the left side of an assignment statement
-    - we have started this by only allowing single identifiers, but the following are also allowed:
-        - field expressions
-        - array expressions
+- ArrayExpr does not print properly
