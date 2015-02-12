@@ -796,9 +796,9 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// Expression6 ::=	( "-" )+ DotExpression
-//             |	( "!" )+ DotExpression
-//             |   DotExpression
+// Expression6 ::=	( "-" )+ Expression7
+//             |	( "!" )+ Expression7
+//             |   Expression7
   static final public Expr Expression6() throws ParseException {
         Expr expr;
     LinkedList<String> types = new LinkedList<String>();
@@ -829,7 +829,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         }
       }
     }
-    expr = DotExpression();
+    expr = Expression7();
                 for (String type : types) {
                         if (type.equals("neg")) expr = new NegExpr(expr);
                         else if (type.equals("not")) expr = new NotExpr(expr);
@@ -838,83 +838,79 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// DotExpression ::= Expression7 ( "." <ID> ( MethodCall )? )*
-  static final public Expr DotExpression() throws ParseException {
-        Expr left;
-        Token id = null;
-        LinkedList<Token> ids = new LinkedList<Token>();
-        LinkedList<LinkedList<Expr>> paramses = new LinkedList<LinkedList<Expr>>();
-    left = Expression7();
-    label_20:
-    while (true) {
-      if (jj_2_11(2)) {
-        ;
-      } else {
-        break label_20;
-      }
-      jj_consume_token(12);
-      id = jj_consume_token(ID);
-                                                            ids.add(id); paramses.add(new LinkedList<Expr>());
-      switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 6:
-        MethodCall(paramses.getLast());
-                                                   if (paramses.getLast().size() == 0) paramses.getLast().add(null);
-        break;
-      default:
-        jj_la1[32] = jj_gen;
-        ;
-      }
-    }
-                for (int i = 0; i < ids.size(); ++i) {
-                        if (paramses.get(i).size() == 0) {
-                                left = new FieldExpr(left, ids.get(i).image);
-                        } else {
-                                LinkedList<Expr> params = paramses.get(i);
-                                if (params.get(0) == null) params = new LinkedList<Expr>();
-                                left = new CallExpr(left, ids.get(i).image, params);
-                        }
-                }
-                {if (true) return left;}
-    throw new Error("Missing return statement in function");
-  }
-
-// Expression7 ::=	Expression8 ( "[" Expression "]" )*
-//             |    "(" Expression ")"
+// Expression7 ::=	( "(" Expression ")" | Expression8 ) ( "." <ID> ( MethodCall )? | "[" Expression "]" )*
   static final public Expr Expression7() throws ParseException {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
-    if (jj_2_12(3)) {
+        Token id = null;
+        LinkedList<Token> ids = new LinkedList<Token>();
+        LinkedList<LinkedList<Expr>> paramses = new LinkedList<LinkedList<Expr>>();
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case 6:
+      jj_consume_token(6);
+      left = Expression();
+      jj_consume_token(7);
+      break;
+    case 40:
+    case 41:
+    case 42:
+    case 43:
+    case 44:
+    case 45:
+    case INT:
+    case STRING:
+    case ID:
       left = Expression8();
-      label_21:
-      while (true) {
-        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-        case 8:
-          ;
-          break;
-        default:
-          jj_la1[33] = jj_gen;
-          break label_21;
-        }
-        jj_consume_token(8);
-        right = Expression();
-                                                                         exprs.add(right);
-        jj_consume_token(9);
-      }
-    } else {
+      break;
+    default:
+      jj_la1[32] = jj_gen;
+      jj_consume_token(-1);
+      throw new ParseException();
+    }
+    label_20:
+    while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-      case 6:
-        jj_consume_token(6);
-        left = Expression();
-        jj_consume_token(7);
+      case 8:
+      case 12:
+        ;
         break;
       default:
-        jj_la1[34] = jj_gen;
+        jj_la1[33] = jj_gen;
+        break label_20;
+      }
+      if (jj_2_11(2)) {
+        jj_consume_token(12);
+        id = jj_consume_token(ID);
+                                       ids.add(id); paramses.add(new LinkedList<Expr>()); exprs.add(null);
+        switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+        case 6:
+          MethodCall(paramses.getLast());
+                                                   if (paramses.getLast().size() == 0) paramses.getLast().add(null);
+          break;
+        default:
+          jj_la1[34] = jj_gen;
+          ;
+        }
+      } else if (jj_2_12(2)) {
+        jj_consume_token(8);
+        right = Expression();
+                                              exprs.add(right); ids.add(null); paramses.add(null);
+        jj_consume_token(9);
+      } else {
         jj_consume_token(-1);
         throw new ParseException();
       }
     }
-                for (Expr expr : exprs) {
-                        left = new ArrayExpr(left, expr);
+                for (int i = 0; i < exprs.size(); i++) {
+                        if (exprs.get(i) != null) {
+                                left = new ArrayExpr(left, exprs.get(i));
+                        } else if (paramses.get(i).size() == 0) {
+                left = new FieldExpr(left, ids.get(i).image);
+            } else {
+                LinkedList<Expr> params = paramses.get(i);
+                if (params.get(0) == null) params = new LinkedList<Expr>();
+                left = new CallExpr(left, ids.get(i).image, params);
+            }
                 }
                 {if (true) return left;}
     throw new Error("Missing return statement in function");
@@ -924,7 +920,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
     left = Expression8();
-    label_22:
+    label_21:
     while (true) {
       jj_consume_token(8);
       right = Expression();
@@ -936,7 +932,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         break;
       default:
         jj_la1[35] = jj_gen;
-        break label_22;
+        break label_21;
       }
     }
         for (Expr expr : exprs) {
@@ -965,7 +961,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     case ID:
       expr = Expression();
                                     exprs.add(expr);
-      label_23:
+      label_22:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case 25:
@@ -973,7 +969,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
           break;
         default:
           jj_la1[36] = jj_gen;
-          break label_23;
+          break label_22;
         }
         jj_consume_token(25);
         expr = Expression();
@@ -1015,12 +1011,12 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       expr = Expression();
                                                                     exprs.add(expr);
       jj_consume_token(9);
-      label_24:
+      label_23:
       while (true) {
         if (jj_2_13(2)) {
           ;
         } else {
-          break label_24;
+          break label_23;
         }
         jj_consume_token(8);
         jj_consume_token(9);
@@ -1243,64 +1239,69 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   }
 
   static private boolean jj_3_1() {
-    if (jj_3R_25()) return true;
+    if (jj_3R_24()) return true;
     return false;
   }
 
-  static private boolean jj_3R_67() {
-    if (jj_3R_68()) return true;
+  static private boolean jj_3_13() {
+    if (jj_scan_token(8)) return true;
+    if (jj_scan_token(9)) return true;
     return false;
   }
 
-  static private boolean jj_3R_27() {
-    if (jj_scan_token(27)) return true;
-    if (jj_3R_36()) return true;
+  static private boolean jj_3R_65() {
+    if (jj_3R_66()) return true;
     return false;
   }
 
-  static private boolean jj_3R_50() {
-    if (jj_3R_60()) return true;
-    return false;
-  }
-
-  static private boolean jj_3_3() {
-    if (jj_3R_27()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_58() {
-    if (jj_scan_token(46)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_32() {
-    if (jj_3R_29()) return true;
-    Token xsp;
-    if (jj_3R_54()) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_54()) { jj_scanpos = xsp; break; }
-    }
+  static private boolean jj_3R_45() {
+    if (jj_scan_token(8)) return true;
     return false;
   }
 
   static private boolean jj_3R_26() {
-    if (jj_3R_36()) return true;
+    if (jj_scan_token(27)) return true;
+    if (jj_3R_34()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_28() {
+    if (jj_3R_40()) return true;
+    return false;
+  }
+
+  static private boolean jj_3_3() {
+    if (jj_3R_26()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_49() {
+    if (jj_scan_token(46)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_71() {
+    if (jj_3R_44()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_25() {
+    if (jj_3R_34()) return true;
     if (jj_scan_token(ID)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_37()) jj_scanpos = xsp;
+    if (jj_3R_35()) jj_scanpos = xsp;
     if (jj_scan_token(26)) return true;
     return false;
   }
 
-  static private boolean jj_3R_66() {
-    if (jj_3R_67()) return true;
+  static private boolean jj_3R_64() {
+    if (jj_3R_65()) return true;
     return false;
   }
 
-  static private boolean jj_3R_41() {
-    if (jj_3R_59()) return true;
+  static private boolean jj_3R_39() {
+    if (jj_3R_50()) return true;
     return false;
   }
 
@@ -1311,78 +1312,130 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_40() {
+  static private boolean jj_3R_38() {
     if (jj_scan_token(39)) return true;
     return false;
   }
 
-  static private boolean jj_3R_73() {
-    if (jj_scan_token(6)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_51() {
-    if (jj_scan_token(ID)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_34() {
+  static private boolean jj_3R_32() {
     if (jj_scan_token(33)) return true;
     if (jj_scan_token(ID)) return true;
     return false;
   }
 
-  static private boolean jj_3R_39() {
+  static private boolean jj_3R_37() {
     if (jj_scan_token(37)) return true;
     return false;
   }
 
-  static private boolean jj_3R_38() {
+  static private boolean jj_3R_30() {
+    if (jj_3R_44()) return true;
+    Token xsp;
+    if (jj_3R_45()) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_45()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_36() {
     if (jj_scan_token(10)) return true;
     return false;
   }
 
-  static private boolean jj_3_12() {
-    if (jj_3R_29()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_30()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_71() {
+  static private boolean jj_3R_69() {
     if (jj_scan_token(14)) return true;
     return false;
   }
 
-  static private boolean jj_3R_72() {
+  static private boolean jj_3R_27() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_12()) {
+    if (jj_3R_36()) {
     jj_scanpos = xsp;
-    if (jj_3R_73()) return true;
+    if (jj_3R_37()) {
+    jj_scanpos = xsp;
+    if (jj_3R_38()) {
+    jj_scanpos = xsp;
+    if (jj_3_9()) {
+    jj_scanpos = xsp;
+    if (jj_3R_39()) return true;
+    }
+    }
+    }
     }
     return false;
   }
 
-  static private boolean jj_3R_28() {
+  static private boolean jj_3R_46() {
+    if (jj_3R_60()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_33() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_38()) {
+    if (jj_3R_46()) {
     jj_scanpos = xsp;
-    if (jj_3R_39()) {
+    if (jj_3_3()) {
     jj_scanpos = xsp;
-    if (jj_3R_40()) {
-    jj_scanpos = xsp;
-    if (jj_3_9()) {
-    jj_scanpos = xsp;
-    if (jj_3R_41()) return true;
+    if (jj_3R_47()) return true;
     }
     }
+    return false;
+  }
+
+  static private boolean jj_3R_41() {
+    if (jj_scan_token(ID)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_48() {
+    if (jj_scan_token(47)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_43() {
+    if (jj_scan_token(47)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_42() {
+    if (jj_scan_token(46)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_63() {
+    if (jj_3R_64()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_29() {
+    if (jj_scan_token(45)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_41()) {
+    jj_scanpos = xsp;
+    if (jj_3R_42()) {
+    jj_scanpos = xsp;
+    if (jj_3R_43()) return true;
     }
     }
+    return false;
+  }
+
+  static private boolean jj_3R_24() {
+    if (jj_3R_31()) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_32()) jj_scanpos = xsp;
+    if (jj_scan_token(10)) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_33()) { jj_scanpos = xsp; break; }
+    }
+    if (jj_scan_token(11)) return true;
     return false;
   }
 
@@ -1392,99 +1445,29 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_53() {
-    if (jj_scan_token(47)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_52() {
-    if (jj_scan_token(46)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_31() {
-    if (jj_scan_token(45)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_51()) {
-    jj_scanpos = xsp;
-    if (jj_3R_52()) {
-    jj_scanpos = xsp;
-    if (jj_3R_53()) return true;
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_55() {
-    if (jj_3R_61()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_35() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_55()) {
-    jj_scanpos = xsp;
-    if (jj_3_3()) {
-    jj_scanpos = xsp;
-    if (jj_3R_56()) return true;
-    }
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_63() {
-    if (jj_scan_token(ID)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_57() {
-    if (jj_scan_token(47)) return true;
-    return false;
-  }
-
-  static private boolean jj_3_16() {
-    if (jj_3R_32()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_65() {
-    if (jj_3R_66()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_59() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_16()) {
-    jj_scanpos = xsp;
-    if (jj_3R_63()) return true;
-    }
-    return false;
-  }
-
-  static private boolean jj_3R_25() {
-    if (jj_3R_33()) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_34()) jj_scanpos = xsp;
-    if (jj_scan_token(10)) return true;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_35()) { jj_scanpos = xsp; break; }
-    }
-    if (jj_scan_token(11)) return true;
-    return false;
-  }
-
   static private boolean jj_3R_70() {
-    if (jj_3R_72()) return true;
+    if (jj_scan_token(6)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_12() {
+    if (jj_scan_token(8)) return true;
+    if (jj_3R_28()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_68() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_70()) {
+    jj_scanpos = xsp;
+    if (jj_3R_71()) return true;
+    }
     return false;
   }
 
   static private boolean jj_3_2() {
-    if (jj_3R_26()) return true;
+    if (jj_3R_25()) return true;
     return false;
   }
 
@@ -1496,18 +1479,28 @@ public class MiniJavaParser implements MiniJavaParserConstants {
 
   static private boolean jj_3_8() {
     if (jj_scan_token(38)) return true;
-    if (jj_3R_28()) return true;
+    if (jj_3R_27()) return true;
     return false;
   }
 
-  static private boolean jj_3R_36() {
+  static private boolean jj_3R_62() {
+    if (jj_scan_token(ID)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_16() {
+    if (jj_3R_30()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_34() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_scan_token(59)) {
     jj_scanpos = xsp;
-    if (jj_3R_57()) {
+    if (jj_3R_48()) {
     jj_scanpos = xsp;
-    if (jj_3R_58()) return true;
+    if (jj_3R_49()) return true;
     }
     }
     while (true) {
@@ -1517,58 +1510,38 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_56() {
-    if (jj_3R_62()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_49() {
-    if (jj_scan_token(44)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_48() {
-    if (jj_scan_token(43)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_47() {
-    if (jj_scan_token(42)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_46() {
-    if (jj_scan_token(41)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_45() {
-    if (jj_scan_token(STRING)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_64() {
-    if (jj_3R_65()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_44() {
-    if (jj_scan_token(INT)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_69() {
+  static private boolean jj_3R_50() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3_10()) {
+    if (jj_3_16()) {
     jj_scanpos = xsp;
-    if (jj_3R_71()) return true;
+    if (jj_3R_62()) return true;
     }
     return false;
   }
 
-  static private boolean jj_3R_61() {
-    if (jj_3R_36()) return true;
+  static private boolean jj_3R_47() {
+    if (jj_3R_61()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_51() {
+    if (jj_3R_63()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_67() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_10()) {
+    jj_scanpos = xsp;
+    if (jj_3R_69()) return true;
+    }
+    return false;
+  }
+
+  static private boolean jj_3R_60() {
+    if (jj_3R_34()) return true;
     return false;
   }
 
@@ -1577,67 +1550,112 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3R_43() {
-    if (jj_scan_token(ID)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_42() {
-    if (jj_scan_token(40)) return true;
-    if (jj_scan_token(12)) return true;
-    if (jj_scan_token(ID)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_68() {
+  static private boolean jj_3R_66() {
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_69()) { jj_scanpos = xsp; break; }
+      if (jj_3R_67()) { jj_scanpos = xsp; break; }
     }
-    if (jj_3R_70()) return true;
+    if (jj_3R_68()) return true;
     return false;
   }
 
   static private boolean jj_3_6() {
-    if (jj_3R_26()) return true;
+    if (jj_3R_25()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_59() {
+    if (jj_scan_token(44)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_58() {
+    if (jj_scan_token(43)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_57() {
+    if (jj_scan_token(42)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_56() {
+    if (jj_scan_token(41)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_55() {
+    if (jj_scan_token(STRING)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_54() {
+    if (jj_scan_token(INT)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_53() {
+    if (jj_scan_token(ID)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_61() {
+    if (jj_scan_token(27)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_52() {
+    if (jj_scan_token(40)) return true;
+    if (jj_scan_token(12)) return true;
     return false;
   }
 
   static private boolean jj_3_15() {
-    if (jj_3R_31()) return true;
+    if (jj_3R_29()) return true;
     if (jj_scan_token(8)) return true;
     return false;
   }
 
   static private boolean jj_3_14() {
-    if (jj_3R_31()) return true;
+    if (jj_3R_29()) return true;
     if (jj_scan_token(6)) return true;
     return false;
   }
 
-  static private boolean jj_3R_29() {
+  static private boolean jj_3R_31() {
+    if (jj_scan_token(32)) return true;
+    if (jj_scan_token(ID)) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_40() {
+    if (jj_3R_51()) return true;
+    return false;
+  }
+
+  static private boolean jj_3R_44() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_14()) {
     jj_scanpos = xsp;
     if (jj_3_15()) {
     jj_scanpos = xsp;
-    if (jj_3R_42()) {
+    if (jj_3R_52()) {
     jj_scanpos = xsp;
-    if (jj_3R_43()) {
+    if (jj_3R_53()) {
     jj_scanpos = xsp;
-    if (jj_3R_44()) {
+    if (jj_3R_54()) {
     jj_scanpos = xsp;
-    if (jj_3R_45()) {
+    if (jj_3R_55()) {
     jj_scanpos = xsp;
-    if (jj_3R_46()) {
+    if (jj_3R_56()) {
     jj_scanpos = xsp;
-    if (jj_3R_47()) {
+    if (jj_3R_57()) {
     jj_scanpos = xsp;
-    if (jj_3R_48()) {
+    if (jj_3R_58()) {
     jj_scanpos = xsp;
-    if (jj_3R_49()) return true;
+    if (jj_3R_59()) return true;
     }
     }
     }
@@ -1647,54 +1665,21 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
     }
     }
-    return false;
-  }
-
-  static private boolean jj_3_13() {
-    if (jj_scan_token(8)) return true;
-    if (jj_scan_token(9)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_62() {
-    if (jj_scan_token(27)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_60() {
-    if (jj_3R_64()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_33() {
-    if (jj_scan_token(32)) return true;
-    if (jj_scan_token(ID)) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_54() {
-    if (jj_scan_token(8)) return true;
     return false;
   }
 
   static private boolean jj_3_5() {
-    if (jj_3R_26()) return true;
+    if (jj_3R_25()) return true;
     return false;
   }
 
-  static private boolean jj_3R_30() {
-    if (jj_scan_token(8)) return true;
-    if (jj_3R_50()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_37() {
+  static private boolean jj_3R_35() {
     if (jj_scan_token(20)) return true;
     return false;
   }
 
   static private boolean jj_3_4() {
-    if (jj_3R_27()) return true;
+    if (jj_3R_26()) return true;
     return false;
   }
 
@@ -1718,10 +1703,10 @@ public class MiniJavaParser implements MiniJavaParserConstants {
       jj_la1_init_1();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x0,0x0,0x400,0x0,0x8000000,0x0,0x8000000,0x8000000,0x0,0x8000000,0x100000,0x0,0x2000000,0x0,0x400,0x400,0x0,0x400,0x400,0x0,0x1000000,0x800000,0x600000,0x600000,0xc0000,0xc0000,0x22000,0x22000,0x18000,0x18000,0x6000,0x4000,0x40,0x100,0x40,0x100,0x2000000,0x6040,0x0,0x0,0x0,};
+      jj_la1_0 = new int[] {0x0,0x0,0x400,0x0,0x8000000,0x0,0x8000000,0x8000000,0x0,0x8000000,0x100000,0x0,0x2000000,0x0,0x400,0x400,0x0,0x400,0x400,0x0,0x1000000,0x800000,0x600000,0x600000,0xc0000,0xc0000,0x22000,0x22000,0x18000,0x18000,0x6000,0x4000,0x40,0x1100,0x40,0x100,0x2000000,0x6040,0x0,0x0,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x1,0x1,0xc803fa0,0x2,0x800c000,0x800c000,0x0,0x800c000,0x800c000,0x0,0x0,0x8,0x0,0x800c000,0xc803fa0,0xc803fa0,0x800c000,0xc803fa0,0xa0,0xc803f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc803f00,0xc801f00,0x8000000,0x800c000,};
+      jj_la1_1 = new int[] {0x1,0x1,0xc803fa0,0x2,0x800c000,0x800c000,0x0,0x800c000,0x800c000,0x0,0x0,0x8,0x0,0x800c000,0xc803fa0,0xc803fa0,0x800c000,0xc803fa0,0xa0,0xc803f00,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0xc803f00,0x0,0x0,0x0,0x0,0xc803f00,0xc801f00,0x8000000,0x800c000,};
    }
   static final private JJCalls[] jj_2_rtns = new JJCalls[16];
   static private boolean jj_rescan = false;
