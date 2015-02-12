@@ -476,15 +476,15 @@ Expr Expression5() : {
     }
 }
 
-// Expression6 ::=	( "-" )+ DotExpression
-//             |	( "!" )+ DotExpression
-//             |   DotExpression
+// Expression6 ::=	( "-" )+ Expression7
+//             |	( "!" )+ Expression7
+//             |   Expression7
 Expr Expression6() : {
 	Expr expr;
     LinkedList<String> types = new LinkedList<String>();
 } {
 	( LOOKAHEAD(2) "-" { types.add("neg"); } | "!" { types.add("not"); } )*
-	expr = DotExpression()
+	expr = Expression7()
 	
 	{
 		for (String type : types) {
@@ -495,42 +495,30 @@ Expr Expression6() : {
 	}
 }
 
-// DotExpression ::= Expression7 ( "." <ID> ( MethodCall )? )*
-Expr DotExpression() : {
-	Expr left;
+// Expression7 ::=	( "(" Expression ")" | Expression8 ) ( "." <ID> ( MethodCall )? | "[" Expression "]" )*
+Expr Expression7() : {
+	Expr left, right = null;
+	LinkedList<Expr> exprs = new LinkedList<Expr>();
 	Token id = null;
 	LinkedList<Token> ids = new LinkedList<Token>();
 	LinkedList<LinkedList<Expr>> paramses = new LinkedList<LinkedList<Expr>>();
 } {
-	left = Expression7() ( LOOKAHEAD(2) "." id = <ID> { ids.add(id); paramses.add(new LinkedList<Expr>()); }
-		[ MethodCall(paramses.getLast()) { if (paramses.getLast().size() == 0) paramses.getLast().add(null); } ] )*
-
-	{
-		for (int i = 0; i < ids.size(); ++i) {
-			if (paramses.get(i).size() == 0) {
-				left = new FieldExpr(left, ids.get(i).image);
-			} else {
-				LinkedList<Expr> params = paramses.get(i);
-				if (params.get(0) == null) params = new LinkedList<Expr>();
-				left = new CallExpr(left, ids.get(i).image, params);
-			}
-		}
-		return left;
-	}
-}
-
-// Expression7 ::=	Expression8 ( "[" Expression "]" )*
-//             |    "(" Expression ")"
-Expr Expression7() : {
-	Expr left, right = null;
-	LinkedList<Expr> exprs = new LinkedList<Expr>();
-} {
-	( LOOKAHEAD(3) left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )*
-	| "(" left = Expression() ")" )
+	( "(" left = Expression() ")" | left = Expression8() )
+	( LOOKAHEAD(2) "." id = <ID> { ids.add(id); paramses.add(new LinkedList<Expr>()); exprs.add(null); }
+      		[ MethodCall(paramses.getLast()) { if (paramses.getLast().size() == 0) paramses.getLast().add(null); } ]
+    | LOOKAHEAD(2) "[" right = Expression() { exprs.add(right); ids.add(null); paramses.add(null); } "]" )*
 	
 	{
-		for (Expr expr : exprs) {
-			left = new ArrayExpr(left, expr);
+		for (int i = 0; i < exprs.size(); i++) {
+			if (exprs.get(i) != null) {
+				left = new ArrayExpr(left, exprs.get(i));
+			} else if (paramses.get(i).size() == 0) {
+            	left = new FieldExpr(left, ids.get(i).image);
+            } else {
+            	LinkedList<Expr> params = paramses.get(i);
+            	if (params.get(0) == null) params = new LinkedList<Expr>();
+            	left = new CallExpr(left, ids.get(i).image, params);
+            }
 		}
 		return left;
 	}
