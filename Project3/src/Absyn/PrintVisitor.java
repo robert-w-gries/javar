@@ -527,7 +527,7 @@ public class PrintVisitor implements Visitor{
     public void visit(ThisExpr ast){
 
         printTabs();
-        printOut.println("ThisExpr");
+        printOut.print("ThisExpr");
         return;
 
     }
