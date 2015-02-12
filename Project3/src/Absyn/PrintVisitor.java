@@ -101,27 +101,26 @@ public class PrintVisitor implements Visitor{
         return;
     }
 
-    //TODO: test
     public void visit(ArrayExpr ast) {
 
         printClassLine("ArrayExpr");
 
-        ast.index.accept(this);
         ast.targetExpr.accept(this);
+        printOut.println();
+        ast.index.accept(this);
 
         decrementTab();
 
         return;
     }
 
-    //TODO: test
     public void visit(ArrayType ast) {
 
         printOut.print("ArrayType(");
 
         ast.baseType.accept(this);
 
-        decrementTab();
+        printOut.print(")");
 
         return;
     }
@@ -325,7 +324,16 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(LesserExpr ast){
-        return; //TODO codavaj!!
+
+        printClassLine("LesserExpr");
+
+        ast.leftExpr.accept(this);
+        printOut.println();
+        ast.rightExpr.accept(this);
+
+        decrementTab();
+
+        return;
     }
 
     public void visit(MethodDecl ast) {
@@ -359,38 +367,108 @@ public class PrintVisitor implements Visitor{
         decrementTab();
 
         return;
+
     }
 
     public void visit(MulExpr ast){
-        return; //TODO codavaj!!
+
+        printClassLine("MulExpr");
+
+        ast.leftExpr.accept(this);
+        printOut.println();
+        ast.rightExpr.accept(this);
+
+        decrementTab();
+
+        return;
+
     }
 
     public void visit(NegExpr ast){
-        return; //TODO codavaj!!
+
+        printClassLine("NegExpr");
+
+        ast.expr.accept(this);
+
+        decrementTab();
+
+        return;
+
     }
 
-    public void visit(NewArrayExpr ast){
-        return; //TODO codavaj!!
+    public void visit(NewArrayExpr ast) {
+
+        printClass("NewArrayExpr");
+
+        ast.type.accept(this);
+        printOut.println();
+
+        visit(ast.dimensions);
+
+        decrementTab();
+
+        return;
+
     }
 
     public void visit(NewObjectExpr ast){
-        return; //TODO codavaj!!
+
+        printClass("NewObjectExpr");
+
+        ast.type.accept(this);
+
+        decrementTab();
+
+        return;
+
     }
 
     public void visit(NotEqExpr ast){
-        return; //TODO codavaj!!
+
+        printClassLine("NotEqExpr");
+
+        ast.leftExpr.accept(this);
+        printOut.println();
+        ast.rightExpr.accept(this);
+
+        decrementTab();
+
+        return;
+
     }
 
     public void visit(NotExpr ast){
-        return; //TODO codavaj!!
+
+        printClassLine("NotExpr");
+
+        ast.expr.accept(this);
+
+        decrementTab();
+
+        return;
+
     }
 
     public void visit(NullExpr ast){
-        return; //TODO codavaj!!
+
+        printTabs();
+        printOut.print("NullExpr");
+        return;
+
     }
 
     public void visit(OrExpr ast){
-        return; //TODO codavaj!!
+
+        printClassLine("OrExpr");
+
+        ast.leftExpr.accept(this);
+        printOut.println();
+        ast.rightExpr.accept(this);
+
+        decrementTab();
+
+        return;
+
     }
 
     /**
@@ -416,7 +494,11 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(StringLiteral ast){
-        return; //TODO codavaj!!
+
+        printTabs();
+        printOut.print("StringLiteral(" + ast.value + ")");
+        return;
+
     }
 
     public void visit(SubExpr ast){
@@ -442,7 +524,22 @@ public class PrintVisitor implements Visitor{
     }
 
     public void visit(ThreadDecl ast){
-        return; //TODO codavaj!!
+
+        printClass("ThreadDecl");
+        printOut.print(ast.name + " " + ast.parent);
+        printOut.println();
+
+        // print all fields of the class
+        visit(ast.fields);
+        printOut.println();
+
+        // print all methods of the class
+        visit(ast.methods);
+
+        decrementTab();
+
+        return;
+
     }
 
     public void visit(TrueExpr ast) {
@@ -488,16 +585,46 @@ public class PrintVisitor implements Visitor{
         return;
     }
 
+    //TODO: test after it's fixed
     public void visit(WhileStmt ast){
-        return; //TODO codavaj!!
+
+        printClassLine("WhileStmt");
+
+        ast.test.accept(this);
+        printOut.println();
+
+        decrementTab();
+
+        return;
+
     }
 
     public void visit(XinuCallExpr ast){
-        return; //TODO codavaj!!
+
+        printClass("XinuCallExpr");
+
+        printOut.println(ast.method);
+
+        visit(ast.args);
+
+        decrementTab();
+
+        return;
+
     }
 
     public void visit(XinuCallStmt ast){
-        return; //TODO codavaj!!
+
+        printClass("XinuCallStmt");
+
+        printOut.println(ast.method);
+
+        visit(ast.args);
+
+        decrementTab();
+
+        return;
+
     }
 
 }

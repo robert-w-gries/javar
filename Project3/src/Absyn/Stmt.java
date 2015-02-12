@@ -3,8 +3,9 @@ package Absyn;
  * Statement abstract class.
  */
 public abstract class Stmt extends Absyn{
+
     public Stmt(){
-         //TODO codavaj!!
+
     }
 
     /**

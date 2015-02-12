@@ -2,9 +2,9 @@ class Test {
 
     public static void main(String[] args) {
 
-        if (a) {
+        if (Xinu.a()) {
 
-            a = 0;
+            a = b;
 
         }
 
