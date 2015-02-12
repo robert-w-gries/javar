@@ -156,7 +156,6 @@ public class PrintVisitor implements Visitor{
         return;
     }
 
-    //TODO: test
     public void visit(CallExpr ast) {
 
         printClass("CallExpr");
@@ -173,7 +172,6 @@ public class PrintVisitor implements Visitor{
 
     }
 
-    //TODO: test fields
     public void visit(ClassDecl ast) {
 
         // print classdecl without newline
@@ -194,7 +192,6 @@ public class PrintVisitor implements Visitor{
         return;
     }
 
-    // TODO: test multiple division signs in a row
     public void visit(DivExpr ast) {
 
         printClassLine("DivExpr");
@@ -235,6 +232,7 @@ public class PrintVisitor implements Visitor{
         printClassLine("FieldExpr");
 
         ast.target.accept(this);
+        printOut.println();
 
         printTabs();
         printOut.print(ast.field);
@@ -594,7 +592,6 @@ public class PrintVisitor implements Visitor{
         return;
     }
 
-    //TODO: test after it's fixed
     public void visit(WhileStmt ast){
 
         printClassLine("WhileStmt");
