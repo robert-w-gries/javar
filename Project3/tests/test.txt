@@ -2,10 +2,8 @@ class Test {
 
     public static void main(String[] args) {
 
-        if (Xinu.a()) {
-
-            a = b;
-
+        while (a == b) {
+            a = 0;
         }
 
     }

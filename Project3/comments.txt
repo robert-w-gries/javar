@@ -1,9 +1,5 @@
 THINGS THAT NEED TO BE ADDRESSED
 --------------------------------
 
-- While loops result in IndexOutOfBoundsException
-    - code:  while (a == b) { a = 0 }
-    - suggestion:  ast.body is a stmt object instead of a BlockStmt?
-
 - field expressions with array does not work
     - code:  int b = this.a[22] == 0;

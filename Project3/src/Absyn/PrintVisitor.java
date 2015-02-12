@@ -592,6 +592,7 @@ public class PrintVisitor implements Visitor{
 
         ast.test.accept(this);
         printOut.println();
+        ast.body.accept(this);
 
         decrementTab();
 

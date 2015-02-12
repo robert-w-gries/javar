@@ -346,7 +346,9 @@ void Statement(LinkedList<Stmt> statements) : {
 		else if (type.equals("if")) {
 			if (innerStatements.size() == 1) statements.add(new IfStmt(innerExpr1, innerStatements.get(0), null));
 			else statements.add(new IfStmt(innerExpr1, innerStatements.get(0), innerStatements.get(1)));
-		} else if (type.equals("while")) statements.add(new WhileStmt(innerExpr1, statements.get(0)));
+		} else if (type.equals("while")) {
+			statements.add(new WhileStmt(innerExpr1, innerStatements.get(0)));
+		}
 		else if (type.equals("xinu")) statements.add(new XinuCallStmt(xinuId.image, innerExpressions));
 		else if (type.equals("assign")) statements.add(new AssignStmt((AssignableExpr)innerExpr1, innerExpr2));
 	}
