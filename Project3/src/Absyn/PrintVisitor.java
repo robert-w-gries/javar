@@ -235,6 +235,7 @@ public class PrintVisitor implements Visitor{
         printClassLine("FieldExpr");
 
         ast.target.accept(this);
+        printOut.println();
 
         printTabs();
         printOut.print(ast.field);
