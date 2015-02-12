@@ -198,7 +198,7 @@ void MainClassDeclaration(LinkedList<ClassDecl> classList) : {
 } {
 	name = ClassName() "{"
 		"public" "static" "void" "main" "(" "String" "[" "]" argsId = <ID> ")" "{"
-			( LOOKAHEAD(2) VarDeclaration(localsList) )*
+			( LOOKAHEAD(3) VarDeclaration(localsList) )*
 			( Statement(statements) )*
 		"}"
 	"}"
