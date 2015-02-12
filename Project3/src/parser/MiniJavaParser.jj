@@ -363,7 +363,7 @@ Expr Expression() : {
 	
 	{
 		for (Expr expr : exprs) {
-			left = new OrExpr(left, right);
+			left = new OrExpr(left, expr);
 		}
 		return left;
 	}
@@ -378,7 +378,7 @@ Expr Expression1() : {
 
     {
     	for (Expr expr : exprs) {
-    		left = new AndExpr(left, right);
+    		left = new AndExpr(left, expr);
     	}
     	return left;
     }
@@ -398,9 +398,9 @@ Expr Expression2() : {
     {
     	for (int i = 0; i < exprs.size(); ++i) {
     		if (types.get(i).equals("equal")) {
-    			left = new EqualExpr(left, right);
+    			left = new EqualExpr(left, exprs.get(i));
     		} else if (types.get(i).equals("notequal")) {
-    			left = new NotEqExpr(left, right);
+    			left = new NotEqExpr(left, exprs.get(i));
     		}
     	}
     	return left;
@@ -421,9 +421,9 @@ Expr Expression3() : {
     {
     	for (int i = 0; i < exprs.size(); ++i) {
     		if (types.get(i).equals("less")) {
-    			left = new LesserExpr(left, right);
+    			left = new LesserExpr(left, exprs.get(i));
     		} else if (types.get(i).equals("greater")) {
-    			left = new GreaterExpr(left, right);
+    			left = new GreaterExpr(left, exprs.get(i));
     		}
     	}
     	return left;
@@ -444,9 +444,9 @@ Expr Expression4() : {
     {
     	for (int i = 0; i < exprs.size(); ++i) {
     		if (types.get(i).equals("plus")) {
-    			left = new AddExpr(left, right);
+    			left = new AddExpr(left, exprs.get(i));
     		} else if (types.get(i).equals("minus")) {
-    			left = new SubExpr(left, right);
+    			left = new SubExpr(left, exprs.get(i));
     		}
     	}
     	return left;
@@ -467,9 +467,9 @@ Expr Expression5() : {
     {
     	for (int i = 0; i < exprs.size(); ++i) {
     		if (types.get(i).equals("times")) {
-    			left = new MulExpr(left, right);
+    			left = new MulExpr(left, exprs.get(i));
     		} else if (types.get(i).equals("div")) {
-    			left = new DivExpr(left, right);
+    			left = new DivExpr(left, exprs.get(i));
     		}
     	}
     	return left;
