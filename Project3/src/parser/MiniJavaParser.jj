@@ -518,13 +518,16 @@ Expr DotExpression() : {
 // Expression7 ::=	Expression8 ( "[" Expression "]" )*
 //             |    "(" Expression ")"
 Expr Expression7() : {
-	Expr left;
+	Expr left, right = null;
+	LinkedList<Expr> exprs = new LinkedList<Expr>();
 } {
-	( LOOKAHEAD(3) left = ArrayExpression()
-	| "(" left = Expression() ")"
-	| left = Expression8() )
+	( LOOKAHEAD(3) left = Expression8() ( "[" right = Expression() { exprs.add(right); } "]" )*
+	| "(" left = Expression() ")" )
 	
 	{
+		for (Expr expr : exprs) {
+			left = new ArrayExpr(left, expr);
+		}
 		return left;
 	}
 }
