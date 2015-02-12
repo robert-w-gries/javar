@@ -3,3 +3,28 @@ THINGS THAT NEED TO BE ADDRESSED
 
 - field expressions with array does not work
     - code:  int b = this.a[22] == 0;
+
+
+- multiple operators in a row mix up their arguments.
+
+    diag1 = new int[n+n-1];
+
+    gives a parser output of
+
+    	     SubExpr(
+	          AddExpr(
+	           IdentifierExpr(n)
+	           IntegerLiteral(1))
+	          IntegerLiteral(1)))))
+
+	diag1 = new int[n+n-2];
+
+	replaces both IntegerLiterals with IntegerLiteral(2)
+
+	proper parser output for this is:
+
+	         SubExpr(
+	          AddExpr(
+	           IdentifierExpr(n)
+	           IdentifierExpr(n))
+	          IntegerLiteral(1)))))
