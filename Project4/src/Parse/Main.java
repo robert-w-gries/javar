@@ -7,6 +7,8 @@ import java.io.IOException;
 
 /**
  * Created by rgries on 2/11/15.
+ *
+ * Use this Main class to output a parsed AST to be run through the type checker
  */
 public class Main {
 
