@@ -27,7 +27,7 @@ public class FUNCTION extends Type {
     }
 
     public FIELD addFormal(Type type, String name) {
-        return null; //TODO codavaj!!
+        return formals.put(type, name);
     }
 
     public boolean coerceTo(Type t) {
