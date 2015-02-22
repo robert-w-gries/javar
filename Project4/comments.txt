@@ -1,4 +1,11 @@
 THINGS THAT NEED TO BE ADDRESSED
 --------------------------------
 
-
+- Implement symbol table
+    - Maps identifiers (strings) to Types
+    - should implement the methods the Brylow told us to make
+- print visitor
+    - copy prints for Absyn classes from Absyn.PrintVisitor to new PrintVisitor
+    - add logic for printing Types after every declaration in the AST
+- TypeChecker
+    - 3 passes, 2 symbol tables, 1 winner
