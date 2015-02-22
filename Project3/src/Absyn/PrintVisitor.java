@@ -66,7 +66,12 @@ public class PrintVisitor implements Visitor{
         // loop through elements of abstract list and accept them
         for (int i = 0; i < list.size(); i++) {
             printOut.println();
-            ((Absyn)list.get(i)).accept(this);
+            if (list.get(i) == null) {
+                printTabs();
+                printOut.print("null");
+            } else {
+                ((Absyn) list.get(i)).accept(this);
+            }
         }
 
         decrementTab();

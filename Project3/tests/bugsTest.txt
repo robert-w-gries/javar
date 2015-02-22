@@ -1,8 +1,8 @@
-class Test {
+class Factorial {
 
-    public static void main(String[] args) {
+    public static void main(String[] a) {
 
-        int b = this.a[22][22][22][22];
+        int x = new int[5][][][];
 
     }
 

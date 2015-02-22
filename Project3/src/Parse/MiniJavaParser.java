@@ -1004,8 +1004,9 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         }
         jj_consume_token(8);
         jj_consume_token(9);
+                                                                                                                      exprs.add(null);
       }
-                                                                                                                         exprType = "newarr";
+                                                                                                                                              exprType = "newarr";
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 40:

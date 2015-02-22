@@ -548,7 +548,7 @@ Expr Expression8() : {
 	String exprType;
 } {
 	( LOOKAHEAD(3) type = NewDecl() "(" ")" { exprType = "newobj"; }
-	| LOOKAHEAD(3) type = NewDecl() "[" ( expr = Expression() { exprs.add(expr); } ) "]" ( LOOKAHEAD(2) "[" "]" )* { exprType = "newarr"; }
+	| LOOKAHEAD(3) type = NewDecl() "[" ( expr = Expression() { exprs.add(expr); } ) "]" ( LOOKAHEAD(2) "[" "]" { exprs.add(null); } )* { exprType = "newarr"; }
 	| "Xinu" "." xinuId = <ID> MethodCall(exprs) { exprType = "xinu"; }
 	| terminal = <ID> { exprType = "id"; }
 	| terminal = <INT> { exprType = "int"; }
