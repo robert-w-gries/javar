@@ -1,5 +1,7 @@
 package Types;
 
+import java.util.Iterator;
+
 /**
  * Type for methods.
  */
@@ -36,5 +38,19 @@ public class FUNCTION extends Type {
 
     public String toString() {
         return null; //TODO codavaj!!
+    }
+
+    public boolean equals(Object obj) {
+        if (!(obj instanceof FUNCTION)) return false;
+        FUNCTION func = (FUNCTION)obj;
+        if (!result.equals(func.result)) return false; // return type mismatch
+        Iterator<FIELD> thisParams = formals.iterator();
+        Iterator<FIELD> superParams = func.formals.iterator();
+        while (thisParams.hasNext()) {
+            if (!superParams.hasNext()) return false; // override has more parameters than superclass
+            if (!thisParams.next().type.equals(superParams.next().type))
+                return false; // mismatched type at this parameter
+        }
+        return !superParams.hasNext(); // if false, override has less params than superclass
     }
 }

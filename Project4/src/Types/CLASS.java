@@ -32,4 +32,10 @@ public class CLASS extends Type {
     public String toString() {
         return null; //TODO codavaj!!
     }
+
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CLASS)) return false;
+        CLASS cls = (CLASS)obj;
+        return name.equals(cls.name);
+    }
 }

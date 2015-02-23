@@ -19,4 +19,8 @@ public class STRING extends Type {
     public String toString() {
         return null; //TODO codavaj!!
     }
+
+    public boolean equals(Object obj) {
+        return obj instanceof STRING;
+    }
 }

@@ -19,4 +19,8 @@ public class VOID extends Type{
         return null; //TODO codavaj!!
     }
 
+    public boolean equals(Object obj) {
+        return obj instanceof VOID;
+    }
+
 }

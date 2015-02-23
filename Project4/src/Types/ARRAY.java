@@ -24,4 +24,10 @@ public class ARRAY extends Type {
     public String toString() {
         return null; //TODO codavaj!!
     }
+
+    public boolean equals(Object obj) {
+        if (!(obj instanceof ARRAY)) return false;
+        ARRAY arr = (ARRAY) obj;
+        return element.equals(arr.element);
+    }
 }

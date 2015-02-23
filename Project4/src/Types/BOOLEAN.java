@@ -19,4 +19,8 @@ public class BOOLEAN extends Type {
     public java.lang.String toString() {
         return null; //TODO codavaj!!
     }
+
+    public boolean equals(Object obj) {
+        return obj instanceof BOOLEAN;
+    }
 }

@@ -60,3 +60,8 @@ HOW TO RUN BRYLOW'S IMPLEMENTATION WITH THE PARSER BEFORE IT
 # Explanation:
 # run the parser for a file, and pipe the output into stdin, then run the checker with the '-' flag, indicating that
 # it should read from stdin instead of a file
+
+
+QUESTIONS FOR BRYLOW
+--------------------
+
