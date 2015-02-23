@@ -22,14 +22,15 @@ public class CLASS extends Type {
      * Visitor pattern dispatch.
      */
     public void accept(Visitor v) {
-        return; //TODO codavaj!!
+        v.visit(this);
+        return;
     }
 
     public boolean coerceTo(Type t) {
-        return false; //TODO codavaj!!
+        return false;
     }
 
     public String toString() {
-        return null; //TODO codavaj!!
+        return "CLASS(" + this.name + "\n";
     }
 }
