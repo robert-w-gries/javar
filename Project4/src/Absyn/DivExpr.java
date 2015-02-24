@@ -1,5 +1,6 @@
 package Absyn;
 
+import Types.Type;
 /**
  * Division Expressions.
  */
@@ -13,6 +14,10 @@ public class DivExpr extends BinOpExpr {
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
+    }
+
+    @Override
+    public Types.Type accept(TypeVisitor v) {
+        return v.visit(this);
     }
 }

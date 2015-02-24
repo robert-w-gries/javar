@@ -1,5 +1,7 @@
 package Absyn;
 
+import Types.Type;
+
 /**
  * Boolean (Logical) And Expressions.
  */
@@ -14,7 +16,10 @@ public class AndExpr extends BinOpExpr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
+    @Override
+    public Type accept(TypeVisitor v) {
+        return v.visit(this);
+    }
 }

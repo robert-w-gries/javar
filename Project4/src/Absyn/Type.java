@@ -14,4 +14,6 @@ public abstract class Type extends Absyn {
      */
     public abstract void accept(Visitor v);
 
+    public abstract Types.Type accept(TypeVisitor v);
+
 }

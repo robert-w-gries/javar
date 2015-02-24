@@ -15,4 +15,8 @@ public class ThreadDecl extends ClassDecl{
         return;
     }
 
+    @Override
+    public Types.Type accept(TypeVisitor v) {
+        return v.visit(this);
+    }
 }

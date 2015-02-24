@@ -1,4 +1,6 @@
 package Absyn;
+
+import Types.Type;
 /**
  * If Statements.
  */
@@ -20,4 +22,9 @@ public class IfStmt extends Stmt{
         return;
     }
 
+    @Override
+    public Types.Type accept(TypeVisitor v) {
+        v.visit(this);
+        return null;
+    }
 }

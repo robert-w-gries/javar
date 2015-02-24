@@ -19,4 +19,9 @@ public class WhileStmt extends Stmt{
         return;
     }
 
+    @Override
+    public Types.Type accept(TypeVisitor v) {
+        v.visit(this);
+        return null;
+    }
 }

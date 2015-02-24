@@ -1,5 +1,7 @@
 package Absyn;
 
+import Types.Type;
+
 /**
  * Expression indexing into an Array.
  */
@@ -18,7 +20,11 @@ public class ArrayExpr extends AssignableExpr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
+
+    @Override
+    public Type accept(TypeVisitor v) {
+        return v.visit(this);
+    }
 }

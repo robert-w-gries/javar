@@ -1,4 +1,6 @@
 package Absyn;
+
+import Types.Type;
 /**
  * Boolean FALSE.
  */
@@ -15,4 +17,8 @@ public class FalseExpr extends Expr{
         return;
     }
 
+    @Override
+    public Types.Type accept(TypeVisitor v) {
+        return v.visit(this);
+    }
 }

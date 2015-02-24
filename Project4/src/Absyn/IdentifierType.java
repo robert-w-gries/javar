@@ -1,4 +1,5 @@
 package Absyn;
+
 /**
  * Class types.
  */
@@ -17,4 +18,8 @@ public class IdentifierType extends Type{
         return;
     }
 
+    @Override
+    public Types.Type accept(TypeVisitor v) {
+        return v.visit(this);
+    }
 }

@@ -1,4 +1,6 @@
 package Absyn;
+
+import Types.Type;
 /**
  * Field lookup on object reference.
  */
@@ -19,4 +21,8 @@ public class FieldExpr extends AssignableExpr{
         return;
     }
 
+    @Override
+    public Types.Type accept(TypeVisitor v) {
+        return v.visit(this);
+    }
 }

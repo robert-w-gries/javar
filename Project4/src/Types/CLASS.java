@@ -16,6 +16,8 @@ public class CLASS extends Type {
 
     public CLASS(String name) {
         this.name = name;
+        this.fields = new RECORD();
+        this.methods = new RECORD();
     }
 
     /**

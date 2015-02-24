@@ -21,4 +21,8 @@ public class VarDecl extends Absyn{
         return;
     }
 
+    @Override
+    public Types.Type accept(TypeVisitor v) {
+        return v.visit(this);
+    }
 }

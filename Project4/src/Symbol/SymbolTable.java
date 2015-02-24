@@ -1,10 +1,12 @@
 package Symbol;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Stack;
 
 /**
  * Created by rgries on 2/22/15.
+ *
  */
 public class SymbolTable<E> {
 
@@ -23,9 +25,15 @@ public class SymbolTable<E> {
         symStack.push(sym);
     }
 
+    public void put(String str, E value) {
+        this.put(Symbol.symbol(str), value);
+    }
+
     public E get(Symbol sym) {
         return symMap.get(sym);
     }
+
+    public E get(String str) { return this.get(Symbol.symbol(str)); }
 
     public void beginScope() {
         symStack.push(Symbol.symbol(""));
@@ -43,4 +51,7 @@ public class SymbolTable<E> {
 
     }
 
+    public Collection<E> values() {
+        return symMap.values();
+    }
 }

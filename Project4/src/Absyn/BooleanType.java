@@ -15,4 +15,8 @@ public class BooleanType extends Type{
         return; 
     }
 
+    @Override
+    public Types.Type accept(TypeVisitor v) {
+        return v.visit(this);
+    }
 }

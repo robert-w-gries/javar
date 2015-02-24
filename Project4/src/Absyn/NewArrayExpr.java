@@ -21,4 +21,9 @@ public class NewArrayExpr extends Expr {
         v.visit(this);
         return;
     }
+
+    @Override
+    public Types.Type accept(TypeVisitor v) {
+        return v.visit(this);
+    }
 }

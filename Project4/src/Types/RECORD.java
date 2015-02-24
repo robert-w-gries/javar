@@ -1,5 +1,7 @@
 package Types;
 
+import Semant.TypeChecker;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +37,15 @@ public class RECORD extends Type implements java.lang.Iterable<FIELD> {
     }
 
     public boolean coerceTo(Type t) {
-        return false; //TODO codavaj!!
+        if (!(t instanceof RECORD)) return false;
+        RECORD r = (RECORD)t;
+        if (fields.size() != r.fields.size()) return false;
+        for (int i : fieldMap.values()) {
+            if (!this.get(i).coerceTo(r.get(i)))
+                TypeChecker.errorAndExit("ERROR incompatible types: " + r.get(i) + " required, " +
+                        "but " + this.get(i) + " found");
+        }
+        return true;
     }
 
     public FIELD get(String name) {

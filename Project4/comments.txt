@@ -65,3 +65,6 @@ HOW TO RUN BRYLOW'S IMPLEMENTATION WITH THE PARSER BEFORE IT
 QUESTIONS FOR BRYLOW
 --------------------
 
+- how should we call coerceTo() when checking the return type vs. the type of the expression returned?
+- are we supporting equality for non int or boolean types?
+- can the calls to Xinu be handled explicitly in the parser or should they be done in the checker?
