@@ -1,5 +1,6 @@
 package Types;
 
+
 /**
  * Basetype "String".
  */
@@ -9,15 +10,16 @@ public class STRING extends Type {
      * Visitor pattern dispatch.
      */
     public void accept(Visitor v) {
-        return; //TODO codavaj!!
+        v.visit(this);
+        return;
     }
 
     public boolean coerceTo(Type t) {
-        return false; //TODO codavaj!!
+        return t.getClass().equals(this);
     }
 
     public String toString() {
-        return null; //TODO codavaj!!
+        return "STRING";
     }
 
     public boolean equals(Object obj) {

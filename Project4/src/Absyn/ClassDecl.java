@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Class Declaration Blocks
  */

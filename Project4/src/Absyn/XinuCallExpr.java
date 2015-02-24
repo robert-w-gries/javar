@@ -7,7 +7,7 @@ import java.util.LinkedList;
  */
 public class XinuCallExpr extends Expr{
     public String method;
-    LinkedList<Expr> args;
+    public LinkedList<Expr> args;
 
     public XinuCallExpr(java.lang.String method, java.util.LinkedList<Expr> args){
         this.method = method;

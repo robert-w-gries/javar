@@ -24,7 +24,8 @@ public class OBJECT extends Type {
      * Visitor pattern dispatch.
      */
     public void accept(Visitor v) {
-        return; //TODO codavaj!!
+        v.visit(this);
+        return;
     }
 
     public boolean coerceTo(Type t) {
