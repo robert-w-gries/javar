@@ -192,8 +192,7 @@ void MainClassDeclaration(LinkedList<ClassDecl> classList) : {
 		LinkedList<Formal> params = new LinkedList<Formal>();
 		Formal args = new Formal(new ArrayType(new IdentifierType("String")), argsId.image);
 		params.add(args);
-		IdentifierType pub_stat_void = new IdentifierType("public_static_void");
-		MethodDecl mainMethod = new MethodDecl(pub_stat_void, false, "main", params, localsList, statements, new IntegerLiteral(0));
+		MethodDecl mainMethod = new MethodDecl(null, false, "main", params, localsList, statements, new IntegerLiteral(0));
 		methods.add(mainMethod);
 		classList.add(new ClassDecl(name, null, new LinkedList<VarDecl>(), methods));
 	}
