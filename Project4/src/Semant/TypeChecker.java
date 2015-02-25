@@ -203,7 +203,11 @@ public class TypeChecker implements TypeVisitor {
         Type returnType;
         switch (state) {
             case PUT_PARENT_METHOD_FIELD:
-                returnType = ast.returnType.accept(this);
+                if (ast.returnType == null) {
+                    returnType = symbolTable.get("public_static_void");
+                } else {
+                    returnType = ast.returnType.accept(this);
+                }
                 RECORD params = new RECORD();
                 for (Formal formal : ast.params) params.put(visit(formal), formal.name);
                 return new FUNCTION(ast.name, null, params, returnType);
@@ -216,7 +220,11 @@ public class TypeChecker implements TypeVisitor {
                 }
                 visit(ast.locals);
                 visit(ast.stmts);
-                returnType = ast.returnType.accept(this);
+                if (ast.returnType == null) {
+                    returnType = symbolTable.get("public_static_void");
+                } else {
+                    returnType = ast.returnType.accept(this);
+                }
                 Type returnExprType = ast.returnVal.accept(this);
                 if (!returnExprType.coerceTo(returnType))
                     errorAndExit("ERROR incompatible types: " + returnType + " required, but " + returnExprType + " found");
