@@ -48,6 +48,7 @@ public class RECORD extends Type implements java.lang.Iterable<FIELD> {
     }
 
     public FIELD get(String name) {
+        if (!fieldMap.containsKey(name)) return null;
         return fields.get(fieldMap.get(name));
     }
 

@@ -1,8 +1,6 @@
 package Symbol;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Stack;
+import java.util.*;
 
 /**
  * Created by rgries on 2/22/15.
@@ -10,18 +8,23 @@ import java.util.Stack;
  */
 public class SymbolTable<E> {
 
-    private HashMap<Symbol, E> symMap;
+    private HashMap<Symbol, Stack<E>> symMap;
     private Stack<Symbol> symStack;
 
     public SymbolTable() {
 
-        symMap = new HashMap<Symbol, E>();
+        symMap = new HashMap<Symbol, Stack<E>>();
         symStack = new Stack<Symbol>();
 
     }
 
     void put(Symbol sym, E value) {
-        symMap.put(sym, value);
+        Stack<E> s = symMap.get(sym);
+        if (s == null) {
+            symMap.put(sym, new Stack<E>());
+            s = symMap.get(sym);
+        }
+        s.push(value);
         symStack.push(sym);
     }
 
@@ -30,7 +33,8 @@ public class SymbolTable<E> {
     }
 
     E get(Symbol sym) {
-        return symMap.get(sym);
+        if (symMap.get(sym) == null) return null;
+        return symMap.get(sym).peek();
     }
 
     public E get(String str) { return this.get(Symbol.symbol(str)); }
@@ -43,7 +47,10 @@ public class SymbolTable<E> {
 
         // loop through all of the symbols from current scope and remove them from the symbol table
         while (!symStack.peek().toString().equals("")) {
-            symMap.remove(symStack.pop());
+            Symbol sym = symStack.pop();
+            Stack<E> stack = symMap.get(sym);
+            stack.pop();
+            if (stack.empty()) symMap.remove(sym);
         }
 
         // pop the beginScope marker
@@ -52,6 +59,10 @@ public class SymbolTable<E> {
     }
 
     public Collection<E> values() {
-        return symMap.values();
+        List<E> list = new ArrayList<E>();
+        for (Stack<E> stack : symMap.values()) {
+            list.add(stack.peek());
+        }
+        return list;
     }
 }

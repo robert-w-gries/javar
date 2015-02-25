@@ -12,6 +12,8 @@ public class OBJECT extends Type {
 
     public OBJECT(CLASS myClass) {
         this.myClass = myClass;
+        this.methods = new RECORD();
+        this.fields = new RECORD();
     }
 
     public OBJECT(CLASS myClass, RECORD methods, RECORD fields) {

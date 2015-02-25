@@ -32,7 +32,11 @@ public class TypeChecker implements TypeVisitor {
         symbolTable = new SymbolTable<Type>();
         symbolTable.put("String", new STRING());
         symbolTable.put("Thread", new CLASS("Thread"));
+        ((CLASS)symbolTable.get("Thread")).instance = new OBJECT((CLASS)symbolTable.get("Thread"));
         symbolTable.put("Xinu", new Xinu());
+        symbolTable.put("public_static_void", new CLASS("public_static_void"));
+        ((CLASS)symbolTable.get("public_static_void")).instance =
+                new OBJECT((CLASS)symbolTable.get("public_static_void"));
     }
 
     private void nextState() {
@@ -145,15 +149,13 @@ public class TypeChecker implements TypeVisitor {
         switch (state) {
             case PUT_CLASSES:
                 if (symbolTable.get(ast.name) != null) errorAndExit("ERROR duplicate class: " + ast.name);
-                cls = new CLASS(ast.name);
-                cls.fields = new RECORD();
-                cls.methods = new RECORD();
                 symbolTable.put(ast.name, new CLASS(ast.name));
                 break;
             case PUT_PARENT_METHOD_FIELD:
-                if (symbolTable.get(ast.parent) == null) errorAndExit("ERROR cannot resolve parent class: " + ast.parent);
+                if (ast.parent != null && symbolTable.get(ast.parent) == null)
+                    errorAndExit("ERROR cannot resolve parent class: " + ast.parent);
                 cls = (CLASS)symbolTable.get(ast.name);
-                cls.parent = (CLASS)symbolTable.get(ast.parent);
+                if (ast.parent != null) cls.parent = (CLASS)symbolTable.get(ast.parent);
                 for (Absyn.VarDecl v : ast.fields) {
                     if (cls.fields.get(v.name) != null)
                         errorAndExit(v.name + " is already defined in " + cls.name);
@@ -219,7 +221,7 @@ public class TypeChecker implements TypeVisitor {
                 return new FUNCTION(ast.name, null, params, returnType);
             case METHOD_SCOPE_CHECK:
                 symbolTable.beginScope();
-                FUNCTION func = (FUNCTION)((FIELD)symbolTable.get(ast.name)).type;
+                FUNCTION func = (FUNCTION)symbolTable.get(ast.name);
                 symbolTable.put("***THIS***", func.self);
                 List<Type> paramTypes = visit(ast.params);
                 for (Type paramType : paramTypes) {
@@ -271,9 +273,14 @@ public class TypeChecker implements TypeVisitor {
     }
 
     @Override
-    public OBJECT visit(Absyn.IdentifierType ast) {
-        if (symbolTable.get(ast.id) == null) errorAndExit("Cannot resolve class " + ast.id);
-        return ((CLASS)symbolTable.get(ast.id)).instance;
+    public Type visit(Absyn.IdentifierType ast) {
+        Type t = symbolTable.get(ast.id);
+        if (t == null) {
+            errorAndExit("Cannot resolve class " + ast.id);
+            return null;
+        }
+        if (t instanceof STRING) return t;
+        return ((CLASS)t).instance;
     }
 
     @Override
