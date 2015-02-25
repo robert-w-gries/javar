@@ -3,7 +3,7 @@ all:
 
 compiler:
 	javacc -OUTPUT_DIRECTORY=Parse/ Parse/MiniJavaParser.jj
-	javac Absyn/*.java Parse/*.java
+	javac Absyn/*.java Parse/*.java Semant/*.java Symbol/*.java Types/*.java
 
 clean:
 	rm Absyn/*.class &
