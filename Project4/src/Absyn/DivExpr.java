@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Division Expressions.
  */

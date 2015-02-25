@@ -15,7 +15,6 @@ public class VoidDecl extends MethodDecl{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

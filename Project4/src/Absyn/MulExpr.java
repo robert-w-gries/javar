@@ -12,7 +12,6 @@ public class MulExpr extends BinOpExpr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

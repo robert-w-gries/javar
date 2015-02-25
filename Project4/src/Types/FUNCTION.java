@@ -8,7 +8,7 @@ import java.util.Iterator;
 public class FUNCTION extends Type {
     public RECORD formals;
 
-    public String name;
+    private String name;
 
     public Type result;
 
@@ -26,7 +26,6 @@ public class FUNCTION extends Type {
      */
     public void accept(Visitor v) {
         v.visit(this);
-        return;
     }
 
     public FIELD addFormal(Type type, String name) {
@@ -34,11 +33,15 @@ public class FUNCTION extends Type {
     }
 
     public boolean coerceTo(Type t) {
-        return false;
+        return t instanceof FUNCTION && formals.coerceTo(((FUNCTION)t).formals);
     }
 
     public String toString() {
-        return "FUNCTION(" + this.name + "\n" + "OBJECT(" + this.self + ")";
+        String str = result.toString() + " " + name + "(";
+        for (FIELD f : formals) {
+            str += f.toString();
+        }
+        return str + ")";
     }
 
     public boolean equals(Object obj) {

@@ -22,7 +22,7 @@ public class Symbol {
         String uniqueString = n.intern();
 
         // check if the unique String object already exists in the dictionary
-        Symbol s = (Symbol) symDictionary.get(uniqueString);
+        Symbol s = symDictionary.get(uniqueString);
         if (s == null) {
             s = new Symbol(uniqueString);
             symDictionary.put(uniqueString, s);

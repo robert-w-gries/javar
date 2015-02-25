@@ -11,15 +11,14 @@ public class STRING extends Type {
      */
     public void accept(Visitor v) {
         v.visit(this);
-        return;
     }
 
     public boolean coerceTo(Type t) {
-        return t.getClass().equals(this);
+        return t instanceof STRING;
     }
 
     public String toString() {
-        return "STRING";
+        return "String";
     }
 
     public boolean equals(Object obj) {

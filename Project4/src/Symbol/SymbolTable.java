@@ -20,7 +20,7 @@ public class SymbolTable<E> {
 
     }
 
-    public void put(Symbol sym, E value) {
+    void put(Symbol sym, E value) {
         symMap.put(sym, value);
         symStack.push(sym);
     }
@@ -29,7 +29,7 @@ public class SymbolTable<E> {
         this.put(Symbol.symbol(str), value);
     }
 
-    public E get(Symbol sym) {
+    E get(Symbol sym) {
         return symMap.get(sym);
     }
 

@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Boolean FALSE.
  */
@@ -14,7 +13,6 @@ public class FalseExpr extends Expr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

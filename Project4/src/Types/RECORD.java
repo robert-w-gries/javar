@@ -33,7 +33,6 @@ public class RECORD extends Type implements java.lang.Iterable<FIELD> {
      * Visitor pattern dispatch.
      */
     public void accept(Visitor v) {
-        return; //TODO codavaj!!
     }
 
     public boolean coerceTo(Type t) {
@@ -52,7 +51,7 @@ public class RECORD extends Type implements java.lang.Iterable<FIELD> {
         return fields.get(fieldMap.get(name));
     }
 
-    public FIELD get(int i) { return fields.get(i); }
+    FIELD get(int i) { return fields.get(i); }
 
     public java.util.Iterator<FIELD> iterator() {
         return fields.iterator();
@@ -72,6 +71,6 @@ public class RECORD extends Type implements java.lang.Iterable<FIELD> {
     }
 
     public java.lang.String toString() {
-        return null; //TODO codavaj!!
+        return "";
     }
 }

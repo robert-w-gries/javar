@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Curly-brace delimited block of statements.
  */

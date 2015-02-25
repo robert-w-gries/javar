@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Method Call.
  */

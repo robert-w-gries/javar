@@ -21,14 +21,13 @@ public class FIELD extends Type {
      */
     public void accept(Visitor v) {
         v.visit(this);
-        return;
     }
 
     public boolean coerceTo(Type t) {
-        return false; //TODO codavaj!!
+        return t instanceof FIELD && type.coerceTo(((FIELD)t).type);
     }
 
     public String toString() {
-        return null; //TODO codavaj!!
+        return type.toString() + " " + name;
     }
 }

@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Integer Literals.
  */
@@ -20,7 +19,6 @@ public class IntegerLiteral extends Expr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

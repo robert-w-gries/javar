@@ -14,7 +14,6 @@ public class Program extends Absyn{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

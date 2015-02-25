@@ -12,7 +12,6 @@ public class ThreadDecl extends ClassDecl{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

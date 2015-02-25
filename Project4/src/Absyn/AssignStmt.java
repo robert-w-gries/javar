@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Assignment Statements.
  */
@@ -19,7 +18,6 @@ public class AssignStmt extends Stmt{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return; 
     }
 
     @Override

@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Reference to an identifier.
  */
@@ -16,7 +15,6 @@ public class IdentifierExpr extends AssignableExpr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

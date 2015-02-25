@@ -10,11 +10,10 @@ public class INT extends Type {
      */
     public void accept(Visitor v) {
         v.visit(this);
-        return;
     }
 
     public boolean coerceTo(Type t) {
-        return t.getClass().equals(this);
+        return t instanceof INT;
     }
 
     public String toString() {

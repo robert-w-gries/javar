@@ -8,7 +8,7 @@ public class OBJECT extends Type {
 
     public RECORD methods;
 
-    public CLASS myClass;
+    private CLASS myClass;
 
     public OBJECT(CLASS myClass) {
         this.myClass = myClass;
@@ -25,14 +25,13 @@ public class OBJECT extends Type {
      */
     public void accept(Visitor v) {
         v.visit(this);
-        return;
     }
 
     public boolean coerceTo(Type t) {
-        return false; //TODO codavaj!!
+        return false;
     }
 
     public String toString() {
-        return null; //TODO codavaj!!
+        return myClass.toString();
     }
 }

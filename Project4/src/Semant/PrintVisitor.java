@@ -2,8 +2,6 @@ package Semant;
 
 import java.io.PrintWriter;
 
-import java.util.AbstractList;
-
 /**
  * Created with IntelliJ IDEA.
  * User: jchitel
@@ -96,9 +94,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -111,9 +106,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -126,9 +118,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.index.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -139,9 +128,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.baseType.accept(this);
 
         printOut.print(")");
-
-        return;
-
     }
 
     @Override
@@ -154,9 +140,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         visit(ast.args);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -169,9 +152,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         visit(ast.args);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -184,9 +164,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.body.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -201,9 +178,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         visit(ast.params);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -227,9 +201,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         printTabs();
         printOut.print(ast.type.toString());
         printOut.print(")");
-
-        return;
-
     }
 
     @Override
@@ -237,8 +208,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
         printTabs();
         printOut.print("TrueExpr");
-        return;
-
     }
 
     @Override
@@ -256,9 +225,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         visit(ast.methods);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -266,8 +232,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
         printTabs();
         printOut.print("ThisExpr");
-        return;
-
     }
 
     @Override
@@ -280,9 +244,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -290,8 +251,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
         printTabs();
         printOut.print("StringLiteral(" + ast.value + ")");
-        return;
-
     }
 
     @Override
@@ -311,9 +270,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         // flush output to console/file and close the printwriter
         printOut.flush();
         printOut.close();
-
-        return;
-
     }
 
     @Override
@@ -321,8 +277,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
         printTabs();
         printOut.print("NullExpr");
-        return;
-
     }
 
     @Override
@@ -335,9 +289,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -348,9 +299,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.expr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -363,9 +311,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -376,9 +321,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.type.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -392,9 +334,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         visit(ast.dimensions);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -405,9 +344,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.expr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -420,9 +356,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -462,10 +395,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         decrementTab();
         printOut.println();
         printTabs();
-
-
-        return;
-
     }
 
     @Override
@@ -478,17 +407,12 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
     public void visit(Absyn.IntegerType ast) {
 
         printOut.print("IntegerType");
-        return;
-
     }
 
     @Override
@@ -496,9 +420,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
         printTabs();
         printOut.print("IntegerLiteral(" + ast.value + ")");
-
-        return;
-
     }
 
     @Override
@@ -520,9 +441,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         }
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -533,9 +451,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         } else {
             printOut.print("IdentifierType(" + ast.id + ")");
         }
-
-        return;
-
     }
 
     @Override
@@ -543,9 +458,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
         printTabs();
         printOut.print("IdentifierExpr(" + ast.id + ")");
-
-        return;
-
     }
 
     @Override
@@ -558,9 +470,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -571,9 +480,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         printOut.print(" " + ast.name);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -588,9 +494,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         printOut.print(ast.field);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -603,9 +506,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -613,9 +513,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
         printTabs();
         printOut.print("FalseExpr");
-
-        return;
-
     }
 
     @Override
@@ -628,9 +525,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     @Override
@@ -659,10 +553,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         numTabs++;
         printOut.println(ast.fields);
         printTabs();
-        
-
-        return;
-
     }
 
     @Override
@@ -677,18 +567,12 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         printOut.println(ast.methodString);
         visit(ast.argsList);
         decrementTab();
-
-        return;
-
     }
 
     @Override
     public void visit(Absyn.BooleanType ast) {
 
         printOut.print("BooleanType");
-
-        return;
-
     }
 
     @Override
@@ -699,9 +583,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         visit(ast.stmtList);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(java.util.AbstractList list) {
@@ -717,8 +598,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         }
 
         decrementTab();
-
-        return;
     }
 
 
@@ -732,9 +611,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     /* Types.Visitor implementations */

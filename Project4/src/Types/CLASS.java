@@ -25,7 +25,6 @@ public class CLASS extends Type {
      */
     public void accept(Visitor v) {
         v.visit(this);
-        return;
     }
 
     public boolean coerceTo(Type t) {
@@ -33,7 +32,7 @@ public class CLASS extends Type {
     }
 
     public String toString() {
-        return "CLASS(" + this.name + "\n";
+        return name;
     }
 
     public boolean equals(Object obj) {

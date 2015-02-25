@@ -70,8 +70,6 @@ public class PrintVisitor implements Visitor{
         }
 
         decrementTab();
-
-        return;
     }
 
     public void visit(AddExpr ast) {
@@ -83,9 +81,6 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(AndExpr ast) {
@@ -97,8 +92,6 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
     }
 
     public void visit(ArrayExpr ast) {
@@ -110,8 +103,6 @@ public class PrintVisitor implements Visitor{
         ast.index.accept(this);
 
         decrementTab();
-
-        return;
     }
 
     public void visit(ArrayType ast) {
@@ -121,8 +112,6 @@ public class PrintVisitor implements Visitor{
         ast.baseType.accept(this);
 
         printOut.print(")");
-
-        return;
     }
 
     public void visit(AssignStmt ast) {
@@ -134,8 +123,6 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
     }
 
     public void visit(BlockStmt ast) {
@@ -145,15 +132,11 @@ public class PrintVisitor implements Visitor{
         visit(ast.stmtList);
 
         decrementTab();
-
-        return;
     }
 
     public void visit(BooleanType ast) {
 
         printOut.print("BooleanType");
-
-        return;
     }
 
     public void visit(CallExpr ast) {
@@ -167,9 +150,6 @@ public class PrintVisitor implements Visitor{
         printOut.println(ast.methodString);
         visit(ast.argsList);
         decrementTab();
-
-        return;
-
     }
 
     public void visit(ClassDecl ast) {
@@ -188,8 +168,6 @@ public class PrintVisitor implements Visitor{
         visit(ast.methods);
 
         decrementTab();
-
-        return;
     }
 
     public void visit(DivExpr ast) {
@@ -201,9 +179,6 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(EqualExpr ast) {
@@ -215,16 +190,12 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
     }
 
     public void visit(FalseExpr ast){
 
         printTabs();
         printOut.print("FalseExpr");
-
-        return;
     }
 
     public void visit(FieldExpr ast){
@@ -238,8 +209,6 @@ public class PrintVisitor implements Visitor{
         printOut.print(ast.field);
 
         decrementTab();
-
-        return;
     }
 
     public void visit(Formal ast) {
@@ -249,9 +218,6 @@ public class PrintVisitor implements Visitor{
         printOut.print(" " + ast.name);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(GreaterExpr ast){
@@ -263,17 +229,12 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
     }
 
     public void visit(IdentifierExpr ast){
 
         printTabs();
         printOut.print("IdentifierExpr(" + ast.id + ")");
-
-        return;
-
     }
 
     public void visit(IdentifierType ast){
@@ -283,9 +244,6 @@ public class PrintVisitor implements Visitor{
         } else {
             printOut.print("IdentifierType(" + ast.id + ")");
         }
-
-        return;
-
     }
 
     public void visit(IfStmt ast){
@@ -306,23 +264,17 @@ public class PrintVisitor implements Visitor{
         }
 
         decrementTab();
-
-        return;
     }
 
     public void visit(IntegerLiteral ast){
 
         printTabs();
         printOut.print("IntegerLiteral(" + ast.value + ")");
-
-        return;
     }
 
     public void visit(IntegerType ast){
 
         printOut.print("IntegerType");
-        return;
-
     }
 
     public void visit(LesserExpr ast){
@@ -334,8 +286,6 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
     }
 
     public void visit(MethodDecl ast) {
@@ -372,9 +322,6 @@ public class PrintVisitor implements Visitor{
         ast.returnVal.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(MulExpr ast){
@@ -386,9 +333,6 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(NegExpr ast){
@@ -398,9 +342,6 @@ public class PrintVisitor implements Visitor{
         ast.expr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(NewArrayExpr ast) {
@@ -413,9 +354,6 @@ public class PrintVisitor implements Visitor{
         visit(ast.dimensions);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(NewObjectExpr ast){
@@ -425,9 +363,6 @@ public class PrintVisitor implements Visitor{
         ast.type.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(NotEqExpr ast){
@@ -439,9 +374,6 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(NotExpr ast){
@@ -451,17 +383,12 @@ public class PrintVisitor implements Visitor{
         ast.expr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(NullExpr ast){
 
         printTabs();
         printOut.print("NullExpr");
-        return;
-
     }
 
     public void visit(OrExpr ast){
@@ -473,9 +400,6 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     /**
@@ -497,17 +421,12 @@ public class PrintVisitor implements Visitor{
         // flush output to console/file and close the printwriter
         printOut.flush();
         printOut.close();
-
-        return;
-
     }
 
     public void visit(StringLiteral ast){
 
         printTabs();
         printOut.print("StringLiteral(" + ast.value + ")");
-        return;
-
     }
 
     public void visit(SubExpr ast){
@@ -519,17 +438,12 @@ public class PrintVisitor implements Visitor{
         ast.rightExpr.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(ThisExpr ast){
 
         printTabs();
         printOut.print("ThisExpr");
-        return;
-
     }
 
     public void visit(ThreadDecl ast){
@@ -546,17 +460,12 @@ public class PrintVisitor implements Visitor{
         visit(ast.methods);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(TrueExpr ast) {
 
         printTabs();
         printOut.print("TrueExpr");
-        return;
-
     }
 
     public void visit(VarDecl ast){
@@ -575,8 +484,6 @@ public class PrintVisitor implements Visitor{
         }
 
         printOut.print(")");
-
-        return;
     }
 
     public void visit(VoidDecl ast) {
@@ -590,8 +497,6 @@ public class PrintVisitor implements Visitor{
         visit(ast.params);
 
         decrementTab();
-
-        return;
     }
 
     public void visit(WhileStmt ast){
@@ -603,9 +508,6 @@ public class PrintVisitor implements Visitor{
         ast.body.accept(this);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(XinuCallExpr ast){
@@ -617,9 +519,6 @@ public class PrintVisitor implements Visitor{
         visit(ast.args);
 
         decrementTab();
-
-        return;
-
     }
 
     public void visit(XinuCallStmt ast){
@@ -631,9 +530,6 @@ public class PrintVisitor implements Visitor{
         visit(ast.args);
 
         decrementTab();
-
-        return;
-
     }
 
 }

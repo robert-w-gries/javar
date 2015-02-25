@@ -10,11 +10,10 @@ public class NIL extends Type {
      */
     public void accept(Visitor v) {
         v.visit(this);
-        return;
     }
 
     public boolean coerceTo(Type t) {
-        return t.getClass().equals(this);
+        return t instanceof NIL || t instanceof OBJECT;
     }
 
     public String toString() {

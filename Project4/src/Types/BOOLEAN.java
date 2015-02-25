@@ -10,15 +10,14 @@ public class BOOLEAN extends Type {
      */
     public void accept(Visitor v) {
         v.visit(this);
-        return;
     }
 
     public boolean coerceTo(Type t) {
-        return t.getClass().equals(this);
+        return t instanceof BOOLEAN;
     }
 
     public String toString() {
-        return "BOOLEAN";
+        return "boolean";
     }
 
     public boolean equals(Object obj) {

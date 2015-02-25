@@ -2,7 +2,7 @@ package Types;
 /**
  * Interface for nodes that permit Visitor Pattern traversals.
  */
-public interface Visitable{
+interface Visitable{
     /**
      * Visitor pattern dispatch.
      */

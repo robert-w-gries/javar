@@ -19,7 +19,6 @@ public class XinuCallExpr extends Expr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Field lookup on object reference.
  */
@@ -18,7 +17,6 @@ public class FieldExpr extends AssignableExpr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

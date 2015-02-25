@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Greater-Than Comparison Expressions.
  */
@@ -14,7 +13,6 @@ public class GreaterExpr extends BinOpExpr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

@@ -19,7 +19,6 @@ public class XinuCallStmt extends Stmt{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

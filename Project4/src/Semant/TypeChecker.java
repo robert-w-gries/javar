@@ -144,14 +144,14 @@ public class TypeChecker implements TypeVisitor {
         CLASS cls = null;
         switch (state) {
             case PUT_CLASSES:
-                if (symbolTable.get(ast.name) != null) errorAndExit("ERROR duplicate class");
+                if (symbolTable.get(ast.name) != null) errorAndExit("ERROR duplicate class: " + ast.name);
                 cls = new CLASS(ast.name);
                 cls.fields = new RECORD();
                 cls.methods = new RECORD();
                 symbolTable.put(ast.name, new CLASS(ast.name));
                 break;
             case PUT_PARENT_METHOD_FIELD:
-                if (symbolTable.get(ast.parent) == null) errorAndExit("ERROR cannot resolve parent class " + ast.parent);
+                if (symbolTable.get(ast.parent) == null) errorAndExit("ERROR cannot resolve parent class: " + ast.parent);
                 cls = (CLASS)symbolTable.get(ast.name);
                 cls.parent = (CLASS)symbolTable.get(ast.parent);
                 for (Absyn.VarDecl v : ast.fields) {

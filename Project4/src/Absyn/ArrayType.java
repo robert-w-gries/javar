@@ -16,7 +16,6 @@ public class ArrayType extends Type{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return; 
     }
 
     @Override

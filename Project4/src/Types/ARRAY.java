@@ -15,15 +15,14 @@ public class ARRAY extends Type {
      */
     public void accept(Visitor v) {
         v.visit(this);
-        return;
     }
 
     public boolean coerceTo(Type t) {
-        return t.getClass().equals(this);
+        return t instanceof ARRAY && element.coerceTo(((ARRAY)t).element);
     }
 
     public String toString() {
-        return "STRING";
+        return element.toString() + "[]";
     }
 
     public boolean equals(Object obj) {

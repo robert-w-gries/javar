@@ -1,6 +1,5 @@
 package Absyn;
 
-import Types.Type;
 /**
  * Boolean (Logical) Equality Expressions.
  */
@@ -14,7 +13,6 @@ public class EqualExpr extends BinOpExpr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

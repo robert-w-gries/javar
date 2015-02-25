@@ -12,7 +12,6 @@ public class TrueExpr extends Expr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override

@@ -5,7 +5,7 @@ package Absyn;
  */
 public abstract class Absyn implements Visitable {
 
-    public Absyn(){}
+    Absyn(){}
 
     /**
      * Visitor pattern dispatch.

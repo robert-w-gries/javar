@@ -12,7 +12,6 @@ public class SubExpr extends BinOpExpr{
      */
     public void accept(Visitor v){
         v.visit(this);
-        return;
     }
 
     @Override
