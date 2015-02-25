@@ -239,11 +239,7 @@ public class PrintVisitor implements Visitor{
 
     public void visit(IdentifierType ast){
 
-        if (ast.id.equals("public_static_void")) {
-            printOut.print(ast.id);
-        } else {
-            printOut.print("IdentifierType(" + ast.id + ")");
-        }
+        printOut.print("IdentifierType(" + ast.id + ")");
     }
 
     public void visit(IfStmt ast){
@@ -295,7 +291,11 @@ public class PrintVisitor implements Visitor{
         printClass("MethodDecl");
 
         // print return type
-        ast.returnType.accept(this);
+        if (ast.returnType == null) {
+            System.out.print("public_static_void");
+        } else {
+            ast.returnType.accept(this);
+        }
 
         // print method name and start new line
         printOut.print(" " + ast.name);
