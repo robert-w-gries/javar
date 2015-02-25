@@ -8,18 +8,15 @@ public class OBJECT extends Type {
 
     public RECORD methods;
 
-    private CLASS myClass;
+    public CLASS myClass;
+
+    public boolean initialized;
 
     public OBJECT(CLASS myClass) {
         this.myClass = myClass;
         this.methods = new RECORD();
         this.fields = new RECORD();
-    }
-
-    public OBJECT(CLASS myClass, RECORD methods, RECORD fields) {
-        this.myClass = myClass;
-        this.methods = methods;
-        this.fields = fields;
+        this.initialized = false;
     }
 
     /**
@@ -30,7 +27,7 @@ public class OBJECT extends Type {
     }
 
     public boolean coerceTo(Type t) {
-        return false;
+        return t instanceof OBJECT && myClass.coerceTo(((OBJECT)t).myClass);
     }
 
     public String toString() {

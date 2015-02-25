@@ -12,9 +12,9 @@ public class FUNCTION extends Type {
 
     public Type result;
 
-    public Type self;
+    public OBJECT self;
 
-    public FUNCTION(String name, Type self, RECORD formals, Type result) {
+    public FUNCTION(String name, OBJECT self, RECORD formals, Type result) {
         this.name = name;
         this.self = self;
         this.formals = formals;

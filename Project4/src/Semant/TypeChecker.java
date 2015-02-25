@@ -44,28 +44,16 @@ public class TypeChecker implements TypeVisitor {
     }
 
     private void cyclicInheritanceCheck() {
-        HashSet<CLASS> brokenClasses = new HashSet<CLASS>();
-        boolean error = false;
-
         for (Type t : symbolTable.values()) {
             if (t instanceof STRING) continue;
-            CLASS cls = (CLASS)t;
-            if (brokenClasses.contains(cls)) continue;
             HashSet<CLASS> parentChain = new HashSet<CLASS>();
-            for (CLASS prnt = cls; prnt.parent != null; prnt = prnt.parent) {
-                if (parentChain.contains(prnt.parent)) {
-                    for (CLASS broke : parentChain) {
-                        brokenClasses.add(broke);
-                        System.err.println("ERROR cyclic inheritance involving " + broke.name);
-                    }
-                    error = true;
-                    break;
+            for (CLASS cls = (CLASS)t; cls.parent != null; cls = cls.parent) {
+                if (parentChain.contains(cls.parent)) {
+                    errorAndExit("ERROR cyclic inheritance involving " + cls.name);
                 }
-                parentChain.add(prnt);
+                parentChain.add(cls);
             }
         }
-
-        if (error) System.exit(0);
     }
 
     private void createInstances() {
@@ -77,8 +65,7 @@ public class TypeChecker implements TypeVisitor {
     }
 
     private void createInstance(CLASS cls) {
-        if (cls.parent != null && cls.parent.instance == null) createInstance(cls.parent);
-        cls.instance = new OBJECT(cls);
+        if (cls.parent != null && !cls.parent.instance.initialized) createInstance(cls.parent);
         RECORD thisFields = new RECORD(cls.fields);
         RECORD thisMethods = new RECORD(cls.methods);
         if (cls.parent != null) {
@@ -88,6 +75,7 @@ public class TypeChecker implements TypeVisitor {
         }
         cls.instance.fields = thisFields;
         cls.instance.methods = thisMethods;
+        cls.instance.initialized = true;
     }
 
     private RECORD getNonOverriddenMethods(RECORD parentMethods, RECORD thisMethods, String className) {
@@ -134,11 +122,11 @@ public class TypeChecker implements TypeVisitor {
 
     @Override
     public List<Type> visit(AbstractList list) {
-        List<Type> classes = new ArrayList<Type>();
+        List<Type> types = new ArrayList<Type>();
         for (Object obj : list) {
-            classes.add(((Absyn.Absyn)obj).accept(this));
+            types.add(((Absyn.Absyn)obj).accept(this));
         }
-        return classes;
+        return types;
     }
 
     // declarations
@@ -165,7 +153,7 @@ public class TypeChecker implements TypeVisitor {
                     if (cls.fields.get(m.name) != null)
                         errorAndExit(m.name + " is already defined in " + cls.name);
                     FUNCTION func = (FUNCTION)m.accept(this);
-                    func.self = cls;
+                    func.self = cls.instance;
                     cls.methods.put(func, m.name);
                 }
                 break;
@@ -223,10 +211,8 @@ public class TypeChecker implements TypeVisitor {
                 symbolTable.beginScope();
                 FUNCTION func = (FUNCTION)symbolTable.get(ast.name);
                 symbolTable.put("***THIS***", func.self);
-                List<Type> paramTypes = visit(ast.params);
-                for (Type paramType : paramTypes) {
-                    FIELD f = (FIELD)paramType;
-                    symbolTable.put(f.name, f.type);
+                for (Formal f : ast.params) {
+                    symbolTable.put(f.name, visit(f));
                 }
                 visit(ast.locals);
                 visit(ast.stmts);

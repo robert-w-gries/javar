@@ -13,7 +13,7 @@ public class INT extends Type {
     }
 
     public boolean coerceTo(Type t) {
-        return t instanceof INT;
+        return t instanceof INT || t instanceof OBJECT && ((OBJECT)t).myClass.name.equals("public_static_void");
     }
 
     public String toString() {

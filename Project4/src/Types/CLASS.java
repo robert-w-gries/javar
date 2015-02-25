@@ -18,6 +18,7 @@ public class CLASS extends Type {
         this.name = name;
         this.fields = new RECORD();
         this.methods = new RECORD();
+        this.instance = new OBJECT(this);
     }
 
     /**
@@ -28,7 +29,7 @@ public class CLASS extends Type {
     }
 
     public boolean coerceTo(Type t) {
-        return false;
+        return t instanceof CLASS && (name.equals(((CLASS)t).name) || parent.coerceTo(t));
     }
 
     public String toString() {
