@@ -111,8 +111,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
                 LinkedList<Formal> params = new LinkedList<Formal>();
                 Formal args = new Formal(new ArrayType(new IdentifierType("String")), argsId.image);
                 params.add(args);
-                IdentifierType pub_stat_void = new IdentifierType("public_static_void");
-                MethodDecl mainMethod = new MethodDecl(pub_stat_void, false, "main", params, localsList, statements, new IntegerLiteral(0));
+                MethodDecl mainMethod = new MethodDecl(null, false, "main", params, localsList, statements, new IntegerLiteral(0));
                 methods.add(mainMethod);
                 classList.add(new ClassDecl(name, null, new LinkedList<VarDecl>(), methods));
   }
@@ -1222,6 +1221,11 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     finally { jj_save(15, xla); }
   }
 
+  static private boolean jj_3R_59() {
+    if (jj_scan_token(44)) return true;
+    return false;
+  }
+
   static private boolean jj_3R_58() {
     if (jj_scan_token(43)) return true;
     return false;
@@ -1269,15 +1273,15 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     return false;
   }
 
-  static private boolean jj_3_14() {
-    if (jj_3R_29()) return true;
-    if (jj_scan_token(6)) return true;
-    return false;
-  }
-
   static private boolean jj_3R_31() {
     if (jj_scan_token(32)) return true;
     if (jj_scan_token(ID)) return true;
+    return false;
+  }
+
+  static private boolean jj_3_14() {
+    if (jj_3R_29()) return true;
+    if (jj_scan_token(6)) return true;
     return false;
   }
 
@@ -1659,11 +1663,6 @@ public class MiniJavaParser implements MiniJavaParserConstants {
 
   static private boolean jj_3_6() {
     if (jj_3R_25()) return true;
-    return false;
-  }
-
-  static private boolean jj_3R_59() {
-    if (jj_scan_token(44)) return true;
     return false;
   }
 
