@@ -8,7 +8,7 @@ import java.util.Iterator;
 public class FUNCTION extends Type {
     public RECORD formals;
 
-    private String name;
+    public String name;
 
     public Type result;
 

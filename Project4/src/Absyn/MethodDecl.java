@@ -13,6 +13,7 @@ public class MethodDecl extends Absyn {
     public LinkedList<VarDecl> locals;
     public LinkedList<Stmt> stmts;
     public Expr returnVal;
+    public Types.FUNCTION function;
 
     public MethodDecl(Type returnType, boolean synced, String name, LinkedList<Formal> params,
                       LinkedList<VarDecl> locals, LinkedList<Stmt> stmts, Expr returnVal) {

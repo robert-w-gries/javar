@@ -6,6 +6,7 @@ package Absyn;
 public class FieldExpr extends AssignableExpr{
     public Expr target;
     public String field;
+    public int id;
 
     public FieldExpr(Expr target, java.lang.String field){
          this.target = target;

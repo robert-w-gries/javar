@@ -8,6 +8,7 @@ public class CallExpr extends Expr{
     public Expr targetExpr;
     public java.lang.String methodString;
     public java.util.LinkedList<Expr> argsList;
+    public int id;
 
     public CallExpr(Expr target, java.lang.String method, java.util.LinkedList<Expr> args){
         targetExpr = target;

@@ -1,6 +1,7 @@
 package Semant;
 
 import java.io.PrintWriter;
+import java.util.AbstractList;
 
 /**
  * Created with IntelliJ IDEA.
@@ -11,7 +12,6 @@ import java.io.PrintWriter;
 public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
     /* Absyn.Visitor implementations */
-
 
     private java.io.PrintWriter printOut;
     private int numTabs = 0;
@@ -59,13 +59,11 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
     }
 
-
-    // Covered in: visit(java.util.AbstractList list), leaving it commented until I know for sure we dont need this specific...
-    // ...version for some reason.
-
-/*
-    @Override
-    public void visit(AbstractList<Absyn.Visitable> list) {
+    /**
+     * Description copied from interface:
+     * Visitor pattern dispatch.
+     */
+    public void visit(AbstractList list) {
 
         // print abstract list without newline
         // AbstractList can have multiple closing parentheses
@@ -74,17 +72,12 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         // loop through elements of abstract list and accept them
         for (int i = 0; i < list.size(); i++) {
             printOut.println();
-            list.get(i).accept(this);
+            ((Absyn.Absyn)list.get(i)).accept(this);
         }
 
         decrementTab();
-
-        return;
-
     }
-*/
 
-    @Override
     public void visit(Absyn.AddExpr ast) {
 
         printClassLine("AddExpr");
@@ -96,7 +89,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         decrementTab();
     }
 
-    @Override
     public void visit(Absyn.AndExpr ast) {
 
         printClassLine("AndExpr");
@@ -108,7 +100,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         decrementTab();
     }
 
-    @Override
     public void visit(Absyn.ArrayExpr ast) {
 
         printClassLine("ArrayExpr");
@@ -120,7 +111,6 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         decrementTab();
     }
 
-    @Override
     public void visit(Absyn.ArrayType ast) {
 
         printOut.print("ArrayType(");
@@ -130,90 +120,52 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         printOut.print(")");
     }
 
-    @Override
-    public void visit(Absyn.XinuCallStmt ast) {
+    public void visit(Absyn.AssignStmt ast) {
 
-        printClass("XinuCallStmt");
+        printClassLine("AssignStmt");
 
-        printOut.println(ast.method);
-
-        visit(ast.args);
-
-        decrementTab();
-    }
-
-    @Override
-    public void visit(Absyn.XinuCallExpr ast) {
-
-        printClass("XinuCallExpr");
-
-        printOut.println(ast.method);
-
-        visit(ast.args);
-
-        decrementTab();
-    }
-
-    @Override
-    public void visit(Absyn.WhileStmt ast) {
-
-        printClassLine("WhileStmt");
-
-        ast.test.accept(this);
+        ast.leftExpr.accept(this);
         printOut.println();
-        ast.body.accept(this);
+        ast.rightExpr.accept(this);
 
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.VoidDecl ast) {
+    public void visit(Absyn.BlockStmt ast) {
 
-        printClass("VoidDecl");
+        printClassLine("BlockStmt");
 
-        printOut.println(ast.name);
-
-        visit(ast.locals);
-        printOut.println();
-        visit(ast.params);
+        visit(ast.stmtList);
 
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.VarDecl ast) {
+    public void visit(Absyn.BooleanType ast) {
 
-        printTabs();
-        printOut.print("VarDecl(");
+        printOut.print("BooleanType");
+    }
 
-        ast.type.accept(this);
-        printOut.print(" " + ast.name);
+    public void visit(Absyn.CallExpr ast) {
 
-        if (ast.init == null) {
-            printOut.print(" null");
-        } else {
-            printOut.println();
-            ast.init.accept(this);
-        }
+        printClass("CallExpr");
 
         printOut.println();
-        numTabs++;
+        ast.targetExpr.accept(this);
+        printOut.println();
         printTabs();
-        printOut.print(ast.type.toString());
-        printOut.print(")");
+        printOut.println(ast.methodString);
+        visit(ast.argsList);
+        printOut.println();
+        printTabs();
+        printOut.print(ast.id);
+        decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.TrueExpr ast) {
+    public void visit(Absyn.ClassDecl ast) {
 
-        printTabs();
-        printOut.print("TrueExpr");
-    }
-
-    @Override
-    public void visit(Absyn.ThreadDecl ast) {
-
-        printClass("ThreadDecl");
+        // print classdecl without newline
+        // ClassDecl prints name of class and its parent on same line
+        printClass("ClassDecl");
         printOut.print(ast.name + " " + ast.parent);
         printOut.println();
 
@@ -224,20 +176,16 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         // print all methods of the class
         visit(ast.methods);
 
+        //print the type checker class
+        printOut.println();
+        visit(ast.type);
+
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.ThisExpr ast) {
+    public void visit(Absyn.DivExpr ast) {
 
-        printTabs();
-        printOut.print("ThisExpr");
-    }
-
-    @Override
-    public void visit(Absyn.SubExpr ast) {
-
-        printClassLine("SubExpr");
+        printClassLine("DivExpr");
 
         ast.leftExpr.accept(this);
         printOut.println();
@@ -246,43 +194,9 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.StringLiteral ast) {
+    public void visit(Absyn.EqualExpr ast) {
 
-        printTabs();
-        printOut.print("StringLiteral(" + ast.value + ")");
-    }
-
-    @Override
-    public void visit(Absyn.Program ast) {
-
-        // print the visited class
-        printClassLine("Program");
-
-        // visit all the classes
-        visit(ast.classes);
-
-        // print closing parenthesis and decrement indent
-        decrementTab();
-
-        printOut.println();
-
-        // flush output to console/file and close the printwriter
-        printOut.flush();
-        printOut.close();
-    }
-
-    @Override
-    public void visit(Absyn.NullExpr ast) {
-
-        printTabs();
-        printOut.print("NullExpr");
-    }
-
-    @Override
-    public void visit(Absyn.OrExpr ast) {
-
-        printClassLine("OrExpr");
+        printClassLine("EqualExpr");
 
         ast.leftExpr.accept(this);
         printOut.println();
@@ -291,65 +205,40 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.NotExpr ast) {
+    public void visit(Absyn.FalseExpr ast){
 
-        printClassLine("NotExpr");
-
-        ast.expr.accept(this);
-
-        decrementTab();
+        printTabs();
+        printOut.print("FalseExpr");
     }
 
-    @Override
-    public void visit(Absyn.NotEqExpr ast) {
+    public void visit(Absyn.FieldExpr ast){
 
-        printClassLine("NotEqExpr");
+        printClassLine("FieldExpr");
 
-        ast.leftExpr.accept(this);
+        ast.target.accept(this);
         printOut.println();
-        ast.rightExpr.accept(this);
 
+        printTabs();
+        printOut.print(ast.field);
+
+        printOut.println();
+        printTabs();
+        printOut.print(ast.id);
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.NewObjectExpr ast) {
+    public void visit(Absyn.Formal ast) {
 
-        printClass("NewObjectExpr");
-
+        printClass("Formal");
         ast.type.accept(this);
+        printOut.print(" " + ast.name);
 
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.NewArrayExpr ast) {
+    public void visit(Absyn.GreaterExpr ast){
 
-        printClass("NewArrayExpr");
-
-        ast.type.accept(this);
-        printOut.println();
-
-        visit(ast.dimensions);
-
-        decrementTab();
-    }
-
-    @Override
-    public void visit(Absyn.NegExpr ast) {
-
-        printClassLine("NegExpr");
-
-        ast.expr.accept(this);
-
-        decrementTab();
-    }
-
-    @Override
-    public void visit(Absyn.MulExpr ast) {
-
-        printClassLine("MulExpr");
+        printClassLine("GreaterExpr");
 
         ast.leftExpr.accept(this);
         printOut.println();
@@ -358,7 +247,59 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         decrementTab();
     }
 
-    @Override
+    public void visit(Absyn.IdentifierExpr ast){
+
+        printTabs();
+        printOut.print("IdentifierExpr(" + ast.id + ")");
+    }
+
+    public void visit(Absyn.IdentifierType ast){
+
+        printOut.print("IdentifierType(" + ast.id + ")");
+    }
+
+    public void visit(Absyn.IfStmt ast){
+
+        printClassLine("IfStmt");
+
+        ast.test.accept(this);
+        printOut.println();
+
+        ast.thenStm.accept(this);
+        printOut.println();
+
+        if (ast.elseStm == null) {
+            printTabs();
+            printOut.print("null");
+        } else {
+            ast.elseStm.accept(this);
+        }
+
+        decrementTab();
+    }
+
+    public void visit(Absyn.IntegerLiteral ast){
+
+        printTabs();
+        printOut.print("IntegerLiteral(" + ast.value + ")");
+    }
+
+    public void visit(Absyn.IntegerType ast){
+
+        printOut.print("IntegerType");
+    }
+
+    public void visit(Absyn.LesserExpr ast){
+
+        printClassLine("LesserExpr");
+
+        ast.leftExpr.accept(this);
+        printOut.println();
+        ast.rightExpr.accept(this);
+
+        decrementTab();
+    }
+
     public void visit(Absyn.MethodDecl ast) {
 
         // print methodecl without newline
@@ -366,7 +307,11 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         printClass("MethodDecl");
 
         // print return type
-        ast.returnType.accept(this);
+        if (ast.returnType == null) {
+            printOut.print("public_static_void");
+        } else {
+            ast.returnType.accept(this);
+        }
 
         // print method name and start new line
         printOut.print(" " + ast.name);
@@ -392,15 +337,16 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         // print the return value
         ast.returnVal.accept(this);
 
-        decrementTab();
+        // print the method's FUNCTION
         printOut.println();
-        printTabs();
+        visit(ast.function);
+
+        decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.LesserExpr ast) {
+    public void visit(Absyn.MulExpr ast){
 
-        printClassLine("LesserExpr");
+        printClassLine("MulExpr");
 
         ast.leftExpr.accept(this);
         printOut.println();
@@ -409,97 +355,39 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.IntegerType ast) {
+    public void visit(Absyn.NegExpr ast){
 
-        printOut.print("IntegerType");
-    }
+        printClassLine("NegExpr");
 
-    @Override
-    public void visit(Absyn.IntegerLiteral ast) {
-
-        printTabs();
-        printOut.print("IntegerLiteral(" + ast.value + ")");
-    }
-
-    @Override
-    public void visit(Absyn.IfStmt ast) {
-
-        printClassLine("IfStmt");
-
-        ast.test.accept(this);
-        printOut.println();
-
-        ast.thenStm.accept(this);
-        printOut.println();
-
-        if (ast.elseStm == null) {
-            printTabs();
-            printOut.print("null");
-        } else {
-            ast.elseStm.accept(this);
-        }
+        ast.expr.accept(this);
 
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.IdentifierType ast) {
+    public void visit(Absyn.NewArrayExpr ast) {
 
-        if (ast.id.equals("public_static_void")) {
-            printOut.print(ast.id);
-        } else {
-            printOut.print("IdentifierType(" + ast.id + ")");
-        }
-    }
+        printClass("NewArrayExpr");
 
-    @Override
-    public void visit(Absyn.IdentifierExpr ast) {
-
-        printTabs();
-        printOut.print("IdentifierExpr(" + ast.id + ")");
-    }
-
-    @Override
-    public void visit(Absyn.GreaterExpr ast) {
-
-        printClassLine("GreaterExpr");
-
-        ast.leftExpr.accept(this);
-        printOut.println();
-        ast.rightExpr.accept(this);
-
-        decrementTab();
-    }
-
-    @Override
-    public void visit(Absyn.Formal ast) {
-
-        printClass("Formal");
         ast.type.accept(this);
-        printOut.print(" " + ast.name);
-
-        decrementTab();
-    }
-
-    @Override
-    public void visit(Absyn.FieldExpr ast) {
-
-        printClassLine("FieldExpr");
-
-        ast.target.accept(this);
         printOut.println();
 
-        printTabs();
-        printOut.print(ast.field);
+        visit(ast.dimensions);
 
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.EqualExpr ast) {
+    public void visit(Absyn.NewObjectExpr ast){
 
-        printClassLine("EqualExpr");
+        printClass("NewObjectExpr");
+
+        ast.type.accept(this);
+
+        decrementTab();
+    }
+
+    public void visit(Absyn.NotEqExpr ast){
+
+        printClassLine("NotEqExpr");
 
         ast.leftExpr.accept(this);
         printOut.println();
@@ -508,17 +396,24 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.FalseExpr ast) {
+    public void visit(Absyn.NotExpr ast){
 
-        printTabs();
-        printOut.print("FalseExpr");
+        printClassLine("NotExpr");
+
+        ast.expr.accept(this);
+
+        decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.DivExpr ast) {
+    public void visit(Absyn.NullExpr ast){
 
-        printClassLine("DivExpr");
+        printTabs();
+        printOut.print("NullExpr");
+    }
+
+    public void visit(Absyn.OrExpr ast){
+
+        printClassLine("OrExpr");
 
         ast.leftExpr.accept(this);
         printOut.println();
@@ -527,12 +422,53 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         decrementTab();
     }
 
-    @Override
-    public void visit(Absyn.ClassDecl ast) {
+    /**
+     * Visitor pattern dispatch.
+     */
+    public void visit(Absyn.Program ast){
 
-        // print classdecl without newline
-        // ClassDecl prints name of class and its parent on same line
-        printClass("ClassDecl");
+        // print the visited class
+        printClassLine("Program");
+
+        // visit all the classes
+        visit(ast.classes);
+
+        // print closing parenthesis and decrement indent
+        decrementTab();
+
+        printOut.println();
+
+        // flush output to console/file and close the printwriter
+        printOut.flush();
+        printOut.close();
+    }
+
+    public void visit(Absyn.StringLiteral ast){
+
+        printTabs();
+        printOut.print("StringLiteral(" + ast.value + ")");
+    }
+
+    public void visit(Absyn.SubExpr ast){
+
+        printClassLine("SubExpr");
+
+        ast.leftExpr.accept(this);
+        printOut.println();
+        ast.rightExpr.accept(this);
+
+        decrementTab();
+    }
+
+    public void visit(Absyn.ThisExpr ast){
+
+        printTabs();
+        printOut.print("ThisExpr");
+    }
+
+    public void visit(Absyn.ThreadDecl ast){
+
+        printClass("ThreadDecl");
         printOut.print(ast.name + " " + ast.parent);
         printOut.println();
 
@@ -543,100 +479,156 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
         // print all methods of the class
         visit(ast.methods);
 
-        decrementTab();
-
-        printOut.println();
-        printTabs();
-        numTabs++;
-        ast.type.toString();
-        printTabs();
-        numTabs++;
-        printOut.println(ast.fields);
-        printTabs();
-    }
-
-    @Override
-    public void visit(Absyn.CallExpr ast) {
-
-        printClass("CallExpr");
-
-        printOut.println();
-        ast.targetExpr.accept(this);
-        printOut.println();
-        printTabs();
-        printOut.println(ast.methodString);
-        visit(ast.argsList);
-        decrementTab();
-    }
-
-    @Override
-    public void visit(Absyn.BooleanType ast) {
-
-        printOut.print("BooleanType");
-    }
-
-    @Override
-    public void visit(Absyn.BlockStmt ast) {
-
-        printClassLine("BlockStmt");
-
-        visit(ast.stmtList);
+        // print the ThreadDecl's CLASS
+        visit(ast.type);
 
         decrementTab();
     }
 
-    public void visit(java.util.AbstractList list) {
+    public void visit(Absyn.TrueExpr ast) {
 
-        // print abstract list without newline
-        // AbstractList can have multiple closing parentheses
-        printClass("AbstractList");
+        printTabs();
+        printOut.print("TrueExpr");
+    }
 
-        // loop through elements of abstract list and accept them
-        for (int i = 0; i < list.size(); i++) {
+    public void visit(Absyn.VarDecl ast){
+
+        printTabs();
+        printOut.print("VarDecl(");
+
+        ast.type.accept(this);
+        printOut.print(" " + ast.name);
+
+        if (ast.init == null) {
+            printOut.print(" null");
+        } else {
             printOut.println();
-            ((Absyn.Type)list.get(i)).accept(this);
+            ast.init.accept(this);
         }
 
+        // print the VarDecl's type
+        printOut.println();
+        ast.semantType.accept(this);
+
+        printOut.print(")");
+    }
+
+    public void visit(Absyn.VoidDecl ast) {
+
+        printClass("VoidDecl");
+
+        printOut.println(ast.name);
+
+        visit(ast.locals);
+        printOut.println();
+        visit(ast.params);
+
+        // print this VoidDecl's FUNCTION
+        visit(ast.function);
+
         decrementTab();
     }
 
+    public void visit(Absyn.WhileStmt ast){
 
-    @Override
-    public void visit(Absyn.AssignStmt ast) {
+        printClassLine("WhileStmt");
 
-        printClassLine("AssignStmt");
-
-        ast.leftExpr.accept(this);
+        ast.test.accept(this);
         printOut.println();
-        ast.rightExpr.accept(this);
+        ast.body.accept(this);
+
+        decrementTab();
+    }
+
+    public void visit(Absyn.XinuCallExpr ast){
+
+        printClass("XinuCallExpr");
+
+        printOut.println(ast.method);
+
+        visit(ast.args);
+
+        decrementTab();
+    }
+
+    public void visit(Absyn.XinuCallStmt ast){
+
+        printClass("XinuCallStmt");
+
+        printOut.println(ast.method);
+
+        visit(ast.args);
 
         decrementTab();
     }
 
     /* Types.Visitor implementations */
 
+    private boolean printFullObject = false;
+
     @Override
     public void visit(Types.ARRAY a) {
+        printClassLine("ARRAY");
+        a.element.accept(this);
+        decrementTab();
     }
 
     @Override
     public void visit(Types.BOOLEAN b) {
+        printOut.print("BOOLEAN");
     }
 
     @Override
     public void visit(Types.CLASS c) {
+        printClass("CLASS");
+        printOut.println(c.name);
+
+        printTabs();
+        if (c.parent == null) printOut.println("null");
+        else printOut.println(c.parent.name);
+
+        visit(c.methods);
+        printOut.println();
+
+        printTabs();
+        visit(c.fields);
+        printOut.println();
+
+        printFullObject = true;
+        visit(c.instance);
+
+        decrementTab();
     }
 
     @Override
     public void visit(Types.FIELD f) {
+        printOut.println();
+        printClass("FIELD");
+        printOut.println(f.index + " " + f.name);
+        f.type.accept(this);
+        decrementTab();
     }
 
     @Override
     public void visit(Types.FUNCTION f) {
+        printClass("FUNCTION");
+        printOut.println(f.name);
+
+        visit(f.self);
+        printOut.println();
+
+        visit(f.formals);
+
+        printOut.println();
+        f.result.accept(this);
+
+        decrementTab();
     }
 
     @Override
     public void visit(Types.INT i) {
+        printTabs();
+        printOut.print("INT");
     }
 
     @Override
@@ -645,17 +637,39 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
     @Override
     public void visit(Types.OBJECT o) {
+        if (printFullObject) {
+            printFullObject = false;
+            printClass("OBJECT");
+            printOut.println(o.myClass.name);
+            visit(o.methods);
+            printOut.println();
+            visit(o.fields);
+            decrementTab();
+        } else {
+            printClass("OBJECT");
+            printOut.print(o.myClass.name);
+            decrementTab();
+        }
     }
 
     @Override
     public void visit(Types.RECORD r) {
+        printClass("RECORD");
+        for (Types.FIELD f : r) {
+            visit(f);
+        }
+        decrementTab();
     }
 
     @Override
     public void visit(Types.STRING s) {
+        printTabs();
+        printOut.print("OBJECT(String)");
     }
 
     @Override
     public void visit(Types.VOID v) {
+        printTabs();
+        printOut.print("VOID");
     }
 }

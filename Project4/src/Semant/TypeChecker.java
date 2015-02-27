@@ -153,6 +153,7 @@ public class TypeChecker implements TypeVisitor {
                     func.self = cls.instance;
                     cls.methods.put(func, m.name);
                 }
+                ast.type = (CLASS)symbolTable.get(ast.name);
                 break;
             case METHOD_SCOPE_CHECK:
                 cls = (CLASS)symbolTable.get(ast.name);
@@ -181,7 +182,9 @@ public class TypeChecker implements TypeVisitor {
     public Type visit(Absyn.VarDecl ast) {
         switch (state) {
             case PUT_PARENT_METHOD_FIELD:
-                return ast.type.accept(this);
+                Type t = ast.type.accept(this);
+                ast.semantType = t;
+                return t;
             case METHOD_SCOPE_CHECK:
                 Type varType = ast.type.accept(this);
                 symbolTable.put(ast.name, varType);
@@ -190,6 +193,7 @@ public class TypeChecker implements TypeVisitor {
                     if (!initType.coerceTo(varType))
                         errorAndExit("ERROR incompatible types: " + varType + " required, but " + initType + " found");
                 }
+                ast.semantType = varType;
                 return varType;
         }
         return null;
@@ -201,13 +205,15 @@ public class TypeChecker implements TypeVisitor {
         switch (state) {
             case PUT_PARENT_METHOD_FIELD:
                 if (ast.returnType == null) {
-                    returnType = new INT();
+                    returnType = new VOID();
                 } else {
                     returnType = ast.returnType.accept(this);
                 }
                 RECORD params = new RECORD();
                 for (Formal formal : ast.params) params.put(visit(formal), formal.name);
-                return new FUNCTION(ast.name, null, params, returnType);
+                FUNCTION fun = new FUNCTION(ast.name, null, params, returnType);
+                ast.function = fun;
+                return fun;
             case METHOD_SCOPE_CHECK:
                 symbolTable.beginScope();
                 FUNCTION func = (FUNCTION)symbolTable.get(ast.name);
@@ -235,7 +241,9 @@ public class TypeChecker implements TypeVisitor {
     public Type visit(Absyn.VoidDecl ast) {
         switch (state) {
             case PUT_PARENT_METHOD_FIELD:
-                return new FUNCTION(ast.name, null, new RECORD(), new VOID());
+                FUNCTION f = new FUNCTION(ast.name, null, new RECORD(), new VOID());
+                ast.function = f;
+                return f;
             case METHOD_SCOPE_CHECK:
                 symbolTable.beginScope();
                 visit(ast.locals);
@@ -506,6 +514,7 @@ public class TypeChecker implements TypeVisitor {
             errorAndExit("ERROR cannot resolve symbol " + ast.field);
             return null; // won't be reached because errorAndExit exits
         }
+        ast.id = f.index;
         return f.type;
     }
 
@@ -541,6 +550,7 @@ public class TypeChecker implements TypeVisitor {
             errorAndExit("ERROR cannot resolve method " + ast.methodString);
             return null; // won't be reached because errorAndExit exits
         }
+        ast.id = f.index;
         FUNCTION func = (FUNCTION)f.type;
         RECORD funcParams = func.formals;
         RECORD callParams = new RECORD();

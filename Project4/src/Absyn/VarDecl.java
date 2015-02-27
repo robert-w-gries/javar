@@ -6,6 +6,7 @@ public class VarDecl extends Absyn{
     public Type type;
     public String name;
     public Expr init;
+    public Types.Type semantType;
 
     public VarDecl(Type type, java.lang.String name, Expr init){
         this.type = type;

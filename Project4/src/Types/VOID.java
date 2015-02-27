@@ -8,6 +8,7 @@ public class VOID extends Type{
      * Visitor pattern dispatch.
      */
     public void accept(Visitor v){
+        v.visit(this);
     }
 
     public boolean coerceTo(Type t){
