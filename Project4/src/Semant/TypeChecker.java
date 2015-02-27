@@ -34,9 +34,6 @@ public class TypeChecker implements TypeVisitor {
         symbolTable.put("Thread", new CLASS("Thread"));
         ((CLASS)symbolTable.get("Thread")).instance = new OBJECT((CLASS)symbolTable.get("Thread"));
         symbolTable.put("Xinu", new Xinu());
-        symbolTable.put("public_static_void", new CLASS("public_static_void"));
-        ((CLASS)symbolTable.get("public_static_void")).instance =
-                new OBJECT((CLASS)symbolTable.get("public_static_void"));
     }
 
     private void nextState() {
@@ -204,7 +201,7 @@ public class TypeChecker implements TypeVisitor {
         switch (state) {
             case PUT_PARENT_METHOD_FIELD:
                 if (ast.returnType == null) {
-                    returnType = symbolTable.get("public_static_void");
+                    returnType = new INT();
                 } else {
                     returnType = ast.returnType.accept(this);
                 }
@@ -221,7 +218,7 @@ public class TypeChecker implements TypeVisitor {
                 visit(ast.locals);
                 visit(ast.stmts);
                 if (ast.returnType == null) {
-                    returnType = symbolTable.get("public_static_void");
+                    returnType = new INT();
                 } else {
                     returnType = ast.returnType.accept(this);
                 }
