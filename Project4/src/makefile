@@ -6,8 +6,8 @@ compiler:
 	javac Absyn/*.java Parse/*.java Semant/*.java Symbol/*.java Types/*.java
 
 clean:
-	rm Absyn/*.class &
-	rm Parse/*.class &
-	rm Semant/*.class &
-	rm Symbol/*.class &
-	rm Types/*.class
+	rm -f Absyn/*.class &
+	rm -f Parse/*.class &
+	rm -f Semant/*.class &
+	rm -f Symbol/*.class &
+	rm -f Types/*.class
