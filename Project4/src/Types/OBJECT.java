@@ -27,7 +27,7 @@ public class OBJECT extends Type {
     }
 
     public boolean coerceTo(Type t) {
-        return t instanceof OBJECT && myClass.coerceTo(((OBJECT)t).myClass);
+        return t instanceof NIL || t instanceof OBJECT && myClass.coerceTo(((OBJECT)t).myClass);
     }
 
     public String toString() {

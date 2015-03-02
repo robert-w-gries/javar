@@ -1,9 +1,9 @@
-public_static_voidProgram(
+Program(
  AbstractList(
   ClassDecl(BinarySearch null
    AbstractList()
    AbstractList(
-    MethodDecl( main
+    MethodDecl(public_static_void main
      AbstractList(
       Formal(ArrayType(IdentifierType(String)) a))
      AbstractList()

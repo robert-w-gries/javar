@@ -292,7 +292,7 @@ public class PrintVisitor implements Visitor{
 
         // print return type
         if (ast.returnType == null) {
-            System.out.print("public_static_void");
+            printOut.print("public_static_void");
         } else {
             ast.returnType.accept(this);
         }

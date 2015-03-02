@@ -504,6 +504,9 @@ public class TypeChecker implements TypeVisitor {
     @Override
     public Type visit(Absyn.FieldExpr ast) {
         Type target = ast.target.accept(this);
+        if (target instanceof ARRAY && ast.field.equals("length")) {
+            return new INT();
+        }
         if (!(target instanceof OBJECT)) {
             errorAndExit("ERROR target not object, type " + target);
             return null; // won't be reached because errorAndExit exits
