@@ -1,0 +1,39 @@
+Program(
+ AbstractList(
+  ClassDecl(Parse1 null
+   AbstractList()
+   AbstractList(
+    MethodDecl(public_static_void main
+     AbstractList(
+      Formal(ArrayType(IdentifierType(String)) a))
+     AbstractList(
+      VarDecl(ArrayType(ArrayType(IntegerType)) b null))
+     AbstractList(
+      AssignStmt(
+       IdentifierExpr(b)
+       NewArrayExpr(IntegerType
+        AbstractList(
+         IntegerLiteral(3)
+         null)))
+      AssignStmt(
+       ArrayExpr(
+        IdentifierExpr(b)
+        IntegerLiteral(0))
+       NewArrayExpr(IntegerType
+        AbstractList(
+         IntegerLiteral(3))))
+      AssignStmt(
+       ArrayExpr(
+        IdentifierExpr(b)
+        IntegerLiteral(1))
+       NewArrayExpr(IntegerType
+        AbstractList(
+         IntegerLiteral(4))))
+      AssignStmt(
+       ArrayExpr(
+        IdentifierExpr(b)
+        IntegerLiteral(2))
+       NewArrayExpr(IntegerType
+        AbstractList(
+         IntegerLiteral(5)))))
+     IntegerLiteral(0))))))

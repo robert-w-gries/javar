@@ -452,9 +452,11 @@ public class TypeChecker implements TypeVisitor {
     public Type visit(Absyn.NewArrayExpr ast) {
         Type base = ast.type.accept(this);
         for (Absyn.Expr exp : ast.dimensions) {
-            Type dim = exp.accept(this);
-            if (!(dim instanceof INT))
-                errorAndExit("ERROR incompatible types: int required, but "+dim+" found");
+            if (exp != null) {
+                Type dim = exp.accept(this);
+                if (!(dim instanceof INT))
+                    errorAndExit("ERROR incompatible types: int required, but " + dim + " found");
+            }
             base = new ARRAY(base);
         }
         return base;
