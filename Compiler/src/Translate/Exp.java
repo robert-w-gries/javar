@@ -7,4 +7,9 @@ package Translate;
  * Time: 11:19 PM
  */
 public abstract class Exp {
+
+    abstract Tree.Exp unEx();
+    abstract Tree.Stm unNx();
+    abstract Tree.Stm unCx(Temp.Label t, Temp.Label f);
+
 }
