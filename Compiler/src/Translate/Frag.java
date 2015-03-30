@@ -7,4 +7,7 @@ package Translate;
  * Time: 11:18 PM
  */
 public abstract class Frag {
+
+    public Frag next;
+
 }

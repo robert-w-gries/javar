@@ -7,4 +7,13 @@ package Translate;
  * Time: 11:18 PM
  */
 public class ProcFrag extends Frag {
+
+    Tree.Stm body;
+    Frame.Frame frame;
+
+    public ProcFrag(Tree.Stm body, Frame.Frame frame) {
+        this.body = body;
+        this.frame = frame;
+    }
+
 }

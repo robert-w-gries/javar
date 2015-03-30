@@ -7,4 +7,11 @@ package Translate;
  * Time: 11:19 PM
  */
 public class DataFrag extends Frag {
+
+    String data;
+
+    public DataFrag(String data) {
+        this.data = data;
+    }
+
 }
