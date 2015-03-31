@@ -1,19 +1,19 @@
 /* Copyright (C) 2007-2013, Marquette University.  All rights reserved. */
 //options { DEBUG_PARSER=true; DEBUG_LOOKAHEAD=true; 
 PARSER_BEGIN(ReadTypes)
-package Parse;
+package Translate;
 import java.util.LinkedList;
 public class ReadTypes {
 
-	   private static Symbol.Table<Types.CLASS> classEnv = 
-	   		   		  new Symbol.Table<Types.CLASS>();
+	   private static Symbol.SymbolTable<Types.CLASS> classEnv =
+	   		   		  new Symbol.SymbolTable<Types.CLASS>();
 	   private static Types.CLASS referToClass(String cname)
 	   {
 			Types.CLASS c = classEnv.get(cname);
 			if (c == null)
 			{
 				c = new Types.CLASS(cname);
-				c.instance = new Types.OBJECT(c, null, null);
+				c.instance = new Types.OBJECT(c);
 				classEnv.put(cname, c);
 			}
 			return c;
@@ -212,7 +212,7 @@ void ClassDecl(LinkedList<Absyn.ClassDecl> cl) :
 	LinkedList<Absyn.VarDecl> vl = new LinkedList<Absyn.VarDecl>();
 	LinkedList<Absyn.MethodDecl> ml = new LinkedList<Absyn.MethodDecl>();
 	Absyn.ClassDecl cd; 
-	Types.CLASS checktype;
+	Types.CLASS type;
 }
 {
 	"ClassDecl" "(" name = <ID> 
@@ -222,14 +222,14 @@ void ClassDecl(LinkedList<Absyn.ClassDecl> cl) :
 	       "AbstractList" "("
 	       (MethodDecl(ml))*
 	       ")"
-	checktype = ClassDescriptor()
+	type = ClassDescriptor()
 	")"
 	{
 		if (null == parent) parentName = null;
 		else parentName = parent.toString();
 		cd = new Absyn.ClassDecl(name.toString(), parentName, vl, ml);
 		cl.add(cd);
-		cd.checktype = checktype;
+		cd.type = type;
 	}
 }
 
@@ -240,7 +240,7 @@ void ThreadDecl(LinkedList<Absyn.ClassDecl> cl) :
 	LinkedList<Absyn.VarDecl> vl = new LinkedList<Absyn.VarDecl>();
 	LinkedList<Absyn.MethodDecl> ml = new LinkedList<Absyn.MethodDecl>();
 	Absyn.ThreadDecl td; 
-	Types.CLASS checktype;
+	Types.CLASS type;
 }
 {
 	"ThreadDecl" "(" name = <ID> "Thread"
@@ -249,12 +249,12 @@ void ThreadDecl(LinkedList<Absyn.ClassDecl> cl) :
 	       "AbstractList" "("
 		(MethodDecl(ml) | VoidDecl(ml) )*
 	       ")"
-	checktype = ClassDescriptor()
+	type = ClassDescriptor()
 	")"
 	{
 		td = new Absyn.ThreadDecl(name.toString(), vl, ml);
 		cl.add(td);
-		td.checktype = checktype;
+		td.type = type;
 	}
 }
 
@@ -275,7 +275,7 @@ void MethodDecl(LinkedList<Absyn.MethodDecl> ml) :
 	LinkedList<Absyn.VarDecl> locals  = new LinkedList<Absyn.VarDecl>();
 	LinkedList<Absyn.Stmt> stmts      = new LinkedList<Absyn.Stmt>();
 	Absyn.MethodDecl md = null;
-	Types.FUNCTION checktype;
+	Types.FUNCTION type;
 }
 {
 	"MethodDecl" "("
@@ -289,17 +289,17 @@ void MethodDecl(LinkedList<Absyn.MethodDecl> ml) :
 	     "AbstractList" "("	( stmt  = Stmt() { stmts.add(stmt); } )*
 	     ")"
 	     expr = Expr()
-         checktype = FunctionDescriptor()
+         type = FunctionDescriptor()
 	")"
 	{ 
 		md = new Absyn.MethodDecl(type, sync, name.toString(),
 								  params, locals, stmts, expr); 
 		ml.add(md);
-		md.checktype = checktype;
-		Types.RECORD r = checktype.formals;
+		md.type = type;
+		Types.RECORD r = type.formals;
 		for (Absyn.Formal f : params)
 		{
-			f.checktype = r.get(f.name).type;
+			f.type = r.get(f.name).type;
 		}
 	}
 }
@@ -314,7 +314,7 @@ void VoidDecl(LinkedList<Absyn.MethodDecl> ml) :
 	LinkedList<Absyn.Formal> params   = new LinkedList<Absyn.Formal>();
 	LinkedList<Absyn.VarDecl> locals  = new LinkedList<Absyn.VarDecl>();
 	LinkedList<Absyn.Stmt> stmts      = new LinkedList<Absyn.Stmt>();
-	Types.FUNCTION checktype;
+	Types.FUNCTION type;
 	Absyn.VoidDecl vd;
 }
 {
@@ -324,16 +324,16 @@ void VoidDecl(LinkedList<Absyn.MethodDecl> ml) :
 	     ")"
 	     "AbstractList" "("	( stmt  = Stmt() { stmts.add(stmt); } )*
 	     ")"
-         checktype = FunctionDescriptor()
+         type = FunctionDescriptor()
 	")"
 	{ 
 		vd = new Absyn.VoidDecl(name.toString(), locals, stmts);
 		ml.add(vd); 
-		vd.checktype = checktype;
-		Types.RECORD r = checktype.formals;
+		vd.type = type;
+		Types.RECORD r = type.formals;
 		for (Absyn.Formal f : params)
 		{
-			f.checktype = r.get(f.name).type;
+			f.type = r.get(f.name).type;
 		}
 	}
 }
@@ -358,19 +358,19 @@ void VarDecl(LinkedList<Absyn.VarDecl> vl) :
 	Absyn.Type type;
 	Token name;
 	Absyn.Expr init = null;
-	Types.Type checktype;
+	Types.Type type;
 	Absyn.VarDecl vd;
 }
 {
 	"VarDecl" "("
 	type = Type() name = <ID> 
 	("null" |  init = Expr() )
-	checktype = TypeDescriptor()
+	type = TypeDescriptor()
 	")"
 	{
 		vd = new Absyn.VarDecl(type, name.image, init);
 		vl.add(vd); 
-		vd.checktype = checktype;
+		vd.type = type;
 	}
 }
 
