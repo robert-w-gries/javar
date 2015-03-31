@@ -66,7 +66,7 @@ public class ReadTypes implements ReadTypesConstants {
         LinkedList<Absyn.VarDecl> vl = new LinkedList<Absyn.VarDecl>();
         LinkedList<Absyn.MethodDecl> ml = new LinkedList<Absyn.MethodDecl>();
         Absyn.ClassDecl cd;
-        Types.CLASS checktype;
+        Types.CLASS type;
     jj_consume_token(19);
     jj_consume_token(6);
     name = jj_consume_token(ID);
@@ -112,13 +112,13 @@ public class ReadTypes implements ReadTypesConstants {
       MethodDecl(ml);
     }
     jj_consume_token(7);
-    checktype = ClassDescriptor();
+    type = ClassDescriptor();
     jj_consume_token(7);
                 if (null == parent) parentName = null;
                 else parentName = parent.toString();
                 cd = new Absyn.ClassDecl(name.toString(), parentName, vl, ml);
                 cl.add(cd);
-                cd.type = checktype;
+                cd.type = type;
   }
 
 //ThreadDecl(String name, LinkedList<VarDecl> fields, LinkedList<MethodDecl> methods)
@@ -127,7 +127,7 @@ public class ReadTypes implements ReadTypesConstants {
         LinkedList<Absyn.VarDecl> vl = new LinkedList<Absyn.VarDecl>();
         LinkedList<Absyn.MethodDecl> ml = new LinkedList<Absyn.MethodDecl>();
         Absyn.ThreadDecl td;
-        Types.CLASS checktype;
+        Types.CLASS type;
     jj_consume_token(47);
     jj_consume_token(6);
     name = jj_consume_token(ID);
@@ -174,11 +174,11 @@ public class ReadTypes implements ReadTypesConstants {
       }
     }
     jj_consume_token(7);
-    checktype = ClassDescriptor();
+    type = ClassDescriptor();
     jj_consume_token(7);
                 td = new Absyn.ThreadDecl(name.toString(), vl, ml);
                 cl.add(td);
-                td.type = checktype;
+                td.type = type;
   }
 
 //MethodDecl(Type returnType, String name,
@@ -197,7 +197,7 @@ public class ReadTypes implements ReadTypesConstants {
         LinkedList<Absyn.VarDecl> locals  = new LinkedList<Absyn.VarDecl>();
         LinkedList<Absyn.Stmt> stmts      = new LinkedList<Absyn.Stmt>();
         Absyn.MethodDecl md = null;
-        Types.FUNCTION checktype;
+        Types.FUNCTION type;
     jj_consume_token(33);
     jj_consume_token(6);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -277,13 +277,13 @@ public class ReadTypes implements ReadTypesConstants {
     }
     jj_consume_token(7);
     expr = Expr();
-    checktype = FunctionDescriptor();
+    type = FunctionDescriptor();
     jj_consume_token(7);
                 md = new Absyn.MethodDecl(type, sync, name.toString(),
                                                                   params, locals, stmts, expr);
                 ml.add(md);
-                md.function = checktype;
-                Types.RECORD r = checktype.formals;
+                md.type = type;
+                Types.RECORD r = type.formals;
                 for (Absyn.Formal f : params)
                 {
                         f.type = r.get(f.name).type;
@@ -299,7 +299,7 @@ public class ReadTypes implements ReadTypesConstants {
         LinkedList<Absyn.Formal> params   = new LinkedList<Absyn.Formal>();
         LinkedList<Absyn.VarDecl> locals  = new LinkedList<Absyn.VarDecl>();
         LinkedList<Absyn.Stmt> stmts      = new LinkedList<Absyn.Stmt>();
-        Types.FUNCTION checktype;
+        Types.FUNCTION type;
         Absyn.VoidDecl vd;
     jj_consume_token(51);
     jj_consume_token(6);
@@ -339,15 +339,15 @@ public class ReadTypes implements ReadTypesConstants {
                                                    stmts.add(stmt);
     }
     jj_consume_token(7);
-    checktype = FunctionDescriptor();
+    type = FunctionDescriptor();
     jj_consume_token(7);
                 vd = new Absyn.VoidDecl(name.toString(), locals, stmts);
                 ml.add(vd);
-                vd.checktype = checktype;
-                Types.RECORD r = checktype.formals;
+                vd.type = type;
+                Types.RECORD r = type.formals;
                 for (Absyn.Formal f : params)
                 {
-                        f.checktype = r.get(f.name).type;
+                        f.type = r.get(f.name).type;
                 }
   }
 
@@ -369,7 +369,7 @@ public class ReadTypes implements ReadTypesConstants {
         Absyn.Type type;
         Token name;
         Absyn.Expr init = null;
-        Types.Type checktype;
+        Types.Type type;
         Absyn.VarDecl vd;
     jj_consume_token(50);
     jj_consume_token(6);
@@ -411,11 +411,11 @@ public class ReadTypes implements ReadTypesConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-    checktype = TypeDescriptor();
+    type = TypeDescriptor();
     jj_consume_token(7);
                 vd = new Absyn.VarDecl(type, name.image, init);
                 vl.add(vd);
-                vd.type = checktype;
+                vd.type = type;
   }
 
   static final public Absyn.Type Type() throws ParseException {
