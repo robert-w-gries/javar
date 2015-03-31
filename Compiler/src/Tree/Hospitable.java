@@ -1,5 +1,6 @@
 package Tree;
-public interface Hospitable{
+public interface Hospitable {
+
     abstract void accept(Tree.IntVisitor v, int d);
 
 }

@@ -1,5 +1,6 @@
 package Tree;
-public interface IntVisitor{
+public interface IntVisitor {
+
     abstract void visit(Tree.BINOP n, int d);
 
     abstract void visit(Tree.CALL n, int d);

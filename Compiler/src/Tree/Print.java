@@ -1,7 +1,11 @@
 package Tree;
-public class Print implements Tree.IntVisitor{
-    public Print(java.io.PrintWriter o, Tree.Stm s){
-         //TODO codavaj!!
+public class Print implements Tree.IntVisitor {
+
+    private java.io.PrintWriter writer;
+
+    public Print(java.io.PrintWriter o, Tree.Stm s) {
+        writer = o;
+        s.accept(this, 0); //TODO: check whether this is the correct way to Print
     }
 
     public void visit(Tree.BINOP e, int d){
