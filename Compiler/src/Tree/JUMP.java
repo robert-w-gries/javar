@@ -15,7 +15,7 @@ public class JUMP extends Tree.Stm {
     public JUMP(Temp.Label target) {
         targets = new java.util.LinkedList<Temp.Label>();
         targets.push(target);
-        exp = null;
+        exp = new NAME(target);
     }
 
     public void accept(Tree.IntVisitor v, int d) {
