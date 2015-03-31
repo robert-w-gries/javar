@@ -19,7 +19,7 @@ public class Ex extends Exp {
     }
 
     Tree.Stm unNx() {
-        return new Tree.EXP(exp);
+        return new Tree.EXP_STM(exp);
     }
 
     //TODO

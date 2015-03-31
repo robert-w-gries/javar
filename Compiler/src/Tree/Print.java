@@ -28,7 +28,7 @@ public class Print implements Tree.IntVisitor {
         return; //TODO codavaj!!
     }
 
-    public void visit(Tree.EXP s, int d){
+    public void visit(Tree.EXP_STM s, int d){
         return; //TODO codavaj!!
     }
 

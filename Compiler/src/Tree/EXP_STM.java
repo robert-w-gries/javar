@@ -2,11 +2,11 @@ package Tree;
 /**
  * Evaluates the expression and discards the result.
  */
-public class EXP extends Tree.Stm {
+public class EXP_STM extends Tree.Stm {
 
     public Tree.Exp exp;
 
-    public EXP(Tree.Exp e) {
+    public EXP_STM(Tree.Exp e) {
          exp = e;
     }
 

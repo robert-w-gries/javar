@@ -11,7 +11,7 @@ public interface IntVisitor {
 
     abstract void visit(Tree.ESEQ n, int d);
 
-    abstract void visit(Tree.EXP n, int d);
+    abstract void visit(Tree.EXP_STM n, int d);
 
     abstract void visit(Tree.JUMP n, int d);
 
