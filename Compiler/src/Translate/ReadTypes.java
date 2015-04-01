@@ -277,7 +277,7 @@ public class ReadTypes implements ReadTypesConstants {
     }
     jj_consume_token(7);
     expr = Expr();
-    type = FunctionDescriptor();
+    function = FunctionDescriptor();
     jj_consume_token(7);
                 md = new Absyn.MethodDecl(type, sync, name.toString(),
                                                                   params, locals, stmts, expr);
@@ -339,12 +339,12 @@ public class ReadTypes implements ReadTypesConstants {
                                                    stmts.add(stmt);
     }
     jj_consume_token(7);
-    type = FunctionDescriptor();
+    function = FunctionDescriptor();
     jj_consume_token(7);
                 vd = new Absyn.VoidDecl(name.toString(), locals, stmts);
                 ml.add(vd);
                 vd.function = function;
-                Types.RECORD r = type.formals;
+                Types.RECORD r = function.formals;
                 for (Absyn.Formal f : params)
                 {
                         f.checktype = r.get(f.name).type;
