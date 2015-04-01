@@ -1,5 +1,6 @@
 package Absyn;
 
+
 import Types.Type;
 
 /**
@@ -22,4 +23,7 @@ public class AddExpr extends BinOpExpr {
     public Type accept(TypeVisitor v) {
         return v.visit(this);
     }
+
+    //public Translate.Exp accept(Translate t) { return t.visit(this);}
+
 }
