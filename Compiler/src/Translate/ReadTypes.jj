@@ -330,7 +330,7 @@ void VoidDecl(LinkedList<Absyn.MethodDecl> ml) :
 		vd = new Absyn.VoidDecl(name.toString(), locals, stmts);
 		ml.add(vd); 
 		vd.function = function;
-		Types.RECORD r = type.formals;
+		Types.RECORD r = function.formals;
 		for (Absyn.Formal f : params)
 		{
 			f.checktype = r.get(f.name).type;
