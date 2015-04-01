@@ -18,8 +18,8 @@ public class JUMP extends Tree.Stm {
         exp = new NAME(target);
     }
 
-    public void accept(Tree.IntVisitor v, int d) {
-        v.visit(this, d);
+    public void accept(Tree.IntVisitor v) {
+        v.visit(this);
     }
 
 }

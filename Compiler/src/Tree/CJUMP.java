@@ -4,25 +4,22 @@ package Tree;
  */
 public class CJUMP extends Tree.Stm {
 
-    public static final int EQ=0;
-    public static final int NE=1;
-    public static final int LT=2;
-    public static final int GT=3;
-    public static final int LE=4;
-    public static final int GE=5;
-    public static final int ULT=6;
-    public static final int ULE=7;
-    public static final int UGT=8;
-    public static final int UGE=9;
+    public static enum RelOperation {
+        EQ, NE,
+        LT, GT,
+        LE, GE,
+        ULT, ULE,
+        UGT, UGE
+    }
 
     public Temp.Label iffalse;
     public Temp.Label iftrue;
 
     public Tree.Exp left;
-    public int relop;
+    public RelOperation relop;
     public Tree.Exp right;
 
-    public CJUMP(int rel, Tree.Exp l, Tree.Exp r, Temp.Label t, Temp.Label f) {
+    public CJUMP(RelOperation rel, Tree.Exp l, Tree.Exp r, Temp.Label t, Temp.Label f) {
 
         iftrue = t;
         iffalse = f;
@@ -33,8 +30,8 @@ public class CJUMP extends Tree.Stm {
 
     }
 
-    public void accept(Tree.IntVisitor v, int d) {
-        v.visit(this, d);
+    public void accept(Tree.IntVisitor v) {
+        v.visit(this);
     }
 
     public static int notRel(int relop){
