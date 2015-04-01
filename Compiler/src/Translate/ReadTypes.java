@@ -197,7 +197,7 @@ public class ReadTypes implements ReadTypesConstants {
         LinkedList<Absyn.VarDecl> locals  = new LinkedList<Absyn.VarDecl>();
         LinkedList<Absyn.Stmt> stmts      = new LinkedList<Absyn.Stmt>();
         Absyn.MethodDecl md = null;
-        Types.FUNCTION type;
+        Types.FUNCTION function;
     jj_consume_token(33);
     jj_consume_token(6);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -277,16 +277,16 @@ public class ReadTypes implements ReadTypesConstants {
     }
     jj_consume_token(7);
     expr = Expr();
-    type = FunctionDescriptor();
+    function = FunctionDescriptor();
     jj_consume_token(7);
                 md = new Absyn.MethodDecl(type, sync, name.toString(),
                                                                   params, locals, stmts, expr);
                 ml.add(md);
-                md.type = type;
-                Types.RECORD r = type.formals;
+                md.function = function;
+                Types.RECORD r = function.formals;
                 for (Absyn.Formal f : params)
                 {
-                        f.type = r.get(f.name).type;
+                    f.checktype = r.get(f.name).type;
                 }
   }
 
@@ -343,11 +343,11 @@ public class ReadTypes implements ReadTypesConstants {
     jj_consume_token(7);
                 vd = new Absyn.VoidDecl(name.toString(), locals, stmts);
                 ml.add(vd);
-                vd.type = type;
+                vd.function = type;
                 Types.RECORD r = type.formals;
                 for (Absyn.Formal f : params)
                 {
-                        f.type = r.get(f.name).type;
+                        f.checktype = r.get(f.name).type;
                 }
   }
 
@@ -369,7 +369,7 @@ public class ReadTypes implements ReadTypesConstants {
         Absyn.Type type;
         Token name;
         Absyn.Expr init = null;
-        Types.Type type;
+        Types.Type checktype;
         Absyn.VarDecl vd;
     jj_consume_token(50);
     jj_consume_token(6);
@@ -411,11 +411,11 @@ public class ReadTypes implements ReadTypesConstants {
       jj_consume_token(-1);
       throw new ParseException();
     }
-    type = TypeDescriptor();
+    checktype = TypeDescriptor();
     jj_consume_token(7);
                 vd = new Absyn.VarDecl(type, name.image, init);
                 vl.add(vd);
-                vd.type = type;
+                vd.semantType = checktype;
   }
 
   static final public Absyn.Type Type() throws ParseException {
@@ -911,7 +911,7 @@ public class ReadTypes implements ReadTypesConstants {
     index = jj_consume_token(INT);
     jj_consume_token(7);
           Absyn.CallExpr ce = new Absyn.CallExpr(target, method.image, args);
-          ce.typeIndex = new Integer(index.toString());
+          ce.id = new Integer(index.toString());
           {if (true) return ce;}
     throw new Error("Missing return statement in function");
   }
@@ -935,7 +935,7 @@ public class ReadTypes implements ReadTypesConstants {
     index = jj_consume_token(INT);
     jj_consume_token(7);
                 Absyn.FieldExpr fe = new Absyn.FieldExpr(target, field.image);
-                fe.typeIndex = new Integer(index.toString());
+                fe.id = new Integer(index.toString());
                 {if (true) return fe;}
     throw new Error("Missing return statement in function");
   }
@@ -1298,7 +1298,7 @@ public class ReadTypes implements ReadTypesConstants {
     formals = RecordDescriptor();
     result = TypeDescriptor();
     jj_consume_token(7);
-                {if (true) return new Types.FUNCTION(name.toString(), self, formals, result);}
+                {if (true) return new Types.FUNCTION(name.toString(), (Types.OBJECT)self, formals, result);}
     throw new Error("Missing return statement in function");
   }
 

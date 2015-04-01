@@ -275,7 +275,7 @@ void MethodDecl(LinkedList<Absyn.MethodDecl> ml) :
 	LinkedList<Absyn.VarDecl> locals  = new LinkedList<Absyn.VarDecl>();
 	LinkedList<Absyn.Stmt> stmts      = new LinkedList<Absyn.Stmt>();
 	Absyn.MethodDecl md = null;
-	Types.FUNCTION type;
+	Types.FUNCTION function;
 }
 {
 	"MethodDecl" "("
@@ -295,11 +295,11 @@ void MethodDecl(LinkedList<Absyn.MethodDecl> ml) :
 		md = new Absyn.MethodDecl(type, sync, name.toString(),
 								  params, locals, stmts, expr); 
 		ml.add(md);
-		md.type = type;
-		Types.RECORD r = type.formals;
+		md.function = function;
+		Types.RECORD r = function.formals;
 		for (Absyn.Formal f : params)
 		{
-			f.type = r.get(f.name).type;
+			f.checktype = r.get(f.name).type;
 		}
 	}
 }
@@ -314,7 +314,7 @@ void VoidDecl(LinkedList<Absyn.MethodDecl> ml) :
 	LinkedList<Absyn.Formal> params   = new LinkedList<Absyn.Formal>();
 	LinkedList<Absyn.VarDecl> locals  = new LinkedList<Absyn.VarDecl>();
 	LinkedList<Absyn.Stmt> stmts      = new LinkedList<Absyn.Stmt>();
-	Types.FUNCTION type;
+	Types.FUNCTION function;
 	Absyn.VoidDecl vd;
 }
 {
@@ -329,11 +329,11 @@ void VoidDecl(LinkedList<Absyn.MethodDecl> ml) :
 	{ 
 		vd = new Absyn.VoidDecl(name.toString(), locals, stmts);
 		ml.add(vd); 
-		vd.type = type;
+		vd.function = function;
 		Types.RECORD r = type.formals;
 		for (Absyn.Formal f : params)
 		{
-			f.type = r.get(f.name).type;
+			f.checktype = r.get(f.name).type;
 		}
 	}
 }
@@ -358,19 +358,19 @@ void VarDecl(LinkedList<Absyn.VarDecl> vl) :
 	Absyn.Type type;
 	Token name;
 	Absyn.Expr init = null;
-	Types.Type type;
+	Types.Type checktype;
 	Absyn.VarDecl vd;
 }
 {
 	"VarDecl" "("
 	type = Type() name = <ID> 
 	("null" |  init = Expr() )
-	type = TypeDescriptor()
+	checktype = TypeDescriptor()
 	")"
 	{
 		vd = new Absyn.VarDecl(type, name.image, init);
 		vl.add(vd); 
-		vd.type = type;
+		vd.semantType = checktype;
 	}
 }
 
@@ -702,7 +702,7 @@ Absyn.CallExpr CallExpr() :
 	")"
 	{ 
 	  Absyn.CallExpr ce = new Absyn.CallExpr(target, method.image, args);
-	  ce.typeIndex = new Integer(index.toString());
+	  ce.id = new Integer(index.toString());
 	  return ce;
 	}
 }
@@ -730,7 +730,7 @@ Absyn.FieldExpr FieldExpr() :
 	")"
 	{
 		Absyn.FieldExpr fe = new Absyn.FieldExpr(target, field.image);
-		fe.typeIndex = new Integer(index.toString());
+		fe.id = new Integer(index.toString());
 		return fe;
 	}
 }
@@ -963,7 +963,7 @@ Types.FUNCTION FunctionDescriptor() :
 	result  = TypeDescriptor()
 	")"
 	{
-		return new Types.FUNCTION(name.toString(), self, formals, result);
+		return new Types.FUNCTION(name.toString(), (Types.OBJECT)self, formals, result);
 	}
 }
 

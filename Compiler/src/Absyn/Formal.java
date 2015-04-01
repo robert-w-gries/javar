@@ -6,6 +6,7 @@ package Absyn;
 public class Formal extends Absyn{
     public Type type;
     public String name;
+    public Types.Type checktype;
 
     public Formal(Type type, java.lang.String name){
         this.type = type;
