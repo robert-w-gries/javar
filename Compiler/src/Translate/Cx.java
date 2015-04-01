@@ -1,5 +1,8 @@
 package Translate;
 
+import Tree.LABEL;
+import Tree.SEQ;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jchitel
@@ -26,9 +29,13 @@ public abstract class Cx extends Exp {
 
     }
 
-    //TODO
+    //TODO: figure out if this is the correct way to do it
     Tree.Stm unNx() {
-        return null;
+
+        Temp.Label join = new Temp.Label();
+
+        return new SEQ(unCx(join, join), new LABEL(join));
+
     }
 
     abstract Tree.Stm unCx(Temp.Label t, Temp.Label f);
