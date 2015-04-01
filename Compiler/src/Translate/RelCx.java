@@ -8,13 +8,19 @@ package Translate;
  */
 public class RelCx extends Cx {
 
-    Exp left, right;
-    Temp.Label t = new Temp.Label();
-    Temp.Label f = new Temp.Label();
+    Tree.CJUMP.RelOperation op;
+    Tree.Exp left, right;
 
-    //TODO
+    public RelCx(Tree.CJUMP.RelOperation op,  Tree.Exp left, Tree.Exp right) {
+
+        this.op = op;
+        this.left = left;
+        this.right = right;
+
+    }
+
     Tree.Stm unCx(Temp.Label tt, Temp.Label ff) {
-        return null;
+        return new Tree.CJUMP(op, left, right, tt, ff);
     }
 
 }

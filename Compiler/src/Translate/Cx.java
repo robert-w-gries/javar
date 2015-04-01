@@ -16,12 +16,12 @@ public abstract class Cx extends Exp {
 
         return new Tree.ESEQ(
                 new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r),
-                        new Tree.CONST(1)),
+                                            new Tree.CONST(1)),
                         new Tree.SEQ(unCx(t,f),
                                 new Tree.SEQ(new Tree.LABEL(f),
                                         new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r),
-                                                new Tree.CONST(0)),
-                                                new Tree.LABEL(t))))),
+                                                                    new Tree.CONST(0)),
+                                                    new Tree.LABEL(t))))),
                 new Tree.TEMP(r));
 
     }

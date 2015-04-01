@@ -1,5 +1,8 @@
 package Translate;
 
+import Tree.CJUMP;
+import Tree.CONST;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jchitel
@@ -22,9 +25,8 @@ public class Ex extends Exp {
         return new Tree.EXP_STM(exp);
     }
 
-    //TODO
     Tree.Stm unCx(Temp.Label t, Temp.Label f) {
-        return null;
+            return new CJUMP(Tree.CJUMP.RelOperation.NE, exp, new CONST(0), t, f);
     }
 
 }
