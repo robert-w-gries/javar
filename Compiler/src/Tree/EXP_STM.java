@@ -10,8 +10,8 @@ public class EXP_STM extends Tree.Stm {
          exp = e;
     }
 
-    public void accept(Tree.IntVisitor v, int d) {
-        v.visit(this, d);
+    public void accept(Tree.IntVisitor v) {
+        v.visit(this);
     }
 
 }

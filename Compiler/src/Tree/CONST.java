@@ -10,8 +10,8 @@ public class CONST extends Tree.Exp {
         value = v;
     }
 
-    public void accept(Tree.IntVisitor v, int d) {
-        v.visit(this, d);
+    public void accept(Tree.IntVisitor v) {
+        v.visit(this);
     }
 
 }

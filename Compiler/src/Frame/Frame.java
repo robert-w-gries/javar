@@ -1,5 +1,7 @@
 package Frame;
 
+import java.util.LinkedList;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jchitel
@@ -7,4 +9,22 @@ package Frame;
  * Time: 11:14 PM
  */
 public abstract class Frame {
+
+    public Temp.Label name;
+    public LinkedList<Access> formals;
+    public LinkedList<Access> actuals;
+
+    abstract public Temp.Temp FP();
+    abstract public int wordSize();
+    abstract public Access allocFormal();
+    abstract public Access allocLocal();
+
+    public Temp.Label badPtr() {
+        return new Temp.Label("_BADPTR");
+    }
+
+    public Temp.Label badSub() {
+        return new Temp.Label("_BADSUB");
+    }
+
 }

@@ -10,8 +10,8 @@ public class TEMP extends Tree.Exp {
         temp = t;
     }
 
-    public void accept(Tree.IntVisitor v, int d) {
-        v.visit(this, d);
+    public void accept(Tree.IntVisitor v) {
+        v.visit(this);
     }
 
 }

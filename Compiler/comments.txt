@@ -1,6 +1,17 @@
 THINGS THAT NEED TO BE ADDRESSED
 --------------------------------
 
+In Translate, basically everything. Start with program and get a basic testcase to work and build
+up from there.
+
+The symbol table will need to be touched to add temp vars to it.
+
+All the things.
+
+
+
+
+------------------------------------------LAST PROJECT ?
 - Implement symbol table
     - Maps identifiers (strings) to Types
     - should implement the methods the Brylow told us to make

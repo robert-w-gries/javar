@@ -8,6 +8,6 @@ public abstract class Stm implements Tree.Hospitable {
 
     }
 
-    public abstract void accept(Tree.IntVisitor v, int d);
+    public abstract void accept(Tree.IntVisitor v);
 
 }
