@@ -4,50 +4,54 @@
 package Translate;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.*;
-//import Semant.*;
 import Absyn.Program;
-import Parse.*;
-import Parse.ParseException;
-import Semant.*;
-//import Translate.Translate;
+import Mips.MipsFrame;
+import Parse.MiniJavaParser;
+import Semant.ReadAbsyn;
+import Semant.TypeChecker;
+import Tree.Print;
 
 public class Main {
 
 	private static final String PARSE_FLAG = "--parse", CHECK_FLAG = "--check";
 
-	public static void main(String[] args) throws IOException, Parse.ParseException, Semant.ParseException {
+	public static void main(String[] args) throws IOException, Parse.ParseException, Semant.ParseException, ParseException {
 		String file = null;
 		boolean parse = false, check = false;
 
 		for (String arg : args) {
 			if (arg.equals(PARSE_FLAG)) parse = true;
 			else if (arg.equals(CHECK_FLAG)) check = true;
-			else if (file == null) file = arg;
-			else printUsageAndExit();
+			else if (file == null) file = arg; // if file hasn't been set yet, set it
+			else printUsageAndExit(); // multiple files were entered
 		}
 
-		if (file == null) printUsageAndExit();
+		if (file == null) printUsageAndExit(); // no file was entered
 
 		assert file != null; // this is to get rid of warning in intellij
 		FileReader reader = new FileReader(file);
 		Program program;
 
-		if (parse) {
+		if (parse) { // if parse flag was used, we parse and check
 			new MiniJavaParser(reader);
-			program = MiniJavaParser.Goal();
-		} else {
+			program = MiniJavaParser.Goal(); // parse MiniJava source file
+			new TypeChecker().visit(program); // type check syntax tree, add type info
+		} else if (check) { // if only the check flag was used, we only check
 			new ReadAbsyn(reader);
-			program = ReadAbsyn.Program();
+			program = ReadAbsyn.Program(); // parse syntax tree file
+			new TypeChecker().visit(program); // type check syntax tree, add type info
+		} else { // if no flag was used, we use ReadTypes to parse syntax tree w/ type info
+			new ReadTypes(reader);
+			program = ReadTypes.Program(); // parse syntax tree file with type info
 		}
 
-		// run program through the type checker
-		TypeChecker typeChecker = new TypeChecker();
-		typeChecker.visit(program);
+		// run program through translator
+		MipsFrame frame = new MipsFrame();
+		Translate translate = new Translate(frame);
+		translate.visit(program);
 
 		// print the program back out
-		PrintVisitor visitor = new PrintVisitor();
+		Tree.Print visitor = new Print();
 		visitor.visit(program);
 	}
 

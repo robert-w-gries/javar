@@ -8,12 +8,14 @@ package Temp;
  */
 public class Temp {
 
-    private static int regCount = 0;
+    private static int regCount = 32;
     private int regIndex;
 
     public Temp() {
         regIndex = regCount++;
     }
+
+    public Temp(int reg) { regIndex = reg; }
 
     public String toString() {
         return "t" + Integer.toString(this.regIndex);

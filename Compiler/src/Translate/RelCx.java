@@ -19,7 +19,7 @@ public class RelCx extends Cx {
 
     }
 
-    Tree.Stm unCx(Temp.Label tt, Temp.Label ff) {
+    public Tree.Stm unCx(Temp.Label tt, Temp.Label ff) {
         return new Tree.CJUMP(op, left, right, tt, ff);
     }
 

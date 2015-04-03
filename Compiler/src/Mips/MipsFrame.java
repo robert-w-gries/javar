@@ -14,9 +14,10 @@ import java.util.LinkedList;
 public class MipsFrame extends Frame {
 
     private Temp.Temp framePointer;
+    private int argIndex = 0;
 
     public MipsFrame() {
-        framePointer = new Temp.Temp();
+        framePointer = new Temp.Temp(30);
         name = new Temp.Label();
         formals = new LinkedList<Access>();
         actuals = new LinkedList<Access>();
@@ -35,16 +36,31 @@ public class MipsFrame extends Frame {
     }
 
     public Access allocFormal() {
+        // add a formal
+        InReg formal = new InReg(new Temp.Temp()); // formals are always temp registers
+        formals.add(formal);
 
-        //TODO
-        return new InReg();
+        // add an actual
+        // there are only 4 "a" registers
+        if (argIndex < 4) {
+            // "a" registers start at $4
+            int tempIndex = (argIndex++) + 4;
+            actuals.add(new InReg(new Temp.Temp(tempIndex)));
+        } else {
+            // otherwise we need to allocate space on the stack for remaining args
+            // TODO figure out what the frame offset is supposed to be
+            int frameOffset = 0;
+            actuals.add(new InFrame(frameOffset));
+        }
 
+        // translation only cares about the formal, not the actual
+        return formal;
     }
 
     public Access allocLocal() {
 
         //TODO
-        return new InReg();
+        return new InReg(new Temp.Temp());
 
     }
 
