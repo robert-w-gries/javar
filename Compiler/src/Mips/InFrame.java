@@ -1,5 +1,7 @@
 package Mips;
 
+import Tree.CONST;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jchitel
@@ -15,10 +17,7 @@ public class InFrame extends Frame.Access {
     }
 
     public Tree.Exp exp(Tree.Exp framePtr) {
-
-        //TODO
-        return null;
-
+        return new Tree.MEM(new Tree.BINOP(Tree.BINOP.Operation.PLUS, framePtr, new CONST(offset)));
     }
 
 }

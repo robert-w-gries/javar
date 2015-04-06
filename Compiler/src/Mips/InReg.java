@@ -1,5 +1,7 @@
 package Mips;
 
+import Tree.TEMP;
+
 /**
  * Created with IntelliJ IDEA.
  * User: jchitel
@@ -15,10 +17,11 @@ public class InReg extends Frame.Access {
     }
 
     public Tree.Exp exp(Tree.Exp framePtr) {
+        return new Tree.TEMP(reg);
+    }
 
-        //TODO
-        return null;
-
+    public String toString(){
+        return "InReg(" + reg.toString() + ")";
     }
 
 }

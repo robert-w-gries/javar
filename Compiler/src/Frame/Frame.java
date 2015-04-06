@@ -19,12 +19,4 @@ public abstract class Frame {
     abstract public Access allocFormal();
     abstract public Access allocLocal();
 
-    public Temp.Label badPtr() {
-        return new Temp.Label("_BADPTR");
-    }
-
-    public Temp.Label badSub() {
-        return new Temp.Label("_BADSUB");
-    }
-
 }
