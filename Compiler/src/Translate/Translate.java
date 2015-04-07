@@ -43,15 +43,17 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.PLUS, l, r));
     }
 
-    // TODO jake
+    // TODO AndExpr jake
     public Exp visit(AndExpr ast){
         return null;
     }
 
+    // TODO ArrayExpr
     public Exp visit(ArrayExpr ast){
         return null;
     }
 
+    // TODO AssignStmt Luke
     public Exp visit(AssignStmt ast){
         //return new Nx(new Tree.MOVE(accesses.get(ast.leftExpr.toString()).exp().unEx(), ast.accept(this).unEx());
         return null;
@@ -74,6 +76,7 @@ public class Translate{
         return null;
     }
 
+    // TODO CallExpr
     public Exp visit(CallExpr ast){
         return null;
     }
@@ -101,11 +104,8 @@ public class Translate{
         return new Ex(new Tree.CONST(0));
     }
 
+    // TODO FieldExpr
     public Exp visit(FieldExpr ast){
-        return null;
-    }
-
-    public Exp visit(Formal ast){
         return null;
     }
 
@@ -113,11 +113,8 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.GT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
+    // TODO IdentifierExpr
     public Exp visit(IdentifierExpr ast){
-        return null;
-    }
-
-    public Exp visit(IdentifierType ast){
         return null;
     }
 
@@ -147,6 +144,7 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.LT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
+    // TODO MethodDecl
     public Exp visit(MethodDecl ast){
         MipsFrame frame = new MipsFrame();
         frame.name = new Temp.Label(ast.name); // TODO classname.methodname, except for main
@@ -177,10 +175,12 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.MINUS, new Tree.CONST(0), r));
     }
 
+    // TODO NewArrayExpr
     public Exp visit(NewArrayExpr ast){
         return null;
     }
 
+    // TODO NewObjectExpr
     public Exp visit(NewObjectExpr ast){
         return null;
     }
@@ -247,6 +247,7 @@ public class Translate{
         return new Ex(new Tree.CONST(1));
     }
 
+    // TODO VarDecl
     public Exp visit(VarDecl ast){
         return null;
     }
@@ -277,10 +278,12 @@ public class Translate{
         return new Nx(new Tree.SEQ(new Tree.SEQ(while_check, loop), new Tree.LABEL(loop_done)));
     }
 
+    // TODO XinuCallExpr
     public Exp visit(XinuCallExpr ast){
         return null;
     }
 
+    // TODO XinuCallStmt
     public Exp visit(XinuCallStmt ast){
         return null;
     }
