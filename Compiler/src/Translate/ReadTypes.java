@@ -3,7 +3,7 @@ package Translate;
 import java.util.LinkedList;
 public class ReadTypes implements ReadTypesConstants {
 
-           private static Symbol.SymbolTable<Types.CLASS> classEnv =
+           public static Symbol.SymbolTable<Types.CLASS> classEnv =
                                           new Symbol.SymbolTable<Types.CLASS>();
            private static Types.CLASS referToClass(String cname)
            {
