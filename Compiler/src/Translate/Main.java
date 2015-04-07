@@ -4,6 +4,8 @@
 package Translate;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
+
 import Absyn.Program;
 import Mips.MipsFrame;
 import Parse.MiniJavaParser;
@@ -51,8 +53,21 @@ public class Main {
 		translate.visit(program);
 
 		// print the program back out
-		Tree.Print visitor = new Print();
-		visitor.visit(program);
+		PrintWriter writer = new PrintWriter(System.out);
+		for (Frag frag : translate.results()) {
+			if (frag instanceof DataFrag) {
+				writer.println("DataFrag(");
+				writer.println(frag);
+				writer.println(")");
+			} else {
+				writer.println("ProcFrag(");
+				ProcFrag proc = (ProcFrag)frag;
+				((MipsFrame)proc.frame).printFrame(writer);
+				new Print(writer, proc.body);
+				writer.println();
+				writer.println(")");
+			}
+		}
 	}
 
 	private static void printUsageAndExit() {

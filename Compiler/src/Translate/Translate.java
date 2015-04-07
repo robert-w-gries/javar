@@ -43,14 +43,44 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.PLUS, l, r));
     }
 
-    // TODO AndExpr jake
+    // TODO AndExpr rob
     public Exp visit(AndExpr ast){
         return null;
     }
 
-    // TODO ArrayExpr
     public Exp visit(ArrayExpr ast){
-        return null;
+        // get array address
+        Tree.TEMP array = new Tree.TEMP(new Temp.Temp());
+        Tree.MOVE move_array = new Tree.MOVE(array, ast.targetExpr.accept(this).unEx());
+
+        // get index value
+        Tree.TEMP index = new Tree.TEMP(new Temp.Temp());
+        Tree.MOVE move_index = new Tree.MOVE(index, ast.index.accept(this).unEx());
+
+        // labels for null and OOB checks
+        Label nullCheck = new Label(), lowOobCheck = new Label(), highOobCheck = new Label();
+        Label nullLabel = new Label("_BADPTR"), oobLabel = new Label("_BADSUB");
+
+        // jumps for null and OOB checks
+        Tree.CJUMP nullJump = new CJUMP(CJUMP.RelOperation.EQ, array, new Tree.CONST(0), nullLabel, nullCheck);
+        Tree.CJUMP lowOobJump = new CJUMP(CJUMP.RelOperation.LT, index, new Tree.CONST(0), oobLabel, lowOobCheck);
+        Tree.MEM arrayLength = new Tree.MEM(new Tree.BINOP(Tree.BINOP.Operation.PLUS, array, new Tree.CONST(-4)));
+        Tree.CJUMP highOobJump = new CJUMP(CJUMP.RelOperation.GE, index, arrayLength, oobLabel, highOobCheck);
+
+        // assemble sequence that gets the array and index and performs checks
+        Tree.SEQ getAndCheck =
+                new Tree.SEQ(move_array,
+                new Tree.SEQ(move_index,
+                new Tree.SEQ(nullJump,
+                new Tree.SEQ(new Tree.LABEL(nullCheck),
+                new Tree.SEQ(lowOobJump,
+                new Tree.SEQ(new Tree.LABEL(lowOobCheck),
+                             highOobJump))))));
+
+        // assemble result expression
+        Tree.MEM arraySubscript = new Tree.MEM(new Tree.BINOP(BINOP.Operation.PLUS,
+                array, new Tree.BINOP(BINOP.Operation.MUL, index, new Tree.CONST(frame.wordSize()))));
+        return new Ex(new Tree.ESEQ(new Tree.LABEL(highOobCheck), arraySubscript));
     }
 
     public Exp visit(AssignStmt ast){
@@ -112,7 +142,7 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.GT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO IdentifierExpr
+    // TODO IdentifierExpr jake
     public Exp visit(IdentifierExpr ast){
         return null;
     }
@@ -143,7 +173,7 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.LT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO MethodDecl
+    // TODO MethodDecl jake
     public Exp visit(MethodDecl ast){
         MipsFrame frame = new MipsFrame();
         frame.name = new Temp.Label(ast.name); // TODO classname.methodname, except for main
@@ -174,12 +204,15 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.MINUS, new Tree.CONST(0), r));
     }
 
-    // TODO NewArrayExpr
     public Exp visit(NewArrayExpr ast){
-        return null;
+        Tree.TEMP size = new Tree.TEMP(new Temp.Temp());
+        // only need first dimension because you can only init one dimension at a time
+        Tree.MOVE move_size = new Tree.MOVE(size, ast.dimensions.get(0).accept(this).unEx());
+        Tree.CALL call_new = new Tree.CALL(new Tree.NAME(new Label("_new")), size, size);
+        return new Ex(new Tree.ESEQ(move_size, call_new));
     }
 
-    // TODO NewObjectExpr
+    // TODO NewObjectExpr jake
     public Exp visit(NewObjectExpr ast){
         return null;
     }
@@ -188,7 +221,7 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.NE, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO jake
+    // TODO rob
     public Exp visit(NotExpr ast){
         return null;
     }
@@ -197,7 +230,7 @@ public class Translate{
         return new Ex(new Tree.CONST(0));
     }
 
-    // TODO jake
+    // TODO rob
     public Exp visit(OrExpr ast){
         return null;
     }
@@ -246,7 +279,7 @@ public class Translate{
         return new Ex(new Tree.CONST(1));
     }
 
-    // TODO VarDecl
+    // TODO VarDecl jake
     public Exp visit(VarDecl ast){
         return null;
     }
@@ -277,12 +310,12 @@ public class Translate{
         return new Nx(new Tree.SEQ(new Tree.SEQ(while_check, loop), new Tree.LABEL(loop_done)));
     }
 
-    // TODO XinuCallExpr
+    // TODO XinuCallExpr jake
     public Exp visit(XinuCallExpr ast){
         return null;
     }
 
-    // TODO XinuCallStmt
+    // TODO XinuCallStmt jake
     public Exp visit(XinuCallStmt ast){
         return null;
     }

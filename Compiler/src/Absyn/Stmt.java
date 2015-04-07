@@ -13,4 +13,5 @@ public abstract class Stmt extends Absyn{
      */
     public abstract void accept(Visitor v);
 
+    public abstract Translate.Exp accept(Translate.Translate t);
 }

@@ -14,6 +14,4 @@ public abstract class Absyn implements Visitable {
      */
     public abstract void accept(Visitor v);
 
-    public Exp accept(Translate t) { return t.visit(this);}
-
 }
