@@ -38,7 +38,7 @@ public class Main {
 		if (parse) { // if parse flag was used, we parse and check
 			new MiniJavaParser(reader);
 			program = MiniJavaParser.Goal(); // parse MiniJava source file
-			new TypeChecker().visit(program); // type check syntax tree, add type info
+			typeChecker.visit(program); // type check syntax tree, add type info
 		} else if (check) { // if only the check flag was used, we only check
 			new ReadAbsyn(reader);
 			program = ReadAbsyn.Program(); // parse syntax tree file
