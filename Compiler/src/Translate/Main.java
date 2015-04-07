@@ -33,6 +33,7 @@ public class Main {
 		assert file != null; // this is to get rid of warning in intellij
 		FileReader reader = new FileReader(file);
 		Program program;
+		TypeChecker typeChecker = new TypeChecker();
 
 		if (parse) { // if parse flag was used, we parse and check
 			new MiniJavaParser(reader);
@@ -41,15 +42,14 @@ public class Main {
 		} else if (check) { // if only the check flag was used, we only check
 			new ReadAbsyn(reader);
 			program = ReadAbsyn.Program(); // parse syntax tree file
-			new TypeChecker().visit(program); // type check syntax tree, add type info
+			typeChecker.visit(program); // type check syntax tree, add type info
 		} else { // if no flag was used, we use ReadTypes to parse syntax tree w/ type info
 			new ReadTypes(reader);
 			program = ReadTypes.Program(); // parse syntax tree file with type info
 		}
 
 		// run program through translator
-		MipsFrame frame = new MipsFrame();
-		Translate translate = new Translate(frame);
+		Translate translate = new Translate(typeChecker);
 		translate.visit(program);
 
 		// print the program back out
