@@ -4,9 +4,7 @@ package Absyn;
  * The "null" expression.
  */
 public class NullExpr extends Expr {
-    public NullExpr() {
-        //TODO codavaj!!
-    }
+    public NullExpr() {}
 
     /**
      * Visitor pattern dispatch.

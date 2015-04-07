@@ -103,7 +103,6 @@ public class LinkUtils extends AbstractLogger {
             link = link.substring(2);
         }
 
-        // TODO - strip directories back off url for ../
 
         /*
         info( "rooturl          :" + rootUrl );

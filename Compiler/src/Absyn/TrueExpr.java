@@ -3,9 +3,7 @@ package Absyn;
  * Boolean TRUE
  */
 public class TrueExpr extends Expr{
-    public TrueExpr(){
-         //TODO codavaj!!
-    }
+    public TrueExpr(){}
 
     /**
      * Visitor pattern dispatch.

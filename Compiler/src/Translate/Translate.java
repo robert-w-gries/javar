@@ -241,9 +241,25 @@ public class Translate{
         return null;
     }
 
-    // TODO jake
     public Exp visit(WhileStmt ast){
-        return null;
+        // SEQ(
+        //  SEQ(
+        //   SEQ(
+        //    jump_back
+        //    test.unCx(loop_start, loop_done))
+        //   SEQ(
+        //    SEQ(
+        //     loop_start
+        //     while_stmt
+        //    JUMP(jump_back)))
+        //  LABEL(loop done)))
+
+        Label loop_start = new Label(), jump_back = new Label(), loop_done = new Label();
+
+        Tree.SEQ loop = new Tree.SEQ(new Tree.SEQ(new Tree.LABEL(loop_start), ast.body.accept(this).unNx()), new Tree.LABEL(jump_back));
+        Tree.SEQ while_check = new Tree.SEQ(new Tree.LABEL(jump_back), ast.test.accept(this).unCx(loop_start, loop_done));
+
+        return new Nx(new Tree.SEQ(new Tree.SEQ(while_check, loop), new Tree.LABEL(loop_done)));
     }
 
     public Exp visit(XinuCallExpr ast){

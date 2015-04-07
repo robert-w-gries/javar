@@ -37,7 +37,7 @@ public class ProgressEvent {
      * Creates a new ProgressEvent object.
      *
      * @param done DOCUMENT ME!
-     * @param todo DOCUMENT ME!
+     * @param todt DOCUMENT ME!
      * @param message DOCUMENT ME!
      */
     public ProgressEvent(int done, int todo, String message) {
