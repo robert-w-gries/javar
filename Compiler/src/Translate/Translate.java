@@ -6,6 +6,7 @@ import Mips.MipsFrame;
 import Symbol.SymbolTable;
 import Temp.Label;
 import Tree.BINOP;
+import Tree.CJUMP;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class Translate{
     private Mips.MipsFrame frame;
     private List<Frag> frags;
     private SymbolTable<Access> accesses;
+    private ClassDecl currentClass;
 
     public Translate(Mips.MipsFrame frame) {
         this.frame = frame;
@@ -40,6 +42,7 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.PLUS, l, r));
     }
 
+    // TODO jake
     public Exp visit(AndExpr ast){
         return null;
     }
@@ -61,6 +64,7 @@ public class Translate{
     }
 
     public Exp visit(ClassDecl ast){
+        currentClass = ast;
         // visit each method, creating a ProcFrag and any needed DataFrags for each
         for (MethodDecl meth : ast.methods) {
             meth.accept(this);
@@ -75,11 +79,11 @@ public class Translate{
     }
 
     public Exp visit(EqualExpr ast){
-        return null;
+        return new RelCx(CJUMP.RelOperation.EQ, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
     public Exp visit(FalseExpr ast){
-        return null;
+        return new Ex(new Tree.CONST(0));
     }
 
     public Exp visit(FieldExpr ast){
@@ -91,7 +95,7 @@ public class Translate{
     }
 
     public Exp visit(GreaterExpr ast){
-        return null;
+        return new RelCx(CJUMP.RelOperation.GT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
     public Exp visit(IdentifierExpr ast){
@@ -103,7 +107,21 @@ public class Translate{
     }
 
     public Exp visit(IfStmt ast){
-        return null;
+        Label true_label = new Label(), end_of_else = new Label(), false_label = null;
+        Tree.SEQ if_block = new Tree.SEQ(new Tree.SEQ(new Tree.LABEL(true_label), ast.thenStm.accept(this).unNx()), new Tree.JUMP(end_of_else));
+
+        Tree.SEQ if_else;
+        if (ast.elseStm == null) {
+            if_else = if_block;
+        } else {
+            false_label = new Label();
+            Tree.SEQ else_block = new Tree.SEQ(new Tree.SEQ(new Tree.LABEL(false_label), ast.elseStm.accept(this).unNx()), new Tree.JUMP(end_of_else));
+            if_else = new Tree.SEQ(if_block, else_block);
+        }
+
+        Tree.Stm cjump = ast.test.accept(this).unCx(true_label, false_label == null ? end_of_else : false_label);
+
+        return new Nx(new Tree.SEQ(new Tree.SEQ(cjump, if_else), new Tree.LABEL(end_of_else)));
     }
 
     public Exp visit(IntegerLiteral ast){
@@ -111,7 +129,7 @@ public class Translate{
     }
 
     public Exp visit(LesserExpr ast){
-        return null;
+        return new RelCx(CJUMP.RelOperation.LT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
     public Exp visit(MethodDecl ast){
@@ -140,7 +158,8 @@ public class Translate{
     }
 
     public Exp visit(NegExpr ast){
-        return null;
+        Tree.Exp r = ast.expr.accept(this).unEx();
+        return new Ex(new Tree.BINOP(BINOP.Operation.MINUS, new Tree.CONST(0), r));
     }
 
     public Exp visit(NewArrayExpr ast){
@@ -152,9 +171,10 @@ public class Translate{
     }
 
     public Exp visit(NotEqExpr ast){
-        return null;
+        return new RelCx(CJUMP.RelOperation.NE, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
+    // TODO jake
     public Exp visit(NotExpr ast){
         return null;
     }
@@ -163,6 +183,7 @@ public class Translate{
         return new Ex(new Tree.CONST(0));
     }
 
+    // TODO jake
     public Exp visit(OrExpr ast){
         return null;
     }
@@ -220,6 +241,7 @@ public class Translate{
         return null;
     }
 
+    // TODO jake
     public Exp visit(WhileStmt ast){
         return null;
     }
