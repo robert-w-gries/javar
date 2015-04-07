@@ -4,9 +4,7 @@ package Absyn;
  * Boolean FALSE.
  */
 public class FalseExpr extends Expr{
-    public FalseExpr(){
-         //TODO codavaj!!
-    }
+    public FalseExpr(){}
 
     /**
      * Visitor pattern dispatch.

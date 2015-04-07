@@ -248,7 +248,6 @@ public class Wget extends AbstractProcess {
 
         FileOutputStream fos = new FileOutputStream(outputFile);
 
-        // TODO buffered variant
         InputStream is = response.getInputStream();
         int b = 0;
 

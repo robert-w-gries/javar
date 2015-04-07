@@ -3,9 +3,7 @@ package Absyn;
  * Expression abstract class.
  */
 public abstract class Expr extends Absyn {
-    public Expr(){
-         //TODO codavaj!!
-    }
+    public Expr(){}
 
     /**
      * Visitor pattern dispatch.
