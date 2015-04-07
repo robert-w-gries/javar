@@ -8,6 +8,7 @@ import Symbol.SymbolTable;
 import Temp.Label;
 import Tree.BINOP;
 import Tree.CJUMP;
+import Types.OBJECT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +22,14 @@ public class Translate{
     private Mips.MipsFrame frame;
     private List<Frag> frags;
     private SymbolTable<Access> accesses;
+    private SymbolTable<OBJECT> classes;
     private ClassDecl currentClass;
 
     public Translate(Mips.MipsFrame frame) {
         this.frame = frame;
         frags = new ArrayList<Frag>();
         accesses = new SymbolTable<Access>();
+        classes = new SymbolTable<OBJECT>();
     }
 
     public List<Frag> results() {
@@ -39,9 +42,28 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.PLUS, l, r));
     }
 
-    // TODO AndExpr rob
     public Exp visit(AndExpr ast){
-        return null;
+
+        Temp.Label t = new Temp.Label();
+        Temp.Label f = new Temp.Label();
+        Temp.Label join = new Temp.Label();
+        Temp.Temp r = new Temp.Temp();
+
+        Tree.Exp leftExp = ast.leftExpr.accept(this).unEx();
+        Tree.Exp rightExp = ast.rightExpr.accept(this).unEx();
+
+        // leftExpr != 0
+        Tree.CJUMP leftExpCheck = new CJUMP(CJUMP.RelOperation.NE, leftExp, new Tree.CONST(0), t, f);
+
+        Tree.SEQ tSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), rightExp), new Tree.JUMP(join));
+        Tree.SEQ tSeqLabel = new Tree.SEQ(new Tree.LABEL(t), tSeq);
+
+        Tree.SEQ fSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), new Tree.CONST(0)), new Tree.JUMP(join));
+        Tree.SEQ fSeqLabel = new Tree.SEQ(new Tree.LABEL(f), fSeq);
+
+        Tree.SEQ tfSeq = new Tree.SEQ(leftExpCheck, new Tree.SEQ(tSeqLabel, fSeqLabel));
+
+        return new Ex(new Tree.ESEQ(new Tree.SEQ(tfSeq, new Tree.LABEL(join)), new Tree.TEMP(r)));
     }
 
     public Exp visit(ArrayExpr ast){
@@ -101,20 +123,8 @@ public class Translate{
         return null;
     }
 
-    public Exp visit(CallExpr ast) {
-        Types.Type type = ast.targetExpr.accept(new Semant.TypeChecker());
-        java.util.LinkedList<Tree.Exp> expressionList = new java.util.LinkedList<Tree.Exp>();
-        if (ast.argsList.peekFirst() != null) {
-            int curr = 0;
-            int tail = ast.argsList.size();
-            do {
-                // Fill expressionList with the unExed versions of the argsList
-                expressionList.set(curr, ast.argsList.get(curr).accept(this).unEx());
-            } while (++curr != tail);
-            Tree.Exp[] exps = new Tree.Exp[expressionList.size()];
-            for (int i = 0; i < exps.length; i++) exps[i] = expressionList.get(i);
-            return new Ex(new Tree.CALL(new Tree.NAME(new Temp.Label(type.toString())), exps));
-        }
+    // TODO CallExpr
+    public Exp visit(CallExpr ast){
         return null;
     }
 
@@ -220,6 +230,8 @@ public class Translate{
 
         accesses.endScope();
 
+        frags.add(new ProcFrag(body, frame));
+
         return new Nx(body);
     }
 
@@ -242,27 +254,52 @@ public class Translate{
         return new Ex(new Tree.ESEQ(move_size, call_new));
     }
 
-    // TODO NewObjectExpr jake
     public Exp visit(NewObjectExpr ast){
-        return null;
+        String class_name = ((IdentifierType)ast.type).id;
+        OBJECT inst = classes.get(class_name);
+
+        Tree.CONST num_fields = new Tree.CONST(inst.fields.count());
+        Tree.NAME vtable = new Tree.NAME(new Label(class_name + "_vtable"));
+
+        return new Ex(new Tree.CALL(new Tree.NAME(new Label("_new")), num_fields, vtable));
     }
 
-    public Exp visit(NotEqExpr ast) {
+    public Exp visit(NotEqExpr ast){
         return new RelCx(CJUMP.RelOperation.NE, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO rob
     public Exp visit(NotExpr ast){
-        return null;
+        Tree.Exp exp = ast.expr.accept(this).unEx();
+        return new Ex(new Tree.BINOP(BINOP.Operation.BITXOR, exp, new Tree.CONST(1)));
     }
 
     public Exp visitNull(){
         return new Ex(new Tree.CONST(0));
     }
 
-    // TODO rob
-    public Exp visit(OrExpr ast){
-        return null;
+    public Exp visit(OrExpr ast) {
+
+        Temp.Label t = new Temp.Label();
+        Temp.Label f = new Temp.Label();
+        Temp.Label join = new Temp.Label();
+        Temp.Temp r = new Temp.Temp();
+
+        Tree.Exp leftExp = ast.leftExpr.accept(this).unEx();
+        Tree.Exp rightExp = ast.rightExpr.accept(this).unEx();
+
+        // leftExpr != 0
+        Tree.CJUMP leftExpCheck = new CJUMP(CJUMP.RelOperation.NE, leftExp, new Tree.CONST(0), t, f);
+
+        Tree.SEQ tSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), new Tree.CONST(1)), new Tree.JUMP(join));
+        Tree.SEQ tSeqLabel = new Tree.SEQ(new Tree.LABEL(t), tSeq);
+
+        Tree.SEQ fSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), rightExp), new Tree.JUMP(join));
+        Tree.SEQ fSeqLabel = new Tree.SEQ(new Tree.LABEL(f), fSeq);
+
+        Tree.SEQ tfSeq = new Tree.SEQ(leftExpCheck, new Tree.SEQ(tSeqLabel, fSeqLabel));
+
+        return new Ex(new Tree.ESEQ(new Tree.SEQ(tfSeq, new Tree.LABEL(join)), new Tree.TEMP(r)));
+
     }
 
     public Exp visit(Program ast){
@@ -274,6 +311,7 @@ public class Translate{
                 text += "  .word " + cls.name + "." + meth.name + "\n";
             }
             frags.add(new DataFrag(text));
+            classes.put(cls.name, cls.type.instance);
         }
 
         // create proc fragments for the methods in each class
@@ -345,14 +383,12 @@ public class Translate{
         return new Nx(new Tree.SEQ(new Tree.SEQ(while_check, loop), new Tree.LABEL(loop_done)));
     }
 
-    // TODO XinuCallExpr jake
     public Exp visit(XinuCallExpr ast){
-        return null;
+        return new Ex(new Tree.CALL(new Tree.NAME(new Label("_" + ast.method))));
     }
 
-    // TODO XinuCallStmt jake
     public Exp visit(XinuCallStmt ast){
-        return null;
+        return new Nx(new Tree.EXP_STM(new Tree.CALL(new Tree.NAME(new Label("_" + ast.method)), ast.args.get(0).accept(this).unEx())));
     }
 
 }
