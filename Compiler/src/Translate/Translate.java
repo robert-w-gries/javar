@@ -175,9 +175,12 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.MINUS, new Tree.CONST(0), r));
     }
 
-    // TODO NewArrayExpr
     public Exp visit(NewArrayExpr ast){
-        return null;
+        Tree.TEMP size = new Tree.TEMP(new Temp.Temp());
+        // TODO handle multiple dimensions
+        Tree.MOVE move_size = new Tree.MOVE(size, ast.dimensions.get(0).accept(this).unEx());
+        Tree.CALL call_new = new Tree.CALL(new Tree.NAME(new Label("_new")), size, size);
+        return new Ex(new Tree.ESEQ(move_size, call_new));
     }
 
     // TODO NewObjectExpr
