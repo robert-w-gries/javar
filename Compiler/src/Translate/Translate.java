@@ -4,7 +4,6 @@ import Absyn.*;
 import Frame.Access;
 import Mips.InReg;
 import Mips.MipsFrame;
-import Symbol.Symbol;
 import Symbol.SymbolTable;
 import Temp.Label;
 import Tree.BINOP;
@@ -32,10 +31,6 @@ public class Translate{
 
     public List<Frag> results() {
         return frags;
-    }
-
-    public Exp visit(java.util.AbstractList<Visitable> list){
-        return null;
     }
 
     public Exp visit(AddExpr ast){
@@ -81,7 +76,7 @@ public class Translate{
         // assemble result expression
         Tree.MEM arraySubscript = new Tree.MEM(new Tree.BINOP(BINOP.Operation.PLUS,
                 array, new Tree.BINOP(BINOP.Operation.MUL, index, new Tree.CONST(frame.wordSize()))));
-        return new Ex(new Tree.ESEQ(new Tree.LABEL(highOobCheck), arraySubscript));
+        return new Ex(new Tree.ESEQ(getAndCheck, new Tree.ESEQ(new Tree.LABEL(highOobCheck), arraySubscript)));
     }
 
     public Exp visit(AssignStmt ast){
@@ -130,7 +125,7 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.EQ, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    public Exp visit(FalseExpr ast){
+    public Exp visitFalse(){
         return new Ex(new Tree.CONST(0));
     }
 
@@ -143,9 +138,8 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.GT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO IdentifierExpr jake
     public Exp visit(IdentifierExpr ast){
-        return null;
+        return new Ex(accesses.get(ast.id).exp(new Tree.TEMP(frame.FP())));
     }
 
     public Exp visit(IfStmt ast){
@@ -199,7 +193,7 @@ public class Translate{
             else stmts = new Tree.SEQ(stmts, stmt.accept(this).unNx());
         }
 
-        Tree.Stm body = null;
+        Tree.Stm body;
         if (vars == null && stmts == null) {
             return null; // shouldn't happen
         } else if (vars == null) {
@@ -250,7 +244,7 @@ public class Translate{
         return null;
     }
 
-    public Exp visit(NullExpr ast){
+    public Exp visitNull(){
         return new Ex(new Tree.CONST(0));
     }
 
@@ -291,15 +285,15 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.MINUS, l, r));
     }
 
-    public Exp visit(ThisExpr ast){
-        return null;
+    public Exp visitThis(){
+        return new Ex(accesses.get("**THIS**").exp(new Tree.TEMP(frame.FP())));
     }
 
     public Exp visit(ThreadDecl ast){
         return visit((ClassDecl)ast);
     }
 
-    public Exp visit(TrueExpr ast){
+    public Exp visitTrue(){
         return new Ex(new Tree.CONST(1));
     }
 

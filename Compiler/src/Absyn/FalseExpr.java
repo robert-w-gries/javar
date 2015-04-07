@@ -18,5 +18,5 @@ public class FalseExpr extends Expr{
         return v.visit(this);
     }
 
-    public Translate.Exp accept(Translate.Translate t) { return t.visit(this);}
+    public Translate.Exp accept(Translate.Translate t) { return t.visitFalse();}
 }
