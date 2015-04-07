@@ -143,7 +143,7 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.GT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO IdentifierExpr
+    // TODO IdentifierExpr jake
     public Exp visit(IdentifierExpr ast){
         return null;
     }
@@ -174,7 +174,7 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.LT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO MethodDecl
+    // TODO MethodDecl jake
     public Exp visit(MethodDecl ast){
         MipsFrame frame = new MipsFrame();
         frame.name = new Temp.Label(ast.name); // TODO classname.methodname, except for main
@@ -213,7 +213,7 @@ public class Translate{
         return new Ex(new Tree.ESEQ(move_size, call_new));
     }
 
-    // TODO NewObjectExpr
+    // TODO NewObjectExpr jake
     public Exp visit(NewObjectExpr ast){
         return null;
     }
@@ -280,7 +280,7 @@ public class Translate{
         return new Ex(new Tree.CONST(1));
     }
 
-    // TODO VarDecl
+    // TODO VarDecl jake
     public Exp visit(VarDecl ast){
         return null;
     }
@@ -311,12 +311,12 @@ public class Translate{
         return new Nx(new Tree.SEQ(new Tree.SEQ(while_check, loop), new Tree.LABEL(loop_done)));
     }
 
-    // TODO XinuCallExpr
+    // TODO XinuCallExpr jake
     public Exp visit(XinuCallExpr ast){
         return null;
     }
 
-    // TODO XinuCallStmt
+    // TODO XinuCallStmt jake
     public Exp visit(XinuCallStmt ast){
         return null;
     }

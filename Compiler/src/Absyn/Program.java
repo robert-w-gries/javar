@@ -21,4 +21,6 @@ public class Program extends Absyn{
         v.visit(this);
         return null;
     }
+
+    public Translate.Exp accept(Translate.Translate t) { return t.visit(this);}
 }

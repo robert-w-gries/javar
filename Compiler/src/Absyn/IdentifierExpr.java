@@ -21,4 +21,6 @@ public class IdentifierExpr extends AssignableExpr{
     public Types.Type accept(TypeVisitor v) {
         return v.visit(this);
     }
+
+    public Translate.Exp accept(Translate.Translate t) { return t.visit(this);}
 }

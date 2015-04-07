@@ -24,6 +24,6 @@ public class AddExpr extends BinOpExpr {
         return v.visit(this);
     }
 
-    //public Translate.Exp accept(Translate t) { return t.visit(this);}
+    public Translate.Exp accept(Translate.Translate t) { return t.visit(this);}
 
 }
