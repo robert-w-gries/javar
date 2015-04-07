@@ -2,6 +2,7 @@ package Translate;
 
 import Absyn.*;
 import Frame.Access;
+import Mips.InReg;
 import Mips.MipsFrame;
 import Symbol.Symbol;
 import Symbol.SymbolTable;
@@ -84,15 +85,15 @@ public class Translate{
     }
 
     public Exp visit(AssignStmt ast){
-        if(ast.leftExpr instanceof IdentifierExpr){
-            return new Nx(new Tree.MOVE(accesses.get(ast.leftExpr.id.unEx(), ast.accept(this).unEx());
+        if (ast.leftExpr instanceof IdentifierExpr){
+            return new Nx(new Tree.MOVE(ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx()));
         }
         return null;
     }
 
     public Exp visit(BlockStmt ast){
         // convert the statment list into a SEQ tree
-        if(ast.stmtList.peekFirst() != null) {
+        if (ast.stmtList.peekFirst() != null) {
             int curr = 0;
             int tail = ast.stmtList.size();
             // statement to start off the tree
@@ -100,7 +101,7 @@ public class Translate{
             while(++curr != tail){
                 statement = new Tree.SEQ(statement, ast.stmtList.get(curr).accept(this).unNx());
             }
-            return statement;
+            return new Nx(statement);
         }
         return null;
     }
@@ -173,24 +174,47 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.LT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO MethodDecl jake
     public Exp visit(MethodDecl ast){
         MipsFrame frame = new MipsFrame();
-        frame.name = new Temp.Label(ast.name); // TODO classname.methodname, except for main
+
+        if (ast.name.equals("main") && ast.returnType == null) frame.name = new Temp.Label("main");
+        else frame.name = new Temp.Label(currentClass.name + "." + ast.name);
+
         accesses.beginScope();
+
         accesses.put("**THIS**", frame.allocFormal());
         for (Formal f : ast.params) {
             accesses.put(f.name, frame.allocFormal());
         }
 
-        // TODO loop through VarDecls, create a move for each one
+        Tree.Stm vars = null;
+        for (VarDecl var : ast.locals) {
+            if (vars == null) vars = var.accept(this).unNx();
+            else vars = new Tree.SEQ(vars, var.accept(this).unNx());
+        }
 
-        // TODO loop through Stmts, arrange into SEQ tree
+        Tree.Stm stmts = null;
+        for (Stmt stmt : ast.stmts) {
+            if (stmts == null) stmts = stmt.accept(this).unNx();
+            else stmts = new Tree.SEQ(stmts, stmt.accept(this).unNx());
+        }
 
-        // TODO add a last MOVE(TEMP(t2) returnExp) for the return expression
+        Tree.Stm body = null;
+        if (vars == null && stmts == null) {
+            return null; // shouldn't happen
+        } else if (vars == null) {
+            body = stmts;
+        } else if (stmts == null) {
+            body = vars;
+        } else {
+            body = new Tree.SEQ(vars, stmts);
+        }
+
+        body = new Tree.SEQ(body, new Tree.MOVE(new Tree.TEMP(new Temp.Temp(2)), ast.returnVal.accept(this).unEx()));
 
         accesses.endScope();
-        return null;
+
+        return new Nx(body);
     }
 
     public Exp visit(MulExpr ast){
@@ -279,14 +303,19 @@ public class Translate{
         return new Ex(new Tree.CONST(1));
     }
 
-    // TODO VarDecl jake
     public Exp visit(VarDecl ast){
-        return null;
+        Temp.Temp temp = new Temp.Temp();
+        accesses.put(ast.name, new InReg(temp));
+
+        Tree.Exp initial = ast.init == null ? new Tree.CONST(0)
+                : ast.init.accept(this).unEx();
+
+        return new Nx(new Tree.MOVE(new Tree.TEMP(temp), initial));
     }
 
     public Exp visit(VoidDecl ast){
-        // TODO call MethodDecl, strip off return value
-        return null;
+        Tree.SEQ body = (Tree.SEQ)((Nx)visit((MethodDecl)ast)).stm;
+        return new Nx(body.left);
     }
 
     public Exp visit(WhileStmt ast){
