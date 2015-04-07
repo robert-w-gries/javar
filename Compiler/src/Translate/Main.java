@@ -46,6 +46,7 @@ public class Main {
 		} else { // if no flag was used, we use ReadTypes to parse syntax tree w/ type info
 			new ReadTypes(reader);
 			program = ReadTypes.Program(); // parse syntax tree file with type info
+			typeChecker = new TypeChecker(ReadTypes.classEnv);
 		}
 
 		// run program through translator

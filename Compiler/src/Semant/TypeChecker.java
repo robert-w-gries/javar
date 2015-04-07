@@ -28,6 +28,13 @@ public class TypeChecker implements TypeVisitor {
 
     private SymbolTable<Type> symbolTable;
 
+    public TypeChecker(SymbolTable<CLASS> classes) {
+        symbolTable = new SymbolTable<Type>();
+        for (CLASS cls : classes.values()) {
+            symbolTable.put(cls.name, cls);
+        }
+    }
+
     public TypeChecker() {
         symbolTable = new SymbolTable<Type>();
         symbolTable.put("String", new STRING());
