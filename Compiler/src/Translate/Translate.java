@@ -8,6 +8,7 @@ import Symbol.SymbolTable;
 import Temp.Label;
 import Tree.BINOP;
 import Tree.CJUMP;
+import Types.OBJECT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,12 +22,14 @@ public class Translate{
     private Mips.MipsFrame frame;
     private List<Frag> frags;
     private SymbolTable<Access> accesses;
+    private SymbolTable<OBJECT> classes;
     private ClassDecl currentClass;
 
     public Translate(Mips.MipsFrame frame) {
         this.frame = frame;
         frags = new ArrayList<Frag>();
         accesses = new SymbolTable<Access>();
+        classes = new SymbolTable<OBJECT>();
     }
 
     public List<Frag> results() {
@@ -230,9 +233,14 @@ public class Translate{
         return new Ex(new Tree.ESEQ(move_size, call_new));
     }
 
-    // TODO NewObjectExpr jake
     public Exp visit(NewObjectExpr ast){
-        return null;
+        String class_name = ((IdentifierType)ast.type).id;
+        OBJECT inst = classes.get(class_name);
+
+        Tree.CONST num_fields = new Tree.CONST(inst.fields.count());
+        Tree.NAME vtable = new Tree.NAME(new Label(class_name + "_vtable"));
+
+        return new Ex(new Tree.CALL(new Tree.NAME(new Label("_new")), num_fields, vtable));
     }
 
     public Exp visit(NotEqExpr ast){
@@ -262,6 +270,7 @@ public class Translate{
                 text += "  .word " + cls.name + "." + meth.name + "\n";
             }
             frags.add(new DataFrag(text));
+            classes.put(cls.name, cls.type.instance);
         }
 
         // create proc fragments for the methods in each class
@@ -333,14 +342,12 @@ public class Translate{
         return new Nx(new Tree.SEQ(new Tree.SEQ(while_check, loop), new Tree.LABEL(loop_done)));
     }
 
-    // TODO XinuCallExpr jake
     public Exp visit(XinuCallExpr ast){
-        return null;
+        return new Ex(new Tree.CALL(new Tree.NAME(new Label("_" + ast.method))));
     }
 
-    // TODO XinuCallStmt jake
     public Exp visit(XinuCallStmt ast){
-        return null;
+        return new Nx(new Tree.EXP_STM(new Tree.CALL(new Tree.NAME(new Label("_" + ast.method)), ast.args.get(0).accept(this).unEx())));
     }
 
 }
