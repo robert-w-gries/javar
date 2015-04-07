@@ -211,6 +211,8 @@ public class Translate{
 
         accesses.endScope();
 
+        frags.add(new ProcFrag(body, frame));
+
         return new Nx(body);
     }
 
