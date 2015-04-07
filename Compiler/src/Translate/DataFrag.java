@@ -14,4 +14,8 @@ public class DataFrag extends Frag {
         this.data = data;
     }
 
+
+    public String toString() {
+        return data;
+    }
 }
