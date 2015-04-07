@@ -31,8 +31,6 @@ public class MipsFrame extends Frame {
         actuals = new LinkedList<Access>();
     }
 
-    //TODO Add a RV() method?
-
     public Temp.Temp FP() { return framePointer; }
 
     public int wordSize() { return 4; }

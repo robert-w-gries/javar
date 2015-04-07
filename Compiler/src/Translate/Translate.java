@@ -111,18 +111,11 @@ public class Translate{
     }
 
     public Exp visit(BlockStmt ast){
-        // convert the statment list into a SEQ tree
-        if (ast.stmtList.peekFirst() != null) {
-            int curr = 0;
-            int tail = ast.stmtList.size();
-            // statement to start off the tree
-            Tree.Stm statement = ast.stmtList.get(curr).accept(this).unNx();
-            while(++curr != tail){
-                statement = new Tree.SEQ(statement, ast.stmtList.get(curr).accept(this).unNx());
-            }
-            return new Nx(statement);
+        Tree.Stm statement = ast.stmtList.get(0).accept(this).unNx();
+        for (Stmt stmt : ast.stmtList){
+            statement = new Tree.SEQ(statement, stmt.accept(this).unNx());
         }
-        return null;
+        return new Nx(statement);
     }
 
     public Exp visit(CallExpr ast) {
@@ -176,9 +169,23 @@ public class Translate{
         return new Ex(new Tree.CONST(0));
     }
 
-    // TODO FieldExpr
     public Exp visit(FieldExpr ast){
-        return null;
+        // register to store call target
+        Temp.Temp target = new Temp.Temp();
+
+        // assemble tree to get target and null check it
+        Tree.MOVE get_target = new Tree.MOVE(new Tree.TEMP(target), ast.target.accept(this).unEx());
+        Label nullCheckLabel = new Label();
+        Tree.CJUMP nullCheck = new Tree.CJUMP(Tree.CJUMP.RelOperation.EQ, new Tree.TEMP(target), new Tree.CONST(0), frame.badPtr(), nullCheckLabel);
+        Tree.SEQ get_and_check_target = new Tree.SEQ(get_target, nullCheck);
+
+        // get memory location of field
+        OBJECT inst = (OBJECT)ast.target.accept(typeChecker);
+        int offset = inst.fields.get(ast.field).index * frame.wordSize();
+        Tree.MEM field = new Tree.MEM(new Tree.BINOP(BINOP.Operation.PLUS, new Tree.TEMP(target), new Tree.CONST(offset)));
+
+        // return result ESEQ
+        return new Ex(new Tree.ESEQ(get_and_check_target, new Tree.ESEQ(new Tree.LABEL(nullCheckLabel), field)));
     }
 
     public Exp visit(GreaterExpr ast){
