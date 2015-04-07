@@ -4,6 +4,7 @@ import Absyn.*;
 import Frame.Access;
 import Mips.InReg;
 import Mips.MipsFrame;
+import Semant.TypeChecker;
 import Symbol.SymbolTable;
 import Temp.Label;
 import Tree.BINOP;
@@ -11,7 +12,6 @@ import Tree.CJUMP;
 import Types.OBJECT;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -25,9 +25,10 @@ public class Translate{
     private SymbolTable<Access> accesses;
     private SymbolTable<OBJECT> classes;
     private ClassDecl currentClass;
+    private TypeChecker typeChecker;
 
-    public Translate(Mips.MipsFrame frame) {
-        this.frame = frame;
+    public Translate(TypeChecker typeChecker) {
+        this.typeChecker = typeChecker;
         frags = new ArrayList<Frag>();
         accesses = new SymbolTable<Access>();
         classes = new SymbolTable<OBJECT>();
@@ -125,20 +126,31 @@ public class Translate{
     }
 
     public Exp visit(CallExpr ast) {
-        Types.Type type = ast.targetExpr.accept(new Semant.TypeChecker());
-        LinkedList<Tree.Exp> expressionList = new LinkedList<Tree.Exp>();
-        if (ast.argsList.peekFirst() != null) {
-            int curr = 0;
-            int tail = ast.argsList.size();
-            do {
-                // Fill expressionList with the unExed versions of the argsList
-                expressionList.set(curr, ast.argsList.get(curr).accept(this).unEx());
-            } while (++curr != tail);
-            Tree.Exp[] exps = new Tree.Exp[expressionList.size()];
-            for (int i = 0; i < exps.length; i++) exps[i] = expressionList.get(i);
-            return new Ex(new Tree.CALL(new Tree.NAME(new Temp.Label(type.toString())), exps));
+        // register to store call target
+        Temp.Temp target = new Temp.Temp();
+
+        // assemble tree to get target and null check it
+        Tree.MOVE get_target = new Tree.MOVE(new Tree.TEMP(target), ast.targetExpr.accept(this).unEx());
+        Label nullCheckLabel = new Label();
+        Tree.SEQ nullCheck = new Tree.SEQ(new Tree.CJUMP(Tree.CJUMP.RelOperation.EQ, new Tree.TEMP(target), new Tree.CONST(0), frame.badPtr(), nullCheckLabel), new Tree.LABEL(nullCheckLabel));
+        Tree.SEQ get_and_check_target = new Tree.SEQ(get_target, nullCheck);
+
+        // get memory location of vtable
+        Tree.MEM vtable = new Tree.MEM(new Tree.BINOP(Tree.BINOP.Operation.PLUS, new Tree.TEMP(target), new Tree.CONST(-frame.wordSize())));
+
+        // get memory location of method
+        OBJECT inst = (OBJECT)ast.targetExpr.accept(typeChecker);
+        int offset = frame.wordSize() * inst.methods.get(ast.methodString).index;
+        Tree.MEM method = new Tree.MEM(new Tree.BINOP(BINOP.Operation.PLUS, vtable, new Tree.CONST(offset)));
+
+        // assemble arguments list
+        Tree.Exp[] args = new Tree.Exp[ast.argsList.size()+1];
+        args[0] = new Tree.TEMP(target);
+        for (int i = 0; i < ast.argsList.size(); i++) {
+            args[i+1] = ast.argsList.get(i).accept(this).unEx();
         }
-        return null;
+
+        return new Ex(new Tree.ESEQ(get_and_check_target, new Tree.CALL(method, args)));
     }
 
     public Exp visit(ClassDecl ast){
@@ -204,7 +216,7 @@ public class Translate{
     }
 
     public Exp visit(MethodDecl ast){
-        MipsFrame frame = new MipsFrame();
+        frame = new MipsFrame();
 
         if (ast.name.equals("main") && ast.returnType == null) frame.name = new Temp.Label("main");
         else frame.name = new Temp.Label(currentClass.name + "." + ast.name);
