@@ -43,7 +43,7 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.PLUS, l, r));
     }
 
-    // TODO AndExpr jake
+    // TODO AndExpr rob
     public Exp visit(AndExpr ast){
         return null;
     }
@@ -222,7 +222,7 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.NE, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO jake
+    // TODO rob
     public Exp visit(NotExpr ast){
         return null;
     }
@@ -231,7 +231,7 @@ public class Translate{
         return new Ex(new Tree.CONST(0));
     }
 
-    // TODO jake
+    // TODO rob
     public Exp visit(OrExpr ast){
         return null;
     }
