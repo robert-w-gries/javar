@@ -68,6 +68,7 @@ public class Main {
 				writer.println(")");
 			}
 		}
+		writer.flush();
 	}
 
 	private static void printUsageAndExit() {

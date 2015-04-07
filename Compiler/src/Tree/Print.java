@@ -8,7 +8,6 @@ public class Print implements Tree.IntVisitor {
         writer = o;
         numTabs = 0;
         s.accept(this);
-        writer.flush();
     }
 
     private void printTabs() {
