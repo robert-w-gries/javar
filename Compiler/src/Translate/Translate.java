@@ -4,10 +4,12 @@ import Absyn.*;
 import Frame.Access;
 import Mips.InReg;
 import Mips.MipsFrame;
+import Semant.TypeChecker;
 import Symbol.SymbolTable;
 import Temp.Label;
 import Tree.BINOP;
 import Tree.CJUMP;
+import Tree.LABEL;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,8 +103,21 @@ public class Translate{
         return null;
     }
 
-    // TODO CallExpr
     public Exp visit(CallExpr ast){
+        Types.Type type = ast.targetExpr.accept(new TypeChecker());
+        java.util.LinkedList<Tree.Exp> expressionList = new java.util.LinkedList<Tree.Exp>();
+        if (ast.argsList.peekFirst() != null){
+            int curr = 0;
+            int tail = ast.argsList.size();
+            do{
+                // Fill expressionList with the unExed versions of the argsList
+                expressionList.set(curr, ast.argsList.get(curr).accept(this).unEx());
+            }while(++curr != tail);
+            Tree.Exp[] exps = new Tree.Exp[expressionList.size()];
+            for (int i = 0; i < exps.length; i++) exps[i] = expressionList.get(i);
+            return new Ex(new Tree.CALL(new Tree.NAME(new Temp.Label(ast.methodString)), exps));
+        }
+
         return null;
     }
 
@@ -131,6 +146,7 @@ public class Translate{
 
     // TODO FieldExpr
     public Exp visit(FieldExpr ast){
+
         return null;
     }
 
