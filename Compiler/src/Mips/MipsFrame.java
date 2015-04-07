@@ -97,26 +97,20 @@ public class MipsFrame extends Frame {
         if(formals.peekFirst() != null) { // Check if there are any formals first
             // loop through the formals
             int curr = 0;
-            int next = curr + 1;
             int tail = formals.size();
-            while (next != tail) {
+            do{
                 printOut.println(formals.get(curr)); // InReg toString covers the whole print
-                curr = next;
-                next++;
-            }
+            }while(++curr != tail);
         }
         printOut.print(     tab + ")"    + "\n");
         printOut.print(     "Actuals(");
         if(actuals.peekFirst() != null){ // Check if there are any actuals first
             // loop through the actuals
             int curr = 0;
-            int next = curr + 1;
             int tail = actuals.size();
-            while(next != tail){
+            do{
                 printOut.println(actuals.get(curr)); // InReg toString covers the whole print
-                curr = next;
-                next++;
-            }
+            }while(++curr != tail);
         }
         printOut.print(     tab + ")"    + "\n");
         printOut.print(     "BadPtr(" + badPtr() + ")" + "\n");

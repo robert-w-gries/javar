@@ -53,9 +53,10 @@ public class Translate{
         return null;
     }
 
-    // TODO AssignStmt Luke
     public Exp visit(AssignStmt ast){
-        //return new Nx(new Tree.MOVE(accesses.get(ast.leftExpr.toString()).exp().unEx(), ast.accept(this).unEx());
+        if(ast.leftExpr instanceof IdentifierExpr){
+            return new Nx(new Tree.MOVE(accesses.get(ast.leftExpr.id.unEx(), ast.accept(this).unEx());
+        }
         return null;
     }
 
@@ -63,15 +64,13 @@ public class Translate{
         // convert the statment list into a SEQ tree
         if(ast.stmtList.peekFirst() != null) {
             int curr = 0;
-            int next = curr + 1;
             int tail = ast.stmtList.size();
             // statement to start off the tree
             Tree.Stm statement = ast.stmtList.get(curr).accept(this).unNx();
-            curr = next;
-            while(next++ != tail){
+            while(++curr != tail){
                 statement = new Tree.SEQ(statement, ast.stmtList.get(curr).accept(this).unNx());
-                curr = next;
             }
+            return statement;
         }
         return null;
     }
