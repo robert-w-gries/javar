@@ -42,9 +42,28 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.PLUS, l, r));
     }
 
-    // TODO AndExpr rob
     public Exp visit(AndExpr ast){
-        return null;
+
+        Temp.Label t = new Temp.Label();
+        Temp.Label f = new Temp.Label();
+        Temp.Label join = new Temp.Label();
+        Temp.Temp r = new Temp.Temp();
+
+        Tree.Exp leftExp = ast.leftExpr.accept(this).unEx();
+        Tree.Exp rightExp = ast.rightExpr.accept(this).unEx();
+
+        // leftExpr != 0
+        Tree.CJUMP leftExpCheck = new CJUMP(CJUMP.RelOperation.NE, leftExp, new Tree.CONST(0), t, f);
+
+        Tree.SEQ tSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), rightExp), new Tree.JUMP(join));
+        Tree.SEQ tSeqLabel = new Tree.SEQ(new Tree.LABEL(t), tSeq);
+
+        Tree.SEQ fSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), new Tree.CONST(0)), new Tree.JUMP(join));
+        Tree.SEQ fSeqLabel = new Tree.SEQ(new Tree.LABEL(f), fSeq);
+
+        Tree.SEQ tfSeq = new Tree.SEQ(leftExpCheck, new Tree.SEQ(tSeqLabel, fSeqLabel));
+
+        return new Ex(new Tree.ESEQ(new Tree.SEQ(tfSeq, new Tree.LABEL(join)), new Tree.TEMP(r)));
     }
 
     public Exp visit(ArrayExpr ast){
@@ -249,18 +268,38 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.NE, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO rob
     public Exp visit(NotExpr ast){
-        return null;
+        Tree.Exp exp = ast.expr.accept(this).unEx();
+        return new Ex(new Tree.BINOP(BINOP.Operation.BITXOR, exp, new Tree.CONST(1)));
     }
 
     public Exp visitNull(){
         return new Ex(new Tree.CONST(0));
     }
 
-    // TODO rob
-    public Exp visit(OrExpr ast){
-        return null;
+    public Exp visit(OrExpr ast) {
+
+        Temp.Label t = new Temp.Label();
+        Temp.Label f = new Temp.Label();
+        Temp.Label join = new Temp.Label();
+        Temp.Temp r = new Temp.Temp();
+
+        Tree.Exp leftExp = ast.leftExpr.accept(this).unEx();
+        Tree.Exp rightExp = ast.rightExpr.accept(this).unEx();
+
+        // leftExpr != 0
+        Tree.CJUMP leftExpCheck = new CJUMP(CJUMP.RelOperation.NE, leftExp, new Tree.CONST(0), t, f);
+
+        Tree.SEQ tSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), new Tree.CONST(1)), new Tree.JUMP(join));
+        Tree.SEQ tSeqLabel = new Tree.SEQ(new Tree.LABEL(t), tSeq);
+
+        Tree.SEQ fSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), rightExp), new Tree.JUMP(join));
+        Tree.SEQ fSeqLabel = new Tree.SEQ(new Tree.LABEL(f), fSeq);
+
+        Tree.SEQ tfSeq = new Tree.SEQ(leftExpCheck, new Tree.SEQ(tSeqLabel, fSeqLabel));
+
+        return new Ex(new Tree.ESEQ(new Tree.SEQ(tfSeq, new Tree.LABEL(join)), new Tree.TEMP(r)));
+
     }
 
     public Exp visit(Program ast){
