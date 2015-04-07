@@ -11,6 +11,7 @@ import Tree.CJUMP;
 import Types.OBJECT;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -123,8 +124,20 @@ public class Translate{
         return null;
     }
 
-    // TODO CallExpr
-    public Exp visit(CallExpr ast){
+    public Exp visit(CallExpr ast) {
+        Types.Type type = ast.targetExpr.accept(new Semant.TypeChecker());
+        LinkedList<Tree.Exp> expressionList = new LinkedList<Tree.Exp>();
+        if (ast.argsList.peekFirst() != null) {
+            int curr = 0;
+            int tail = ast.argsList.size();
+            do {
+                // Fill expressionList with the unExed versions of the argsList
+                expressionList.set(curr, ast.argsList.get(curr).accept(this).unEx());
+            } while (++curr != tail);
+            Tree.Exp[] exps = new Tree.Exp[expressionList.size()];
+            for (int i = 0; i < exps.length; i++) exps[i] = expressionList.get(i);
+            return new Ex(new Tree.CALL(new Tree.NAME(new Temp.Label(type.toString())), exps));
+        }
         return null;
     }
 
