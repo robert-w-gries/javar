@@ -2,13 +2,13 @@ package Translate;
 
 import Absyn.*;
 import Frame.Access;
+import Mips.InReg;
 import Mips.MipsFrame;
-import Symbol.Symbol;
 import Symbol.SymbolTable;
 import Temp.Label;
 import Tree.BINOP;
 import Tree.CJUMP;
-import Tree.CONST;
+import Types.OBJECT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,20 +22,18 @@ public class Translate{
     private Mips.MipsFrame frame;
     private List<Frag> frags;
     private SymbolTable<Access> accesses;
+    private SymbolTable<OBJECT> classes;
     private ClassDecl currentClass;
 
     public Translate(Mips.MipsFrame frame) {
         this.frame = frame;
         frags = new ArrayList<Frag>();
         accesses = new SymbolTable<Access>();
+        classes = new SymbolTable<OBJECT>();
     }
 
     public List<Frag> results() {
         return frags;
-    }
-
-    public Exp visit(java.util.AbstractList<Visitable> list){
-        return null;
     }
 
     public Exp visit(AddExpr ast){
@@ -55,12 +53,12 @@ public class Translate{
         Tree.Exp rightExp = ast.rightExpr.accept(this).unEx();
 
         // leftExpr != 0
-        Tree.CJUMP leftExpCheck = new CJUMP(CJUMP.RelOperation.NE, leftExp, new CONST(0), t, f);
+        Tree.CJUMP leftExpCheck = new CJUMP(CJUMP.RelOperation.NE, leftExp, new Tree.CONST(0), t, f);
 
         Tree.SEQ tSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), rightExp), new Tree.JUMP(join));
         Tree.SEQ tSeqLabel = new Tree.SEQ(new Tree.LABEL(t), tSeq);
 
-        Tree.SEQ fSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), new CONST(0)), new Tree.JUMP(join));
+        Tree.SEQ fSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), new Tree.CONST(0)), new Tree.JUMP(join));
         Tree.SEQ fSeqLabel = new Tree.SEQ(new Tree.LABEL(f), fSeq);
 
         Tree.SEQ tfSeq = new Tree.SEQ(leftExpCheck, new Tree.SEQ(tSeqLabel, fSeqLabel));
@@ -100,19 +98,19 @@ public class Translate{
         // assemble result expression
         Tree.MEM arraySubscript = new Tree.MEM(new Tree.BINOP(BINOP.Operation.PLUS,
                 array, new Tree.BINOP(BINOP.Operation.MUL, index, new Tree.CONST(frame.wordSize()))));
-        return new Ex(new Tree.ESEQ(new Tree.LABEL(highOobCheck), arraySubscript));
+        return new Ex(new Tree.ESEQ(getAndCheck, new Tree.ESEQ(new Tree.LABEL(highOobCheck), arraySubscript)));
     }
 
     public Exp visit(AssignStmt ast){
-        if(ast.leftExpr instanceof IdentifierExpr){
-            return new Nx(new Tree.MOVE(accesses.get(ast.leftExpr.id.unEx(), ast.accept(this).unEx());
+        if (ast.leftExpr instanceof IdentifierExpr){
+            return new Nx(new Tree.MOVE(ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx()));
         }
         return null;
     }
 
     public Exp visit(BlockStmt ast){
         // convert the statment list into a SEQ tree
-        if(ast.stmtList.peekFirst() != null) {
+        if (ast.stmtList.peekFirst() != null) {
             int curr = 0;
             int tail = ast.stmtList.size();
             // statement to start off the tree
@@ -120,7 +118,7 @@ public class Translate{
             while(++curr != tail){
                 statement = new Tree.SEQ(statement, ast.stmtList.get(curr).accept(this).unNx());
             }
-            return statement;
+            return new Nx(statement);
         }
         return null;
     }
@@ -149,7 +147,7 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.EQ, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    public Exp visit(FalseExpr ast){
+    public Exp visitFalse(){
         return new Ex(new Tree.CONST(0));
     }
 
@@ -162,9 +160,8 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.GT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO IdentifierExpr jake
     public Exp visit(IdentifierExpr ast){
-        return null;
+        return new Ex(accesses.get(ast.id).exp(new Tree.TEMP(frame.FP())));
     }
 
     public Exp visit(IfStmt ast){
@@ -193,24 +190,47 @@ public class Translate{
         return new RelCx(CJUMP.RelOperation.LT, ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx());
     }
 
-    // TODO MethodDecl jake
     public Exp visit(MethodDecl ast){
         MipsFrame frame = new MipsFrame();
-        frame.name = new Temp.Label(ast.name); // TODO classname.methodname, except for main
+
+        if (ast.name.equals("main") && ast.returnType == null) frame.name = new Temp.Label("main");
+        else frame.name = new Temp.Label(currentClass.name + "." + ast.name);
+
         accesses.beginScope();
+
         accesses.put("**THIS**", frame.allocFormal());
         for (Formal f : ast.params) {
             accesses.put(f.name, frame.allocFormal());
         }
 
-        // TODO loop through VarDecls, create a move for each one
+        Tree.Stm vars = null;
+        for (VarDecl var : ast.locals) {
+            if (vars == null) vars = var.accept(this).unNx();
+            else vars = new Tree.SEQ(vars, var.accept(this).unNx());
+        }
 
-        // TODO loop through Stmts, arrange into SEQ tree
+        Tree.Stm stmts = null;
+        for (Stmt stmt : ast.stmts) {
+            if (stmts == null) stmts = stmt.accept(this).unNx();
+            else stmts = new Tree.SEQ(stmts, stmt.accept(this).unNx());
+        }
 
-        // TODO add a last MOVE(TEMP(t2) returnExp) for the return expression
+        Tree.Stm body;
+        if (vars == null && stmts == null) {
+            return null; // shouldn't happen
+        } else if (vars == null) {
+            body = stmts;
+        } else if (stmts == null) {
+            body = vars;
+        } else {
+            body = new Tree.SEQ(vars, stmts);
+        }
+
+        body = new Tree.SEQ(body, new Tree.MOVE(new Tree.TEMP(new Temp.Temp(2)), ast.returnVal.accept(this).unEx()));
 
         accesses.endScope();
-        return null;
+
+        return new Nx(body);
     }
 
     public Exp visit(MulExpr ast){
@@ -232,9 +252,14 @@ public class Translate{
         return new Ex(new Tree.ESEQ(move_size, call_new));
     }
 
-    // TODO NewObjectExpr jake
     public Exp visit(NewObjectExpr ast){
-        return null;
+        String class_name = ((IdentifierType)ast.type).id;
+        OBJECT inst = classes.get(class_name);
+
+        Tree.CONST num_fields = new Tree.CONST(inst.fields.count());
+        Tree.NAME vtable = new Tree.NAME(new Label(class_name + "_vtable"));
+
+        return new Ex(new Tree.CALL(new Tree.NAME(new Label("_new")), num_fields, vtable));
     }
 
     public Exp visit(NotEqExpr ast){
@@ -243,10 +268,10 @@ public class Translate{
 
     public Exp visit(NotExpr ast){
         Tree.Exp exp = ast.expr.accept(this).unEx();
-        return new Ex(new Tree.BINOP(BINOP.Operation.BITXOR, exp, new CONST(1)));
+        return new Ex(new Tree.BINOP(BINOP.Operation.BITXOR, exp, new Tree.CONST(1)));
     }
 
-    public Exp visit(NullExpr ast){
+    public Exp visitNull(){
         return new Ex(new Tree.CONST(0));
     }
 
@@ -261,9 +286,9 @@ public class Translate{
         Tree.Exp rightExp = ast.rightExpr.accept(this).unEx();
 
         // leftExpr != 0
-        Tree.CJUMP leftExpCheck = new CJUMP(CJUMP.RelOperation.NE, leftExp, new CONST(0), t, f);
+        Tree.CJUMP leftExpCheck = new CJUMP(CJUMP.RelOperation.NE, leftExp, new Tree.CONST(0), t, f);
 
-        Tree.SEQ tSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), new CONST(1)), new Tree.JUMP(join));
+        Tree.SEQ tSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), new Tree.CONST(1)), new Tree.JUMP(join));
         Tree.SEQ tSeqLabel = new Tree.SEQ(new Tree.LABEL(t), tSeq);
 
         Tree.SEQ fSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), rightExp), new Tree.JUMP(join));
@@ -284,6 +309,7 @@ public class Translate{
                 text += "  .word " + cls.name + "." + meth.name + "\n";
             }
             frags.add(new DataFrag(text));
+            classes.put(cls.name, cls.type.instance);
         }
 
         // create proc fragments for the methods in each class
@@ -307,26 +333,31 @@ public class Translate{
         return new Ex(new Tree.BINOP(BINOP.Operation.MINUS, l, r));
     }
 
-    public Exp visit(ThisExpr ast){
-        return null;
+    public Exp visitThis(){
+        return new Ex(accesses.get("**THIS**").exp(new Tree.TEMP(frame.FP())));
     }
 
     public Exp visit(ThreadDecl ast){
         return visit((ClassDecl)ast);
     }
 
-    public Exp visit(TrueExpr ast){
+    public Exp visitTrue(){
         return new Ex(new Tree.CONST(1));
     }
 
-    // TODO VarDecl jake
     public Exp visit(VarDecl ast){
-        return null;
+        Temp.Temp temp = new Temp.Temp();
+        accesses.put(ast.name, new InReg(temp));
+
+        Tree.Exp initial = ast.init == null ? new Tree.CONST(0)
+                : ast.init.accept(this).unEx();
+
+        return new Nx(new Tree.MOVE(new Tree.TEMP(temp), initial));
     }
 
     public Exp visit(VoidDecl ast){
-        // TODO call MethodDecl, strip off return value
-        return null;
+        Tree.SEQ body = (Tree.SEQ)((Nx)visit((MethodDecl)ast)).stm;
+        return new Nx(body.left);
     }
 
     public Exp visit(WhileStmt ast){
@@ -350,14 +381,12 @@ public class Translate{
         return new Nx(new Tree.SEQ(new Tree.SEQ(while_check, loop), new Tree.LABEL(loop_done)));
     }
 
-    // TODO XinuCallExpr jake
     public Exp visit(XinuCallExpr ast){
-        return null;
+        return new Ex(new Tree.CALL(new Tree.NAME(new Label("_" + ast.method))));
     }
 
-    // TODO XinuCallStmt jake
     public Exp visit(XinuCallStmt ast){
-        return null;
+        return new Nx(new Tree.EXP_STM(new Tree.CALL(new Tree.NAME(new Label("_" + ast.method)), ast.args.get(0).accept(this).unEx())));
     }
 
 }

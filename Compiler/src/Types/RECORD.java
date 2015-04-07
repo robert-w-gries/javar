@@ -29,6 +29,10 @@ public class RECORD extends Type implements java.lang.Iterable<FIELD> {
         }
     }
 
+    public int count() {
+        return fields.size();
+    }
+
     /**
      * Visitor pattern dispatch.
      */
