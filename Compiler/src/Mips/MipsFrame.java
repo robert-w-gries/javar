@@ -88,31 +88,26 @@ public class MipsFrame extends Frame {
 
     }
 
-    //TODO see if this code belongs elsewhere
     public void printFrame(java.io.PrintWriter printOut){
-        String tab = "\t"; // 8 spaces. Generally 2 tabs but I wont risk it.
+        String tab = "\t\t"; // 8 spaces. Generally 2 tabs but I wont risk it.
         printOut.print(     "MipsFrame(" + "\n" + // Open frame
                             name + ":"   + "\n");
         printOut.print(     "Formals(");
-        if(formals.peekFirst() != null) { // Check if there are any formals first
-            // loop through the formals
-            int curr = 0;
-            int tail = formals.size();
-            do{
-                printOut.println(formals.get(curr)); // InReg toString covers the whole print
-            }while(++curr != tail);
+
+        for (Access curFormal : formals) {
+            printOut.println(curFormal);
+            printOut.print(tab);
         }
-        printOut.print(     tab + ")"    + "\n");
+
+        printOut.print(     ")"    + "\n");
         printOut.print(     "Actuals(");
-        if(actuals.peekFirst() != null){ // Check if there are any actuals first
-            // loop through the actuals
-            int curr = 0;
-            int tail = actuals.size();
-            do{
-                printOut.println(actuals.get(curr)); // InReg toString covers the whole print
-            }while(++curr != tail);
+        
+        for (Access curActual : actuals) {
+            printOut.println(curActual);
+            printOut.print(tab);
         }
-        printOut.print(     tab + ")"    + "\n");
+
+        printOut.print(     ")"    + "\n");
         printOut.print(     "BadPtr(" + badPtr() + ")" + "\n");
         printOut.print(     "BadSub(" + badSub() + ")" + "\n");
         printOut.println(     ")"); // Close frame
