@@ -3,6 +3,7 @@ package Translate;
 import Absyn.*;
 import Frame.Access;
 import Mips.MipsFrame;
+import Symbol.Symbol;
 import Symbol.SymbolTable;
 import Temp.Label;
 import Tree.BINOP;
@@ -49,10 +50,24 @@ public class Translate{
     }
 
     public Exp visit(AssignStmt ast){
+        //return new Nx(new Tree.MOVE(accesses.get(ast.leftExpr.toString()).exp().unEx(), ast.accept(this).unEx());
         return null;
     }
 
     public Exp visit(BlockStmt ast){
+        // convert the statment list into a SEQ tree
+        if(ast.stmtList.peekFirst() != null) {
+            int curr = 0;
+            int next = curr + 1;
+            int tail = ast.stmtList.size();
+            // statement to start off the tree
+            Tree.Stm statement = ast.stmtList.get(curr).accept(this).unNx();
+            curr = next;
+            while(next++ != tail){
+                statement = new Tree.SEQ(statement, ast.stmtList.get(curr).accept(this).unNx());
+                curr = next;
+            }
+        }
         return null;
     }
 

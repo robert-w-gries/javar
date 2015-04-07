@@ -90,30 +90,35 @@ public class MipsFrame extends Frame {
 
     //TODO see if this code belongs elsewhere
     public void printFrame(java.io.PrintWriter printOut){
-        String space = "        "; // 8 spaces. Generally 2 tabs but I wont risk it.
+        String tab = "\t"; // 8 spaces. Generally 2 tabs but I wont risk it.
         printOut.print(     "MipsFrame(" + "\n" + // Open frame
                             name + ":"   + "\n");
-        //TODO find what to loop through for Formals and Actuals to print them
         printOut.print(     "Formals(");
-        // loop through the formals
-        /*
-
-        while(someListOfFormals.hasNext()){
-            printOut.println(currentFormal); // InReg toString covers the whole print
+        if(formals.peekFirst() != null) { // Check if there are any formals first
+            // loop through the formals
+            int curr = 0;
+            int next = curr + 1;
+            int tail = formals.size();
+            while (next != tail) {
+                printOut.println(formals.get(curr)); // InReg toString covers the whole print
+                curr = next;
+                next++;
+            }
         }
-
-         */
-        printOut.print(     space + ")"  + "\n");
+        printOut.print(     tab + ")"    + "\n");
         printOut.print(     "Actuals(");
-        // loop through the actuals
-        /*
-
-        while(someListOfActuals.hasNext()){
-            printOut.println(currentActual); // InReg toString covers the whole print
+        if(actuals.peekFirst() != null){ // Check if there are any actuals first
+            // loop through the actuals
+            int curr = 0;
+            int next = curr + 1;
+            int tail = actuals.size();
+            while(next != tail){
+                printOut.println(actuals.get(curr)); // InReg toString covers the whole print
+                curr = next;
+                next++;
+            }
         }
-
-         */
-        printOut.print(     space + ")"  + "\n");
+        printOut.print(     tab + ")"    + "\n");
         printOut.print(     "BadPtr(" + badPtr() + ")" + "\n");
         printOut.print(     "BadSub(" + badSub() + ")" + "\n");
         printOut.println(     ")"); // Close frame
