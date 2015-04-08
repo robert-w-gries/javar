@@ -87,7 +87,7 @@ public class Print implements Tree.IntVisitor {
         writer.println();
 
         printTabs();
-        writer.print(s.iffalse.toString() + " " + s.iftrue.toString());
+        writer.print(s.iftrue.toString()+ " " + s.iffalse.toString());
 
         decrementTab();
 
