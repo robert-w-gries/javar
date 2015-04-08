@@ -5,8 +5,9 @@ class Test {
 
         int x = 0;
 
-        while (true) {
+        while (x < 20) {
             x = 2;
+            x = 5
         }
 
     }
