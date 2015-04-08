@@ -326,7 +326,7 @@ public class Translate{
 
     public Exp visit(OrExpr ast) {
 
-        return new IfThenElseExp(ast.leftExpr.accept(this), ast.rightExpr.accept(this), new Ex(new Tree.CONST(0)));
+        return new IfThenElseExp(ast.leftExpr.accept(this), new Ex(new Tree.CONST(1)), ast.rightExpr.accept(this));
 
     }
 
