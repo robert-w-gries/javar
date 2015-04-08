@@ -7,7 +7,6 @@ class Test {
         int y;
         
         if (x > 10) {
-            y = x;
         }
 
     }

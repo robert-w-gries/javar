@@ -108,10 +108,15 @@ public class Translate{
     }
 
     public Exp visit(BlockStmt ast){
-        Tree.Stm statement = ast.stmtList.get(0).accept(this).unNx();
-        for (int i = 1; i < ast.stmtList.size(); i++){
-            statement = new Tree.SEQ(statement, ast.stmtList.get(i).accept(this).unNx());
+        Tree.Stm statement = null;
+        for (int i = 0; i < ast.stmtList.size(); i++){
+            Tree.Stm stm = ast.stmtList.get(i).accept(this).unNx();
+            if (statement == null) statement = stm;
+            else statement = new Tree.SEQ(statement, stm);
         }
+
+        if (statement == null) statement = new Tree.LABEL(new Label());
+
         return new Nx(statement);
     }
 
