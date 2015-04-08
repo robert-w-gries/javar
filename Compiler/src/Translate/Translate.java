@@ -45,26 +45,8 @@ public class Translate{
 
     public Exp visit(AndExpr ast){
 
-        Temp.Label t = new Temp.Label();
-        Temp.Label f = new Temp.Label();
-        Temp.Label join = new Temp.Label();
-        Temp.Temp r = new Temp.Temp();
+        return new IfThenElseExp(ast.leftExpr.accept(this), ast.rightExpr.accept(this), new Ex(new Tree.CONST(0)));
 
-        Tree.Exp leftExp = ast.leftExpr.accept(this).unEx();
-        Tree.Exp rightExp = ast.rightExpr.accept(this).unEx();
-
-        // leftExpr != 0
-        Tree.CJUMP leftExpCheck = new CJUMP(CJUMP.RelOperation.NE, leftExp, new Tree.CONST(0), t, f);
-
-        Tree.SEQ tSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), rightExp), new Tree.JUMP(join));
-        Tree.SEQ tSeqLabel = new Tree.SEQ(new Tree.LABEL(t), tSeq);
-
-        Tree.SEQ fSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), new Tree.CONST(0)), new Tree.JUMP(join));
-        Tree.SEQ fSeqLabel = new Tree.SEQ(new Tree.LABEL(f), fSeq);
-
-        Tree.SEQ tfSeq = new Tree.SEQ(leftExpCheck, new Tree.SEQ(tSeqLabel, fSeqLabel));
-
-        return new Ex(new Tree.ESEQ(new Tree.SEQ(tfSeq, new Tree.LABEL(join)), new Tree.TEMP(r)));
     }
 
     public Exp visit(ArrayExpr ast){
@@ -344,26 +326,7 @@ public class Translate{
 
     public Exp visit(OrExpr ast) {
 
-        Temp.Label t = new Temp.Label();
-        Temp.Label f = new Temp.Label();
-        Temp.Label join = new Temp.Label();
-        Temp.Temp r = new Temp.Temp();
-
-        Tree.Exp leftExp = ast.leftExpr.accept(this).unEx();
-        Tree.Exp rightExp = ast.rightExpr.accept(this).unEx();
-
-        // leftExpr != 0
-        Tree.CJUMP leftExpCheck = new CJUMP(CJUMP.RelOperation.NE, leftExp, new Tree.CONST(0), t, f);
-
-        Tree.SEQ tSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), new Tree.CONST(1)), new Tree.JUMP(join));
-        Tree.SEQ tSeqLabel = new Tree.SEQ(new Tree.LABEL(t), tSeq);
-
-        Tree.SEQ fSeq = new Tree.SEQ(new Tree.MOVE(new Tree.TEMP(r), rightExp), new Tree.JUMP(join));
-        Tree.SEQ fSeqLabel = new Tree.SEQ(new Tree.LABEL(f), fSeq);
-
-        Tree.SEQ tfSeq = new Tree.SEQ(leftExpCheck, new Tree.SEQ(tSeqLabel, fSeqLabel));
-
-        return new Ex(new Tree.ESEQ(new Tree.SEQ(tfSeq, new Tree.LABEL(join)), new Tree.TEMP(r)));
+        return new IfThenElseExp(ast.leftExpr.accept(this), ast.rightExpr.accept(this), new Ex(new Tree.CONST(0)));
 
     }
 
