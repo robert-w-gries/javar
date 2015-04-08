@@ -352,7 +352,7 @@ public class Translate{
     public Exp visit(StringLiteral ast){
         String text = "  .data\n";
         Label l = new Label();
-        text += l.toString() + " .asciiz " + ast.value;
+        text += l.toString() + ": .asciiz " + ast.value;
         frags.add(new DataFrag(text));
         return new Ex(new Tree.NAME(l));
     }
@@ -427,7 +427,9 @@ public class Translate{
     }
 
     public Exp visit(XinuCallStmt ast){
-        return new Nx(new Tree.EXP_STM(new Tree.CALL(new Tree.NAME(new Label("_" + ast.method)), ast.args.get(0).accept(this).unEx())));
+        Tree.Exp[] args = new Tree.Exp[ast.args.size()];
+        for (int i = 0; i < ast.args.size(); i++) args[i] = ast.args.get(i).accept(this).unEx();
+        return new Nx(new Tree.EXP_STM(new Tree.CALL(new Tree.NAME(new Label("_" + ast.method)), args)));
     }
 
 }

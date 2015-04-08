@@ -4,7 +4,10 @@ class Test {
 
         boolean x = true;
         boolean y = false;
-        boolean z = x || y;
+        int i;
+        if (x || y) {
+            i = 0;
+        }
 
     }
 
