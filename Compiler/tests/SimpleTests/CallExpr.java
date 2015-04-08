@@ -1,8 +1,11 @@
+// PASSES
 class Test {
 
     public static void main(String[] a) {
 
-        int x = myCall();
+        int x;
+        CallTest call = new CallTest();
+        x = call.myCall();
 
     }
 

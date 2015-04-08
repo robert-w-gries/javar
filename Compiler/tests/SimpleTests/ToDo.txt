@@ -4,8 +4,8 @@ Things to Test
 AddExpr (PASSES)
 
 AndExpr
-- boolean z = x && y
-- if (x && y)
+- boolean z = x && y (PASSES)
+- if (x && y) (FAILS)
 
 ArrayExpr (PASSES)
 
@@ -13,9 +13,9 @@ AssignStmt (PASSES)
 
 BlockStmt (PASSES)
 
-CallExpr
+CallExpr (PASSES)
 
-ClassDecl (FAILS)
+ClassDecl (PASSES)
 
 DivExpr (PASSES)
 
@@ -25,7 +25,7 @@ FieldExpr (PASSES)
 
 GreaterExpr (PASSES)
 
-IfStmt (FAILS)
+IfStmt (PASSES)
 
 LesserExpr (PASSES)
 
@@ -41,20 +41,20 @@ NewObjectExpr (PASSES)
 
 NotEqExpr (PASSES)
 
-NotExpr
+NotExpr (PASSES)
 
 OrExpr (PASSES)
 
 SubExpr (PASSES)
 
-ThreadDecl
+ThreadDecl (PASSES)
 
 VarDecl (PASSES)
 
-VoidDecl
+VoidDecl (brylow's ReadAbsyn doesn't like VoidDecls, can't test)
 
-WhileStmt (doesn't match Brylow's, might be okay)
+WhileStmt (PASSES)
 
-XinuCallExpr (works)
+XinuCallExpr (PASSES)
 
-XinuCallStmt (works)
+XinuCallStmt (PASSES)

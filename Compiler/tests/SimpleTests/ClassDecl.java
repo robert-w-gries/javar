@@ -1,4 +1,4 @@
-//fails:  should have procfrag and return 0
+// PASSES
 class Test {
 
     public static void main(String[] a) {

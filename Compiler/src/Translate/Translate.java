@@ -8,6 +8,7 @@ import Symbol.SymbolTable;
 import Temp.Label;
 import Tree.BINOP;
 import Tree.CJUMP;
+import Tree.SEQ;
 import Types.FUNCTION;
 import Types.OBJECT;
 
@@ -425,7 +426,11 @@ public class Translate{
     public Exp visit(VoidDecl ast){
         Tree.Stm body = ((Nx)visit((MethodDecl)ast)).stm;
         if (body instanceof Tree.SEQ) return new Nx(((Tree.SEQ)body).left);
-        else return null;
+        else {
+            // empty body, create label and jump to it for a "no op"
+            Label nop = new Label();
+            return new Nx(new SEQ(new Tree.JUMP(nop), new Tree.LABEL(nop)));
+        }
     }
 
     public Exp visit(WhileStmt ast){
