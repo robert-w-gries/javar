@@ -4,11 +4,11 @@ import Absyn.*;
 import Frame.Access;
 import Mips.InReg;
 import Mips.MipsFrame;
-import Semant.TypeChecker;
 import Symbol.SymbolTable;
 import Temp.Label;
 import Tree.BINOP;
 import Tree.CJUMP;
+import Types.FUNCTION;
 import Types.OBJECT;
 
 import java.util.ArrayList;
@@ -25,10 +25,8 @@ public class Translate{
     private SymbolTable<Access> accesses;
     private SymbolTable<OBJECT> classes;
     private ClassDecl currentClass;
-    private TypeChecker typeChecker;
 
-    public Translate(TypeChecker typeChecker) {
-        this.typeChecker = typeChecker;
+    public Translate() {
         frags = new ArrayList<Frag>();
         accesses = new SymbolTable<Access>();
         classes = new SymbolTable<OBJECT>();
@@ -100,20 +98,18 @@ public class Translate{
         // assemble result expression
         Tree.MEM arraySubscript = new Tree.MEM(new Tree.BINOP(BINOP.Operation.PLUS,
                 array, new Tree.BINOP(BINOP.Operation.MUL, index, new Tree.CONST(frame.wordSize()))));
+
         return new Ex(new Tree.ESEQ(getAndCheck, new Tree.ESEQ(new Tree.LABEL(highOobCheck), arraySubscript)));
     }
 
     public Exp visit(AssignStmt ast){
-        if (ast.leftExpr instanceof IdentifierExpr){
-            return new Nx(new Tree.MOVE(ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx()));
-        }
-        return null;
+        return new Nx(new Tree.MOVE(ast.leftExpr.accept(this).unEx(), ast.rightExpr.accept(this).unEx()));
     }
 
     public Exp visit(BlockStmt ast){
         Tree.Stm statement = ast.stmtList.get(0).accept(this).unNx();
-        for (Stmt stmt : ast.stmtList){
-            statement = new Tree.SEQ(statement, stmt.accept(this).unNx());
+        for (int i = 1; i < ast.stmtList.size(); i++){
+            statement = new Tree.SEQ(statement, ast.stmtList.get(i).accept(this).unNx());
         }
         return new Nx(statement);
     }
@@ -123,7 +119,8 @@ public class Translate{
         Temp.Temp target = new Temp.Temp();
 
         // assemble tree to get target and null check it
-        Tree.MOVE get_target = new Tree.MOVE(new Tree.TEMP(target), ast.targetExpr.accept(this).unEx());
+        Tree.Exp targ = ast.targetExpr.accept(this).unEx();
+        Tree.MOVE get_target = new Tree.MOVE(new Tree.TEMP(target), targ);
         Label nullCheckLabel = new Label();
         Tree.SEQ nullCheck = new Tree.SEQ(new Tree.CJUMP(Tree.CJUMP.RelOperation.EQ, new Tree.TEMP(target), new Tree.CONST(0), frame.badPtr(), nullCheckLabel), new Tree.LABEL(nullCheckLabel));
         Tree.SEQ get_and_check_target = new Tree.SEQ(get_target, nullCheck);
@@ -132,7 +129,7 @@ public class Translate{
         Tree.MEM vtable = new Tree.MEM(new Tree.BINOP(Tree.BINOP.Operation.PLUS, new Tree.TEMP(target), new Tree.CONST(-frame.wordSize())));
 
         // get memory location of method
-        OBJECT inst = (OBJECT)ast.targetExpr.accept(typeChecker);
+        OBJECT inst = targ.type;
         int offset = frame.wordSize() * inst.methods.get(ast.methodString).index;
         Tree.MEM method = new Tree.MEM(new Tree.BINOP(BINOP.Operation.PLUS, vtable, new Tree.CONST(offset)));
 
@@ -143,7 +140,14 @@ public class Translate{
             args[i+1] = ast.argsList.get(i).accept(this).unEx();
         }
 
-        return new Ex(new Tree.ESEQ(get_and_check_target, new Tree.CALL(method, args)));
+        // build result ESEQ
+        Tree.ESEQ result = new Tree.ESEQ(get_and_check_target, new Tree.CALL(method, args));
+
+        // set return type
+        Types.Type returnType = ((FUNCTION)inst.methods.get(ast.methodString).type).result;
+        if (returnType instanceof OBJECT) result.type = (OBJECT)returnType;
+
+        return new Ex(result);
     }
 
     public Exp visit(ClassDecl ast){
@@ -174,18 +178,26 @@ public class Translate{
         Temp.Temp target = new Temp.Temp();
 
         // assemble tree to get target and null check it
-        Tree.MOVE get_target = new Tree.MOVE(new Tree.TEMP(target), ast.target.accept(this).unEx());
+        Tree.Exp targ = ast.target.accept(this).unEx();
+        Tree.MOVE get_target = new Tree.MOVE(new Tree.TEMP(target), targ);
         Label nullCheckLabel = new Label();
         Tree.CJUMP nullCheck = new Tree.CJUMP(Tree.CJUMP.RelOperation.EQ, new Tree.TEMP(target), new Tree.CONST(0), frame.badPtr(), nullCheckLabel);
         Tree.SEQ get_and_check_target = new Tree.SEQ(get_target, nullCheck);
 
         // get memory location of field
-        OBJECT inst = (OBJECT)ast.target.accept(typeChecker);
+        OBJECT inst = targ.type;
         int offset = inst.fields.get(ast.field).index * frame.wordSize();
         Tree.MEM field = new Tree.MEM(new Tree.BINOP(BINOP.Operation.PLUS, new Tree.TEMP(target), new Tree.CONST(offset)));
 
+        // build result ESEQ
+        Tree.ESEQ result = new Tree.ESEQ(get_and_check_target, new Tree.ESEQ(new Tree.LABEL(nullCheckLabel), field));
+
+        // set return type
+        Types.Type returnType = inst.fields.get(ast.field).type;
+        if (returnType instanceof OBJECT) result.type = (OBJECT)returnType;
+
         // return result ESEQ
-        return new Ex(new Tree.ESEQ(get_and_check_target, new Tree.ESEQ(new Tree.LABEL(nullCheckLabel), field)));
+        return new Ex(result);
     }
 
     public Exp visit(GreaterExpr ast){
@@ -193,7 +205,15 @@ public class Translate{
     }
 
     public Exp visit(IdentifierExpr ast){
-        return new Ex(accesses.get(ast.id).exp(new Tree.TEMP(frame.FP())));
+        Tree.Exp exp;
+        if (accesses.get(ast.id) != null) {
+            exp = accesses.get(ast.id).exp(new Tree.TEMP(frame.FP()));
+            if (classes.get(ast.id) != null) exp.type = classes.get(ast.id);
+        } else {
+            // if it's not a local variable then it's an instance variable
+            exp = new FieldExpr(new ThisExpr(), ast.id).accept(this).unEx();
+        }
+        return new Ex(exp);
     }
 
     public Exp visit(IfStmt ast){
@@ -229,7 +249,7 @@ public class Translate{
         else frame.name = new Temp.Label(currentClass.name + "." + ast.name);
 
         accesses.beginScope();
-
+        classes.beginScope();
         accesses.put("**THIS**", frame.allocFormal());
         for (Formal f : ast.params) {
             accesses.put(f.name, frame.allocFormal());
@@ -261,6 +281,7 @@ public class Translate{
         body = new Tree.SEQ(body, new Tree.MOVE(new Tree.TEMP(new Temp.Temp(2)), ast.returnVal.accept(this).unEx()));
 
         accesses.endScope();
+        classes.endScope();
 
         frags.add(new ProcFrag(body, frame));
 
@@ -293,7 +314,10 @@ public class Translate{
         Tree.CONST num_fields = new Tree.CONST(inst.fields.count());
         Tree.NAME vtable = new Tree.NAME(new Label(class_name + "_vtable"));
 
-        return new Ex(new Tree.CALL(new Tree.NAME(new Label("_new")), num_fields, vtable));
+        Tree.CALL result = new Tree.CALL(new Tree.NAME(new Label("_new")), num_fields, vtable);
+        result.type = inst;
+
+        return new Ex(result);
     }
 
     public Exp visit(NotEqExpr ast){
@@ -368,7 +392,9 @@ public class Translate{
     }
 
     public Exp visitThis(){
-        return new Ex(accesses.get("**THIS**").exp(new Tree.TEMP(frame.FP())));
+        Tree.Exp exp = accesses.get("**THIS**").exp(new Tree.TEMP(frame.FP()));
+        exp.type = currentClass.type.instance;
+        return new Ex(exp);
     }
 
     public Exp visit(ThreadDecl ast){
@@ -382,6 +408,10 @@ public class Translate{
     public Exp visit(VarDecl ast){
         Temp.Temp temp = new Temp.Temp();
         accesses.put(ast.name, new InReg(temp));
+
+        // we have to keep track of types of variables with identifier types
+        if (ast.type instanceof IdentifierType)
+            classes.put(ast.name, classes.get(((IdentifierType)ast.type).id));
 
         Tree.Exp initial = ast.init == null ? new Tree.CONST(0)
                 : ast.init.accept(this).unEx();
