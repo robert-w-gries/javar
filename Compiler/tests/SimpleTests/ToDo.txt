@@ -51,7 +51,7 @@ ThreadDecl (PASSES)
 
 VarDecl (PASSES)
 
-VoidDecl (brylow's ReadAbsyn doesn't like VoidDecls, can't test)
+VoidDecl - no way to test this
 
 WhileStmt (PASSES)
 
