@@ -29,31 +29,31 @@ IfStmt (FAILS)
 
 LesserExpr (PASSES)
 
-MethodDecl
+MethodDecl (PASSES)
 
-MulExpr
+MulExpr (PASSES)
 
-NegExpr
+NegExpr (PASSES)
 
-NewArrayExpr
+NewArrayExpr (PASSES)
 
-NewObjectExpr
+NewObjectExpr (PASSES)
 
-NotEqExpr
+NotEqExpr (PASSES)
 
 NotExpr
 
-OrExpr
+OrExpr (PASSES)
 
-SubExpr
+SubExpr (PASSES)
 
 ThreadDecl
 
-VarDecl
+VarDecl (PASSES)
 
 VoidDecl
 
-WhileStmt
+WhileStmt (doesn't match Brylow's, might be okay)
 
 XinuCallExpr (works)
 
