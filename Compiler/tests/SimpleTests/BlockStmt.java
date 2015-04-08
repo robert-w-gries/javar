@@ -1,9 +1,12 @@
+//passes
 class Test {
 
     public static void main(String[] a) {
 
+        int x = 10;
+
         {
-            int x = 0;
+            x = 0;
         }
 
     }

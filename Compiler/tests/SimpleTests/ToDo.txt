@@ -1,33 +1,33 @@
 Things to Test
 --------------------------------
 
-AddExpr
+AddExpr (PASSES)
 
 AndExpr
 - boolean z = x && y
 - if (x && y)
 
-ArrayExpr
+ArrayExpr (PASSES)
 
-AssignStmt
+AssignStmt (PASSES)
 
-BlockStmt
+BlockStmt (PASSES)
 
 CallExpr
 
-ClassDecl
+ClassDecl (FAILS)
 
-DivExpr
+DivExpr (PASSES)
 
-EqualExpr
+EqualExpr (PASSES)
 
-FieldExpr
+FieldExpr (PASSES)
 
-GreaterExpr
+GreaterExpr (PASSES)
 
-IfStmt
+IfStmt (FAILS)
 
-LesserExpr
+LesserExpr (PASSES)
 
 MethodDecl
 

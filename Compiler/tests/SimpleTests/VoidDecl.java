@@ -10,7 +10,7 @@ class Test {
 
 class VoidTest {
 
-    public void voidCall(int x) {
+    public void voidCall() {
 
     }
 

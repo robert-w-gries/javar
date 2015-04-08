@@ -1,3 +1,4 @@
+//fails:  OOB Exception
 class Test {
 
     public static void main(String[] a) {
