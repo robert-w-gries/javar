@@ -1,5 +1,5 @@
 all:
-	javac Absyn/*.java Parse/*.java Semant/*.java Symbol/*.java Types/*.java
+	javac Absyn/*.java Parse/*.java Semant/*.java Symbol/*.java Types/*.java Translate/*.java
 
 compiler:
 	javacc -OUTPUT_DIRECTORY=Parse/ Parse/MiniJavaParser.jj
