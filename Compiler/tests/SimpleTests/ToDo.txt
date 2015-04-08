@@ -15,7 +15,7 @@ BlockStmt (PASSES)
 
 CallExpr
 
-ClassDecl (FAILS)
+ClassDecl PASSES
 
 DivExpr (PASSES)
 
@@ -51,7 +51,7 @@ ThreadDecl
 
 VarDecl (PASSES)
 
-VoidDecl
+VoidDecl - no way to test this
 
 WhileStmt (doesn't match Brylow's, might be okay)
 
