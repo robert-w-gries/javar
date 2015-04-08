@@ -26,7 +26,6 @@ public class MipsFrame extends Frame {
 
     public MipsFrame() {
         framePointer = new Temp.Temp(30);
-        name = new Temp.Label();
         formals = new LinkedList<Access>();
         actuals = new LinkedList<Access>();
     }

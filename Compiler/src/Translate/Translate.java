@@ -269,7 +269,7 @@ public class Translate{
 
         Tree.Stm body;
         if (vars == null && stmts == null) {
-            return null; // shouldn't happen
+            body = null;
         } else if (vars == null) {
             body = stmts;
         } else if (stmts == null) {
@@ -278,7 +278,10 @@ public class Translate{
             body = new Tree.SEQ(vars, stmts);
         }
 
-        body = new Tree.SEQ(body, new Tree.MOVE(new Tree.TEMP(new Temp.Temp(2)), ast.returnVal.accept(this).unEx()));
+        Tree.MOVE returnVal = new Tree.MOVE(new Tree.TEMP(new Temp.Temp(2)), ast.returnVal.accept(this).unEx());
+
+        if (body == null) body = returnVal;
+        else body = new Tree.SEQ(body, returnVal);
 
         accesses.endScope();
         classes.endScope();
@@ -380,7 +383,7 @@ public class Translate{
     public Exp visit(StringLiteral ast){
         String text = "  .data\n";
         Label l = new Label();
-        text += l.toString() + " .asciiz \"" + ast.value + "\"";
+        text += l.toString() + " .asciiz " + ast.value;
         frags.add(new DataFrag(text));
         return new Ex(new Tree.NAME(l));
     }
@@ -420,8 +423,9 @@ public class Translate{
     }
 
     public Exp visit(VoidDecl ast){
-        Tree.SEQ body = (Tree.SEQ)((Nx)visit((MethodDecl)ast)).stm;
-        return new Nx(body.left);
+        Tree.Stm body = ((Nx)visit((MethodDecl)ast)).stm;
+        if (body instanceof Tree.SEQ) return new Nx(((Tree.SEQ)body).left);
+        else return null;
     }
 
     public Exp visit(WhileStmt ast){
