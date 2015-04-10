@@ -1,108 +1,106 @@
+/* Copyright (C) 1997-2003, Purdue Research Foundation of Purdue University.
+ * All rights reserved.  */
 package Canon;
-
-import Temp.Label;
-import Tree.CJUMP;
-import Tree.JUMP;
-import Tree.LABEL;
-import Tree.Stm;
-
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.LinkedList;
+import java.util.HashMap;
 
-public class TraceSchedule {
+/**
+ * Arranges the blocks so that CJUMP is followed by its false label.
+ */
 
-    public List<Stm> trace;
-    private BasicBlocks blocks;
-    private Map<Label, List<Stm>> unvisited = new HashMap<Label, List<Stm>>();
+public class TraceSchedule
+{
+    Temp.Label done;
+    Iterator<LinkedList<Tree.Stm>> theBlocks;
+    List<Tree.Stm> stms;
+    HashMap<Temp.Label,LinkedList<Tree.Stm>> map
+		= new HashMap<Temp.Label,LinkedList<Tree.Stm>>();
 
-    /**
-     * Initializes the unvisited map with all blocks and creates the trace
-     * @param blocks the blocks to be converted to a single trace
-     */
-    public TraceSchedule(BasicBlocks blocks) {
-        this.blocks = blocks;
-        for (List<Stm> block : blocks.blocks) {
-            unvisited.put(((LABEL)block.get(0)).label, block);
-        }
-        trace = new LinkedList<Stm>();
-        create_trace();
+    Tree.Stm getLast(LinkedList<Tree.Stm> block) 
+	{
+		Tree.Stm last = block.removeLast();
+		stms.addAll(block);
+		return last;
     }
 
-    /**
-     * Loops through every block until an unvisited block is reached
-     * The trace is built by iteratively following jumps until the only jump is to an already visited block,
-     * after which the outer loop will continue until all blocks are visited
-     */
-    private void create_trace() {
-        for (List<Stm> block : blocks.blocks) {
-            // we will continue adding blocks to the trace until we hit a dead end
-            while (true) {
-                Label block_label = ((LABEL)block.get(0)).label;
-                // we only want to add a block if it hasn't been visited already
-                if (!unvisited.containsKey(block_label)) break;
-                unvisited.remove(block_label); // now that we are adding it, mark it visited
-
-                trace.addAll(block); // add the whole block to the trace
-
-                // get the last statement of the block that was just added
-                Stm last = trace.get(trace.size() - 1);
-
-                // this statement will either be a JUMP or a CJUMP
-                // use the JUMP or CJUMP to determine which block to continue with
-                if (last instanceof JUMP) block = trace_jump((JUMP)last);
-                else if (last instanceof CJUMP) block = trace_cjump((CJUMP)last);
-
-                // if there was no block, we've hit a dead end and will look for the next unvisited block
-                if (block == null) break;
-            }
-        }
-
-        trace.add(new LABEL(blocks.done)); // add the done label to the end of the whole trace
+    void trace(LinkedList<Tree.Stm> slist)
+	{
+		for(;;) 
+		{
+			Tree.Stm s = slist.getFirst();
+			Tree.LABEL lab = (Tree.LABEL)s;
+			map.remove(lab.label);
+			s = getLast(slist);
+			if (s instanceof Tree.JUMP) 
+			{
+				Tree.JUMP j = (Tree.JUMP)s;
+				Temp.Label first = j.targets.getFirst();
+				LinkedList<Tree.Stm> target = map.get(first);
+				int size = j.targets.size();
+				if (size == 1 && target != null) 
+				{
+					slist = target;
+				} 
+				else 
+				{
+					if (theBlocks.hasNext()
+						|| first != done
+						|| size > 1)
+						stms.add(s);
+					return;
+				}
+			} 
+			else if (s instanceof Tree.CJUMP) 
+			{
+				Tree.CJUMP j = (Tree.CJUMP)s;
+				LinkedList<Tree.Stm> t = map.get(j.iftrue);
+				LinkedList<Tree.Stm> f = map.get(j.iffalse);
+				if (f != null) 
+				{
+					stms.add(s);
+					slist = f;
+				} 
+				else if (t != null) 
+				{
+					stms.add(new Tree.CJUMP(Tree.CJUMP.notRel(j.relop),
+											j.left, j.right,
+											j.iffalse, j.iftrue));
+					slist = t;
+				} 
+				else 
+				{
+					Temp.Label ff = new Temp.Label();
+					stms.add(new Tree.CJUMP(j.relop, j.left, j.right,
+											j.iftrue, ff));
+					stms.add(new Tree.LABEL(ff));
+					stms.add(new Tree.JUMP(j.iffalse));
+					return;
+				}
+			} 
+			else
+				throw new Error("Bad basic block in TraceSchedule");
+		}
     }
 
-    /**
-     * Attempts to follow a JUMP to its target if the target is not yet visited
-     * @param jump a JUMP to follow
-     * @return the next block to add to the trace, if one was found
-     */
-    private List<Stm> trace_jump(JUMP jump) {
-        // if the unvisited contains the jump target, it hasn't yet been added to the trace
-        if (unvisited.containsKey(jump.target)) {
-            // in this case, we can add the block immediately after its jump and the jump is unnecessary
-            trace.remove(trace.size() - 1);
-            return unvisited.get(jump.target);
-        } else {
-            // if it was not found, we've hit a dead end
-            return null;
-        }
-    }
-
-    /**
-     * Attempts to follow a CJUMP to either of its targets if either of them is not yet visited
-     * @param cj a CJUMP to follow
-     * @return the next block to add to the trace, if one was found
-     */
-    private List<Stm> trace_cjump(CJUMP cj) {
-        // the ideal case is that the false block hasn't been visited
-        if (unvisited.containsKey(cj.iffalse)) {
-            // in this case we can continue right away with the false block
-            return unvisited.get(cj.iffalse);
-        } else if (unvisited.containsKey(cj.iftrue)) { // if the false block wasn't found but the true block was
-            // we swap the CJUMP's operator and labels so the true is now the false
-            trace.set(trace.size() - 1, new CJUMP(CJUMP.notRel(cj.relop), cj.left, cj.right, cj.iffalse, cj.iftrue));
-            return unvisited.get(cj.iftrue);
-        } else { // if neither the true nor the false was found
-            // we create a new label for the false fallthrough
-            Label ff = new Label();
-            // we set the false label of the CJUMP to the new label
-            trace.set(trace.size() - 1, new CJUMP(cj.relop, cj.left, cj.right, cj.iftrue, ff));
-            // we add the label and a jump to the actual false block to the trace
-            trace.add(new LABEL(ff));
-            trace.add(new JUMP(cj.iffalse));
-            // there is no block to continue to
-            return null;
-        }
+    public TraceSchedule(BasicBlocks b, List<Tree.Stm> stmts) 
+	{
+		for (LinkedList<Tree.Stm> s : b.blocks)
+		{
+			map.put(((Tree.LABEL)s.getFirst()).label, s);
+		}
+		done = b.done;
+		theBlocks = b.blocks.iterator();
+		stms = stmts;
+		while (theBlocks.hasNext())
+		{
+			LinkedList<Tree.Stm> s = theBlocks.next();
+			Tree.LABEL lab = (Tree.LABEL)s.getFirst();
+			if (map.get(lab.label) != null)
+				trace(s);
+		}
+		stms.add(new Tree.LABEL(done));
+		map = null;
     }
 }
