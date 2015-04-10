@@ -8,8 +8,8 @@ package Translate;
  */
 public class ProcFrag extends Frag {
 
-    Tree.Stm body;
-    Frame.Frame frame;
+    public Tree.Stm body;
+    public Frame.Frame frame;
 
     public ProcFrag(Tree.Stm body, Frame.Frame frame) {
         this.body = body;
