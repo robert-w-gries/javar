@@ -5,7 +5,7 @@
 // 2009 Apr 11            //
 ////////////////////////////
 PARSER_BEGIN(ReadFrags)
-package Parse;
+package Assem;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Iterator;
