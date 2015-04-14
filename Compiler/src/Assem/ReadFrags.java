@@ -451,7 +451,7 @@ import java.util.List;
     jj_consume_token(RPAREN);
           Tree.Exp[] aargs = new Tree.Exp[args.size()];
           for (int i = 0; i < aargs.length; i++) aargs[i] = args.get(i);
-        {if (true) return new Tree.CALL(target, args);}
+        {if (true) return new Tree.CALL(target, aargs);}
     throw new Error("Missing return statement in function");
   }
 
