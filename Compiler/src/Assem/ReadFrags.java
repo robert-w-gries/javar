@@ -22,9 +22,8 @@ import java.util.List;
             if (null == tempVector)
                 {
                     tempVector = new Vector<Temp.Temp>();
-                    Temp.Temp[] regs = Mips.MipsFrame.registers;
-                    for (int i = 0; i < regs.length; i++)
-                        { tempVector.add(regs[i]); }
+                    for (int i = 0; i < 32; i++)
+                        { tempVector.add(new Temp.Temp(i)); }
                 }
 
             for (int i = tempVector.size(); i <= num; i++)
@@ -185,8 +184,7 @@ import java.util.List;
     jj_consume_token(LPAREN);
     name = jj_consume_token(ID);
     jj_consume_token(COLON);
-                          frame = (Mips.MipsFrame)(masterFrame.newFrame(
-                                                                                Symbol.Symbol.get(name.image)));
+                          frame = new Mips.MipsFrame(); frame.name = new Temp.Label(name.image);
     formals = FormalList();
                              frame.formals = formals;
     actuals = FormalList();
@@ -360,58 +358,58 @@ import java.util.List;
   }
 
   static final public Tree.BINOP BINOP() throws ParseException {
-    int binop;
+    Tree.BINOP.Operation binop;
     Tree.Exp left, right;
     jj_consume_token(BINOP);
     jj_consume_token(LPAREN);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case PLUS:
       jj_consume_token(PLUS);
-                     binop = Tree.BINOP.PLUS;
+                     binop = Tree.BINOP.Operation.PLUS;
       break;
     case MINUS:
       jj_consume_token(MINUS);
-                     binop = Tree.BINOP.MINUS;
+                     binop = Tree.BINOP.Operation.MINUS;
       break;
     case MUL:
       jj_consume_token(MUL);
-                     binop = Tree.BINOP.MUL;
+                     binop = Tree.BINOP.Operation.MUL;
       break;
     case DIV:
       jj_consume_token(DIV);
-                     binop = Tree.BINOP.DIV;
+                     binop = Tree.BINOP.Operation.DIV;
       break;
     case AND:
       jj_consume_token(AND);
-                     binop = Tree.BINOP.AND;
+                     binop = Tree.BINOP.Operation.AND;
       break;
     case OR:
       jj_consume_token(OR);
-                     binop = Tree.BINOP.OR;
+                     binop = Tree.BINOP.Operation.OR;
       break;
     case SLL:
       jj_consume_token(SLL);
-                     binop = Tree.BINOP.LSHIFT;
+                     binop = Tree.BINOP.Operation.LSHIFT;
       break;
     case SRL:
       jj_consume_token(SRL);
-                     binop = Tree.BINOP.RSHIFT;
+                     binop = Tree.BINOP.Operation.RSHIFT;
       break;
     case SRA:
       jj_consume_token(SRA);
-                     binop = Tree.BINOP.ARSHIFT;
+                     binop = Tree.BINOP.Operation.ARSHIFT;
       break;
     case BITAND:
       jj_consume_token(BITAND);
-                     binop = Tree.BINOP.BITAND;
+                     binop = Tree.BINOP.Operation.BITAND;
       break;
     case BITOR:
       jj_consume_token(BITOR);
-                     binop = Tree.BINOP.BITOR;
+                     binop = Tree.BINOP.Operation.BITOR;
       break;
     case BITXOR:
       jj_consume_token(BITXOR);
-                     binop = Tree.BINOP.BITXOR;
+                     binop = Tree.BINOP.Operation.BITXOR;
       break;
     default:
       jj_la1[12] = jj_gen;
@@ -427,7 +425,7 @@ import java.util.List;
 
   static final public Tree.CALL CALL() throws ParseException {
     Tree.Exp target, arg;
-    LinkedList args = new LinkedList();
+    LinkedList<Tree.Exp> args = new LinkedList<Tree.Exp>();
     jj_consume_token(CALL);
     jj_consume_token(LPAREN);
     target = Exp();
@@ -451,12 +449,14 @@ import java.util.List;
                         args.add(arg);
     }
     jj_consume_token(RPAREN);
-          {if (true) return new Tree.CALL(target, args);}
+          Tree.Exp[] aargs = new Tree.Exp[args.size()];
+          for (int i = 0; i < aargs.length; i++) aargs[i] = args.get(i);
+        {if (true) return new Tree.CALL(target, args);}
     throw new Error("Missing return statement in function");
   }
 
   static final public Tree.CJUMP CJUMP() throws ParseException {
-    int relop;
+    Tree.CJUMP.RelOperation relop;
     Tree.Exp left, right;
     Token tLabel, fLabel;
     jj_consume_token(CJUMP);
@@ -464,43 +464,43 @@ import java.util.List;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EQ:
       jj_consume_token(EQ);
-                 relop = Tree.CJUMP.EQ;
+                 relop = Tree.CJUMP.RelOperation.EQ;
       break;
     case NE:
       jj_consume_token(NE);
-                 relop = Tree.CJUMP.NE;
+                 relop = Tree.CJUMP.RelOperation.NE;
       break;
     case LT:
       jj_consume_token(LT);
-                 relop = Tree.CJUMP.LT;
+                 relop = Tree.CJUMP.RelOperation.LT;
       break;
     case GT:
       jj_consume_token(GT);
-                 relop = Tree.CJUMP.GT;
+                 relop = Tree.CJUMP.RelOperation.GT;
       break;
     case LE:
       jj_consume_token(LE);
-                 relop = Tree.CJUMP.LE;
+                 relop = Tree.CJUMP.RelOperation.LE;
       break;
     case GE:
       jj_consume_token(GE);
-                 relop = Tree.CJUMP.GE;
+                 relop = Tree.CJUMP.RelOperation.GE;
       break;
     case ULT:
       jj_consume_token(ULT);
-                 relop = Tree.CJUMP.ULT;
+                 relop = Tree.CJUMP.RelOperation.ULT;
       break;
     case ULE:
       jj_consume_token(ULE);
-                 relop = Tree.CJUMP.ULE;
+                 relop = Tree.CJUMP.RelOperation.ULE;
       break;
     case UGT:
       jj_consume_token(UGT);
-                 relop = Tree.CJUMP.UGT;
+                 relop = Tree.CJUMP.RelOperation.UGT;
       break;
     case UGE:
       jj_consume_token(UGE);
-                 relop = Tree.CJUMP.UGE;
+                 relop = Tree.CJUMP.RelOperation.UGE;
       break;
     default:
       jj_la1[14] = jj_gen;
@@ -539,13 +539,13 @@ import java.util.List;
     throw new Error("Missing return statement in function");
   }
 
-  static final public Tree.EXP EXP() throws ParseException {
+  static final public Tree.EXP_STM EXP() throws ParseException {
     Tree.Exp exp = null;
     jj_consume_token(EXP);
     jj_consume_token(LPAREN);
     exp = Exp();
     jj_consume_token(RPAREN);
-          {if (true) return new Tree.EXP(exp);}
+          {if (true) return new Tree.EXP_STM(exp);}
     throw new Error("Missing return statement in function");
   }
 
