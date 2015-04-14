@@ -55,10 +55,11 @@ public class Main {
 
         if (null == reader) usage();
 
-        LinkedList<Translate.Frag> frags;
+        LinkedList<Translate.Frag> frags = null;
 
         try {
-            frags = new ReadFrags(reader).Program(); // TODO generate ReadFrags
+            new ReadFrags(reader);
+            frags = ReadFrags.Program();
         } catch (ParseException p) {
             System.err.println(p.toString());
             System.exit(-1);

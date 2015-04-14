@@ -29,9 +29,8 @@ import java.util.List;
 	    if (null == tempVector)
 		{
 		    tempVector = new Vector<Temp.Temp>();
-		    Temp.Temp[] regs = Mips.MipsFrame.registers;
-		    for (int i = 0; i < regs.length; i++)
-			{ tempVector.add(regs[i]); }
+		    for (int i = 0; i < 32; i++)
+			{ tempVector.add(new Temp.Temp(i)); }
 		}
 
 	    for (int i = tempVector.size(); i <= num; i++)
@@ -226,8 +225,7 @@ Frame.Frame Frame() :
 }
 {
 	<MIPSFRAME> <LPAREN>
-    name = <ID> <COLON> { frame = (Mips.MipsFrame)(masterFrame.newFrame(
-										Symbol.Symbol.get(name.image))); }
+    name = <ID> <COLON> { frame = new Mips.MipsFrame(); frame.name = new Temp.Label(name.image); }
     formals = FormalList() { frame.formals = formals; }
     actuals = FormalList() { frame.actuals = actuals; }
     [ <BADPTR> <LPAREN> name = <ID> <RPAREN>
@@ -337,23 +335,23 @@ Tree.Exp Exp() :
 
 Tree.BINOP BINOP() :
 {
-    int binop;
+    Tree.BINOP.Operation binop;
     Tree.Exp left, right;
 }
 {
  <BINOP> <LPAREN>
-      (  <PLUS>    { binop = Tree.BINOP.PLUS;    }
-      |  <MINUS>   { binop = Tree.BINOP.MINUS;   }
-      |  <MUL>     { binop = Tree.BINOP.MUL;     }
-      |  <DIV>     { binop = Tree.BINOP.DIV;     }
-      |  <AND>     { binop = Tree.BINOP.AND;     }
-      |  <OR>      { binop = Tree.BINOP.OR;      }
-      |  <SLL>     { binop = Tree.BINOP.LSHIFT;  }
-      |  <SRL>     { binop = Tree.BINOP.RSHIFT;  }
-      |  <SRA>     { binop = Tree.BINOP.ARSHIFT; }
-      |  <BITAND>  { binop = Tree.BINOP.BITAND;  }
-      |  <BITOR>   { binop = Tree.BINOP.BITOR;   }
-      |  <BITXOR>  { binop = Tree.BINOP.BITXOR;  }
+      (  <PLUS>    { binop = Tree.BINOP.Operation.PLUS;    }
+      |  <MINUS>   { binop = Tree.BINOP.Operation.MINUS;   }
+      |  <MUL>     { binop = Tree.BINOP.Operation.MUL;     }
+      |  <DIV>     { binop = Tree.BINOP.Operation.DIV;     }
+      |  <AND>     { binop = Tree.BINOP.Operation.AND;     }
+      |  <OR>      { binop = Tree.BINOP.Operation.OR;      }
+      |  <SLL>     { binop = Tree.BINOP.Operation.LSHIFT;  }
+      |  <SRL>     { binop = Tree.BINOP.Operation.RSHIFT;  }
+      |  <SRA>     { binop = Tree.BINOP.Operation.ARSHIFT; }
+      |  <BITAND>  { binop = Tree.BINOP.Operation.BITAND;  }
+      |  <BITOR>   { binop = Tree.BINOP.Operation.BITOR;   }
+      |  <BITXOR>  { binop = Tree.BINOP.Operation.BITXOR;  }
       )
       left = Exp()
       right = Exp()
@@ -364,34 +362,36 @@ Tree.BINOP BINOP() :
 Tree.CALL CALL() :
 {
     Tree.Exp target, arg;
-    LinkedList args = new LinkedList();
+    LinkedList<Tree.Exp> args = new LinkedList<Tree.Exp>();
 }
 {
 	<CALL> <LPAREN>
 	target = Exp()
 	( arg = Exp() { args.add(arg); } )*
 	<RPAREN>
-	{ return new Tree.CALL(target, args); }
+	{ Tree.Exp[] aargs = new Tree.Exp[args.size()];
+          for (int i = 0; i < aargs.length; i++) aargs[i] = args.get(i);
+	return new Tree.CALL(target, args); }
 }
 
 Tree.CJUMP CJUMP() :
 {
-    int relop;
+    Tree.CJUMP.RelOperation relop;
     Tree.Exp left, right;
     Token tLabel, fLabel;
 }
 {
  <CJUMP> <LPAREN>
-      (  <EQ>  { relop = Tree.CJUMP.EQ;  }
-      |  <NE>  { relop = Tree.CJUMP.NE;  }
-      |  <LT>  { relop = Tree.CJUMP.LT;  }
-      |  <GT>  { relop = Tree.CJUMP.GT;  }
-      |  <LE>  { relop = Tree.CJUMP.LE;  }
-      |  <GE>  { relop = Tree.CJUMP.GE;  }
-      |  <ULT> { relop = Tree.CJUMP.ULT; }
-      |  <ULE> { relop = Tree.CJUMP.ULE; }
-      |  <UGT> { relop = Tree.CJUMP.UGT; }
-      |  <UGE> { relop = Tree.CJUMP.UGE; }
+      (  <EQ>  { relop = Tree.CJUMP.RelOperation.EQ;  }
+      |  <NE>  { relop = Tree.CJUMP.RelOperation.NE;  }
+      |  <LT>  { relop = Tree.CJUMP.RelOperation.LT;  }
+      |  <GT>  { relop = Tree.CJUMP.RelOperation.GT;  }
+      |  <LE>  { relop = Tree.CJUMP.RelOperation.LE;  }
+      |  <GE>  { relop = Tree.CJUMP.RelOperation.GE;  }
+      |  <ULT> { relop = Tree.CJUMP.RelOperation.ULT; }
+      |  <ULE> { relop = Tree.CJUMP.RelOperation.ULE; }
+      |  <UGT> { relop = Tree.CJUMP.RelOperation.UGT; }
+      |  <UGE> { relop = Tree.CJUMP.RelOperation.UGE; }
       )
       left = Exp()
       right = Exp()
@@ -420,11 +420,11 @@ Tree.ESEQ ESEQ() :
 	{ return new Tree.ESEQ(stm,exp); }
 }
 
-Tree.EXP EXP() :
+Tree.EXP_STM EXP() :
 {   Tree.Exp exp = null;   }
 {
 	<EXP> <LPAREN> exp = Exp() <RPAREN>
-	{ return new Tree.EXP(exp); }
+	{ return new Tree.EXP_STM(exp); }
 }
 
 Tree.JUMP JUMP() :
