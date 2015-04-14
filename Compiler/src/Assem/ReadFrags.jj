@@ -371,7 +371,7 @@ Tree.CALL CALL() :
 	<RPAREN>
 	{ Tree.Exp[] aargs = new Tree.Exp[args.size()];
           for (int i = 0; i < aargs.length; i++) aargs[i] = args.get(i);
-	return new Tree.CALL(target, args); }
+	return new Tree.CALL(target, aargs); }
 }
 
 Tree.CJUMP CJUMP() :
