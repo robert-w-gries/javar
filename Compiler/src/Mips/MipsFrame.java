@@ -158,7 +158,7 @@ public class MipsFrame extends Frame {
         //////////////////
     }
 
-    public void printFrame(java.io.PrintWriter printOut){
+    public void printFrame(java.io.PrintWriter printOut) {
         String tab = "\t\t"; // 8 spaces. Generally 2 tabs but I wont risk it.
         printOut.print(     "MipsFrame(" + "\n" + // Open frame
                             name + ":"   + "\n");

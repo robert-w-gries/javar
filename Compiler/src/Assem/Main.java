@@ -146,7 +146,7 @@ public class Main {
                     }
                 }
                 writer.println("ProcFrag(");
-                ((MipsFrame)p.frame).printFrame(writer);
+                p.frame.printFrame(writer);
                 for (Assem.Instr i : code) {
                     i.output(writer);
                 }

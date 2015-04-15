@@ -17,10 +17,11 @@ public abstract class Frame {
     public LinkedList<Access> formals;
     public LinkedList<Access> actuals;
 
-    abstract public Temp.Temp FP();
-    abstract public int wordSize();
-    abstract public Access allocFormal();
-    abstract public Access allocLocal();
+    public abstract Temp.Temp FP();
+    public abstract int wordSize();
+    public abstract Access allocFormal();
+    public abstract Access allocLocal();
+    public abstract void printFrame(java.io.PrintWriter printOut);
 
     public abstract void procEntryExit1(List<Stm> stms);
 }

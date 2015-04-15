@@ -61,7 +61,7 @@ public class Main {
 			} else {
 				writer.println("ProcFrag(");
 				ProcFrag proc = (ProcFrag)frag;
-				((MipsFrame)proc.frame).printFrame(writer);
+				proc.frame.printFrame(writer);
 				new Print(writer, proc.body);
 				writer.println();
 				writer.println(")");
