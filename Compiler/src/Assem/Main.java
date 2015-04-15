@@ -3,6 +3,11 @@
 
 package Assem;
 
+import Absyn.Program;
+import Parse.MiniJavaParser;
+import Semant.TypeChecker;
+import Translate.Frag;
+
 import java.io.*;
 
 import java.util.List;
@@ -26,8 +31,10 @@ public class Main {
         System.exit(-2);
     }
 
-    public static void main(String args[]) {
+    public static void main(String args[]) throws Parse.ParseException {
         Reader reader = null;
+        Program program = null;
+        Translate.Translate translate = null;
 
         for (String arg : args) {
             if (arg.equals("-a")) {
@@ -43,6 +50,12 @@ public class Main {
             } else if (arg.equals("-")) {
                 InputStreamReader isr = new InputStreamReader(System.in);
                 reader = new BufferedReader(isr);
+            } else if (arg.equals("--parse")) {
+                new MiniJavaParser(reader);
+                program = MiniJavaParser.Goal(); // parse MiniJava source file
+                new TypeChecker().visit(program); // typecheck the output program
+                translate = new Translate.Translate();
+                translate.visit(program); // translate the program to IR tree
             } else {
                 try {
                     reader = new FileReader(arg);
@@ -57,12 +70,16 @@ public class Main {
 
         LinkedList<Translate.Frag> frags = null;
 
-        try {
-            new ReadFrags(reader);
-            frags = ReadFrags.Program();
-        } catch (ParseException p) {
-            System.err.println(p.toString());
-            System.exit(-1);
+        if (program == null) {
+            try {
+                new ReadFrags(reader);
+                frags = ReadFrags.Program();
+            } catch (ParseException p) {
+                System.err.println(p.toString());
+                System.exit(-1);
+            }
+        } else {
+            frags = (LinkedList<Frag>)translate.results();
         }
 
         process_frags(frags);
