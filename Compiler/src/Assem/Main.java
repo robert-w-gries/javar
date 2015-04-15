@@ -8,6 +8,8 @@ import Parse.MiniJavaParser;
 import Semant.TypeChecker;
 import Translate.Frag;
 
+import Mips.MipsFrame;
+
 import java.io.*;
 
 import java.util.List;
@@ -144,7 +146,7 @@ public class Main {
                     }
                 }
                 writer.println("ProcFrag(");
-                p.frame.printFrame(writer); // TODO implement this
+                ((MipsFrame)p.frame).printFrame(writer);
                 for (Assem.Instr i : code) {
                     i.output(writer);
                 }

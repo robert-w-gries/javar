@@ -180,6 +180,7 @@ public class MipsFrame extends Frame {
         printOut.print(     ")"    + "\n");
         printOut.print(     "BadPtr(" + badPtr() + ")" + "\n");
         printOut.print(     "BadSub(" + badSub() + ")" + "\n");
+        printOut.print(     "maxArgOffset(0)" + "\n"); //TODO: figure out correct way to print maxArgOffset
         printOut.println(     ")"); // Close frame
     }
 
