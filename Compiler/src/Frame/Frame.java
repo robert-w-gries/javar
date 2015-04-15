@@ -1,6 +1,9 @@
 package Frame;
 
+import Tree.Stm;
+
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,4 +22,5 @@ public abstract class Frame {
     abstract public Access allocFormal();
     abstract public Access allocLocal();
 
+    public abstract void procEntryExit1(List<Stm> stms);
 }

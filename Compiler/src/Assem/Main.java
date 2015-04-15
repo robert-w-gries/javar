@@ -111,7 +111,7 @@ public class Main {
                         writer.flush();
                     }
                 }
-                p.frame.procEntryExit1(traced); // TODO implement this
+                p.frame.procEntryExit1(traced);
                 if (prologOutput) {
                     writer.println("/* **** PROLOGUE / EPILOGUE **** */");
                     for (Tree.Stm s : traced) {

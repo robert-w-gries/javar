@@ -2,8 +2,12 @@ package Mips;
 
 import Frame.Frame;
 import Frame.Access;
+import Tree.MOVE;
+import Tree.Stm;
+import Tree.TEMP;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -83,6 +87,75 @@ public class MipsFrame extends Frame {
 
         */
 
+    }
+
+    @Override
+    public void procEntryExit1(List<Stm> stms) {
+        Temp.Temp ra = new Temp.Temp(), s0 = new Temp.Temp(), s1 = new Temp.Temp(), s2 = new Temp.Temp(),
+                s3 = new Temp.Temp(), s4 = new Temp.Temp(), s5 = new Temp.Temp(), s6 = new Temp.Temp(),
+                s7 = new Temp.Temp(), fp = new Temp.Temp();
+
+        TEMP _fp = new TEMP(framePointer);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+        // PROLOGUE: needs to happen in reverse order because we are inserting at the beginning of the list //
+        //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        // MOVE(ACTUAL, FORMAL)
+
+        for (int i = formals.size()-1; i >= 0; i--) {
+            stms.add(0, new MOVE(actuals.get(i).exp(_fp), formals.get(i).exp(_fp)));
+        }
+
+        // CALLEE SAVES
+
+        // frame pointer
+        stms.add(0, new MOVE(new TEMP(fp), new TEMP(new Temp.Temp(30))));
+        // s registers
+        stms.add(0, new MOVE(new TEMP(s7), new TEMP(new Temp.Temp(23))));
+        stms.add(0, new MOVE(new TEMP(s6), new TEMP(new Temp.Temp(22))));
+        stms.add(0, new MOVE(new TEMP(s5), new TEMP(new Temp.Temp(21))));
+        stms.add(0, new MOVE(new TEMP(s4), new TEMP(new Temp.Temp(20))));
+        stms.add(0, new MOVE(new TEMP(s3), new TEMP(new Temp.Temp(19))));
+        stms.add(0, new MOVE(new TEMP(s2), new TEMP(new Temp.Temp(18))));
+        stms.add(0, new MOVE(new TEMP(s1), new TEMP(new Temp.Temp(17))));
+        stms.add(0, new MOVE(new TEMP(s0), new TEMP(new Temp.Temp(16))));
+        // return address
+        stms.add(0, new MOVE(new TEMP(ra), new TEMP(new Temp.Temp(31))));
+
+        // at this point, the return address is saved first, followed by the s registers, then the frame pointer,
+        // then by the arguments
+
+        //////////////////
+        // END PROLOGUE //
+        //////////////////
+
+        ////////////////////////////////////////////////////////////////////////////
+        // EPILOGUE: normal order because we are inserting at the end of the list //
+        ////////////////////////////////////////////////////////////////////////////
+
+        // CALLEE RESTORES
+
+        // frame pointer
+        stms.add(new MOVE(new TEMP(new Temp.Temp(30)), new TEMP(fp)));
+        // s registers
+        stms.add(new MOVE(new TEMP(new Temp.Temp(23)), new TEMP(s7)));
+        stms.add(new MOVE(new TEMP(new Temp.Temp(22)), new TEMP(s6)));
+        stms.add(new MOVE(new TEMP(new Temp.Temp(21)), new TEMP(s5)));
+        stms.add(new MOVE(new TEMP(new Temp.Temp(20)), new TEMP(s4)));
+        stms.add(new MOVE(new TEMP(new Temp.Temp(19)), new TEMP(s3)));
+        stms.add(new MOVE(new TEMP(new Temp.Temp(18)), new TEMP(s2)));
+        stms.add(new MOVE(new TEMP(new Temp.Temp(17)), new TEMP(s1)));
+        stms.add(new MOVE(new TEMP(new Temp.Temp(16)), new TEMP(s0)));
+        // return address
+        stms.add(new MOVE(new TEMP(new Temp.Temp(31)), new TEMP(ra)));
+
+        // at this point, we save the callee save registers at the top, followed by the arguments
+        // at the end of the method, we restore the callee save registers into their original registers
+
+        //////////////////
+        // END EPILOGUE //
+        //////////////////
     }
 
     public void printFrame(java.io.PrintWriter printOut){
