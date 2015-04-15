@@ -139,7 +139,7 @@ public class Main {
                     }
                     writer.flush();
                 }
-                List<Assem.Instr> code = p.frame.codeGen(traced); // TODO implement this
+                List<Assem.Instr> code = p.frame.codeGen(traced);
                 if (assemOutput) {
                     for (Assem.Instr i : code) {
                         writer.println(i);
