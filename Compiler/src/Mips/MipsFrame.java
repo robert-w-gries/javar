@@ -1,5 +1,6 @@
 package Mips;
 
+import Assem.Instr;
 import Frame.Frame;
 import Frame.Access;
 import Tree.MOVE;
@@ -19,6 +20,7 @@ public class MipsFrame extends Frame {
 
     private Temp.Temp framePointer;
     private int argIndex = 0;
+    private LinkedList<Assem.Instr> instructionList;
 
     public static final Temp.Label _BADPTR = new Temp.Label("_BADPTR");
     public Temp.Label badPtr() { return _BADPTR; }
@@ -32,6 +34,7 @@ public class MipsFrame extends Frame {
         framePointer = new Temp.Temp(30);
         formals = new LinkedList<Access>();
         actuals = new LinkedList<Access>();
+        instructionList = new LinkedList<Instr>();
     }
 
     public Temp.Temp FP() { return framePointer; }
@@ -158,6 +161,34 @@ public class MipsFrame extends Frame {
         //////////////////
     }
 
+    @Override
+    public List<Assem.Instr> codeGen(List<Tree.Stm> stms) {
+
+        if (!stms.isEmpty()) {
+            munchStm(stms.get(0));
+        }
+
+        return instructionList;
+    }
+
+    private void munchStm(Tree.Stm s) {
+
+    }
+
+    private Temp.Temp munchExp(Tree.Exp e) {
+
+        return null;
+
+    }
+
+    private void emit(Assem.Instr inst) {
+
+        //TODO: find out if emit only adds inst to list
+        //TODO: if emit only adds inst to instructionList, remove the emit function
+        instructionList.add(inst);
+
+    }
+
     public void printFrame(java.io.PrintWriter printOut) {
         String tab = "\t\t"; // 8 spaces. Generally 2 tabs but I wont risk it.
         printOut.print(     "MipsFrame(" + "\n" + // Open frame
@@ -181,7 +212,7 @@ public class MipsFrame extends Frame {
         printOut.print(     "BadPtr(" + badPtr() + ")" + "\n");
         printOut.print(     "BadSub(" + badSub() + ")" + "\n");
         printOut.print(     "maxArgOffset(0)" + "\n"); //TODO: figure out correct way to print maxArgOffset
-        printOut.println(     ")"); // Close frame
+        printOut.println(")"); // Close frame
     }
 
 }

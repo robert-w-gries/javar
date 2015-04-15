@@ -23,5 +23,8 @@ public abstract class Frame {
     public abstract Access allocLocal();
     public abstract void printFrame(java.io.PrintWriter printOut);
 
+    /* Methods for Assembler */
     public abstract void procEntryExit1(List<Stm> stms);
+    public abstract List<Assem.Instr> codeGen(List<Stm> stms);
+
 }
