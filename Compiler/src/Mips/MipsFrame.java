@@ -1,11 +1,11 @@
 package Mips;
 
 import Assem.Instr;
+import Assem.OPER;
 import Frame.Frame;
 import Frame.Access;
-import Tree.MOVE;
-import Tree.Stm;
-import Tree.TEMP;
+import Temp.Label;
+import Tree.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -195,16 +195,39 @@ public class MipsFrame extends Frame {
     private Temp.Temp munchExp(Tree.Exp e) {
         // TODO expressions that we will see here: BINOP, CONST, MEM, NAME, TEMP
 
-        // TODO TEMP -> tn
+        if (e instanceof TEMP) {
+            return ((TEMP)e).temp;
+        } else if (e instanceof CONST) {
+            CONST c = (CONST)e;
+            // CONST(0) -> zero (aka $0)
+            if (c.value == 0) return new Temp.Temp(0);
+            else if (c.value < 65536) { // CONST(CONST_16)
+                Temp.Temp t = new Temp.Temp();
+                emit(OPER.addi_zero(t, c.value));
+                return t;
+            } else { // CONST(*)
+                Temp.Temp t = new Temp.Temp();
+                emit(OPER.li(t, c.value));
+                return t;
+            }
+        } else if (e instanceof NAME) {
+            Temp.Temp t = new Temp.Temp();
+            emit(OPER.la(t, ((NAME)e).label.toString()));
+            return t;
+        } else if (e instanceof BINOP) {
+            BINOP b = (BINOP)e;
+            Temp.Temp t = new Temp.Temp();
+            switch (b.binop) {
+                case PLUS:
+                    if (b.left instanceof CONST && ((CONST)b.left).value < 65536) {
+                        emit(OPER.addi(t, munchExp(b.right), ((CONST)b.left).value));
+                    } else if (b.right instanceof CONST && ((CONST)b.right).value < 65536) {
+                        emit(OPER.addi(t, munchExp(b.left), ((CONST)b.right).value));
+                    }
+            }
+            return t;
+        }
 
-        // TODO CONST(0) -> zero (t0)
-        // TODO CONST(CONST_16) -> addi Rd, zero, I_16
-        // TODO CONST(*) -> li Rd, I
-
-        // TODO NAME -> la Rd, label
-
-        // TODO BINOP(PLUS,*,CONST_16) -> addi Rd, Rs, I_16
-        // TODO BINOP(PLUS,CONST_16,*) -> addi Rd, Rs, I_16
         // TODO BINOP(PLUS,*,*) -> add Rd, Rs1, Rs2
 
         // TODO BINOP(MINUS,*,CONST_16) -> addi Rd, Rs, -I_16
