@@ -164,18 +164,83 @@ public class MipsFrame extends Frame {
     @Override
     public List<Assem.Instr> codeGen(List<Tree.Stm> stms) {
 
-        if (!stms.isEmpty()) {
-            munchStm(stms.get(0));
+        for (Tree.Stm stm : stms) {
+            munchStm(stm);
         }
 
         return instructionList;
     }
 
     private void munchStm(Tree.Stm s) {
+        // TODO statements that we will see here: CALL, CJUMP, EXP_STM, JUMP, LABEL, MOVE
 
+        // TODO JUMP(NAME) -> b label
+        // TODO JUMP(*) -> jr Rs
+
+        // TODO LABEL -> label:
+
+        // TODO MOVE(MEM(+(*,CONST_16)),*) -> sw Rs, I_16(Rd)
+        // TODO MOVE(MEM(+(CONST_16,*)),*) -> sw Rs, I_16(Rd)
+        // TODO MOVE(MEM(*),*) -> sw Rs, 0(Rd)
+        // TODO MOVE(*,*) -> move Rd, Rs
+
+        // TODO CJUMP(op,*,*,label,*) -> beq/bne/blt/bgt/ble/bge  Rs1, Rs2, label
+
+        // TODO CALL(NAME,*) -> (move/sw for params) jal label
+        // TODO CALL(*,*) -> (move/sw for params) jalr Rs
+
+        // TODO EXP_STM(CALL(*)) -> just do the call
     }
 
     private Temp.Temp munchExp(Tree.Exp e) {
+        // TODO expressions that we will see here: BINOP, CONST, MEM, NAME, TEMP
+
+        // TODO TEMP -> tn
+
+        // TODO CONST(0) -> zero (t0)
+        // TODO CONST(CONST_16) -> addi Rd, zero, I_16
+        // TODO CONST(*) -> li Rd, I
+
+        // TODO NAME -> la Rd, label
+
+        // TODO BINOP(PLUS,*,CONST_16) -> addi Rd, Rs, I_16
+        // TODO BINOP(PLUS,CONST_16,*) -> addi Rd, Rs, I_16
+        // TODO BINOP(PLUS,*,*) -> add Rd, Rs1, Rs2
+
+        // TODO BINOP(MINUS,*,CONST_16) -> addi Rd, Rs, -I_16
+        // TODO BINOP(MINUS,*,*) -> sub Rd, Rs1, Rs2
+
+        // TODO BINOP(MUL,*,CONST_2^k) -> sll Rd, Rs, I_k
+        // TODO BINOP(MUL,CONST_2^k,*) -> sll Rd, Rs, I_k
+        // TODO BINOP(MUL,*,*) -> mulo Rd, Rs1, Rs2
+
+        // TODO BINOP(DIV,*,CONST_2^k) -> sra Rd, Rs, I_k
+        // TODO BINOP(DIV,*,*) -> div Rd, Rs1, Rs2
+
+        // TODO BINOP(AND,*,CONST_16) -> andi Rd, Rs, I_16
+        // TODO BINOP(AND,CONST_16,*) -> andi Rd, Rs, I_16
+        // TODO BINOP(AND,*,*) -> and Rd, Rs1, Rs2
+
+        // TODO BINOP(OR,*,CONST_16) -> ori Rd, Rs, I_16
+        // TODO BINOP(OR,CONST_16,*) -> ori Rd, Rs, I_16
+        // TODO BINOP(OR,*,*) -> or Rd, Rs1, Rs2
+
+        // TODO BINOP(LSHIFT,*,CONST_16) -> sllv Rd, Rs, I_16
+        // TODO BINOP(LSHIFT,*,*) -> sll Rd, Rs1, Rs2
+
+        // TODO BINOP(RSHIFT,*,CONST_16) -> srlv Rd, Rs, I_16
+        // TODO BINOP(RSHIFT,*,*) -> srl Rd, Rs1, Rs2
+
+        // TODO BINOP(ARSHIFT,*,CONST_16) -> srav Rd, Rs, I_16
+        // TODO BINOP(ARSHIFT,*,*) -> sra Rd, Rs1, Rs2
+
+        // TODO BINOP(BITXOR,*,CONST_16) -> xori Rd, Rs, I_16
+        // TODO BINOP(BITXOR,CONST_16,*) -> xori Rd, Rs, I_16
+        // TODO BINOP(BITXOR,*,*) -> xor Rd, Rs1, Rs2
+
+        // TODO MEM(+(CONST_16,*)) -> lw Rd, I_16(Rs)
+        // TODO MEM(+(*,CONST_16)) -> lw Rd, I_16(Rs)
+        // TODO MEM(*) -> lw Rd, 0(Rs)
 
         return null;
 
