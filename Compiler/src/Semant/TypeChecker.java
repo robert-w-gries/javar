@@ -50,7 +50,7 @@ public class TypeChecker implements TypeVisitor {
     private void cyclicInheritanceCheck() {
         for (Type t : symbolTable.values()) {
             if (t instanceof STRING) continue;
-            HashSet<CLASS> parentChain = new HashSet<CLASS>();
+            HashSet<CLASS> parentChain = new HashSet<>();
             for (CLASS cls = (CLASS)t; cls.parent != null; cls = cls.parent) {
                 if (parentChain.contains(cls.parent)) {
                     errorAndExit("ERROR cyclic inheritance involving " + cls.name);
@@ -126,7 +126,7 @@ public class TypeChecker implements TypeVisitor {
 
     @Override
     public List<Type> visit(AbstractList list) {
-        List<Type> types = new ArrayList<Type>();
+        List<Type> types = new ArrayList<>();
         for (Object obj : list) {
             types.add(((Absyn.Absyn)obj).accept(this));
         }
@@ -513,9 +513,9 @@ public class TypeChecker implements TypeVisitor {
     @Override
     public Type visit(Absyn.FieldExpr ast) {
         Type target = ast.target.accept(this);
-        if (target instanceof ARRAY && ast.field.equals("length")) {
-            return new INT();
-        }
+        //if (target instanceof ARRAY && ast.field.equals("length")) {
+        //    return new INT();
+        //}
         if (!(target instanceof OBJECT)) {
             errorAndExit("ERROR target not object, type " + target);
             return null; // won't be reached because errorAndExit exits

@@ -14,7 +14,10 @@ class BS{
     public int Start(int x) {
 
         int size;
+        int i;
+        number = new int[1];
         size = number.length;
+        i = number[0];
 
         return size;
 

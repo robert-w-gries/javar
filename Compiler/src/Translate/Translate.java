@@ -9,10 +9,10 @@ import Temp.Label;
 import Tree.BINOP;
 import Tree.CJUMP;
 import Tree.SEQ;
+import Types.ARRAY;
 import Types.FUNCTION;
 import Types.OBJECT;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -29,9 +29,10 @@ public class Translate{
     private ClassDecl currentClass;
 
     public Translate() {
-        frags = new LinkedList<Frag>();
+        frags = new LinkedList<>();
         accesses = new SymbolTable<Access>();
         classes = new SymbolTable<OBJECT>();
+        classes.put("**ARRAY**", new ARRAY(null));
     }
 
     public List<Frag> results() {
@@ -296,7 +297,11 @@ public class Translate{
         // only need first dimension because you can only init one dimension at a time
         Tree.MOVE move_size = new Tree.MOVE(size, ast.dimensions.get(0).accept(this).unEx());
         Tree.CALL call_new = new Tree.CALL(new Tree.NAME(new Label("_new")), size, size);
-        return new Ex(new Tree.ESEQ(move_size, call_new));
+
+        Tree.ESEQ result = new Tree.ESEQ(move_size, call_new);
+        result.type = classes.get("**ARRAY**");
+
+        return new Ex(result);
     }
 
     public Exp visit(NewObjectExpr ast){
@@ -385,6 +390,8 @@ public class Translate{
         // we have to keep track of types of variables with identifier types
         if (ast.type instanceof IdentifierType)
             classes.put(ast.name, classes.get(((IdentifierType)ast.type).id));
+        else if (ast.type instanceof ArrayType)
+            classes.put(ast.name, classes.get("**ARRAY**"));
 
         Tree.Exp initial = ast.init == null ? new Tree.CONST(0)
                 : ast.init.accept(this).unEx();
