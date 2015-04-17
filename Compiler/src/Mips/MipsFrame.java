@@ -107,7 +107,7 @@ public class MipsFrame extends Frame {
         // MOVE(ACTUAL, FORMAL)
 
         for (int i = formals.size()-1; i >= 0; i--) {
-            stms.add(0, new MOVE(actuals.get(i).exp(_fp), formals.get(i).exp(_fp)));
+            stms.add(0, new MOVE(formals.get(i).exp(_fp), actuals.get(i).exp(_fp)));
         }
 
         // CALLEE SAVES
