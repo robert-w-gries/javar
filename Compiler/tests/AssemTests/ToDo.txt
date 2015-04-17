@@ -1,12 +1,12 @@
 Broken Brylow Testcases
 -----------------------
-BinaryTree
-    Shorter Version => brokenClassMethods
-    Same problem as LinkedList
-
 BinarySearch
     Doesn't produce correct output
     Similar to the LinearSearch problem
+
+BinaryTree
+    Shorter Version => brokenClassMethods
+    Same problem as LinkedList
 
 LinearSearch
     Doesn't produce correct output
@@ -28,3 +28,9 @@ ThreadGood
 
 TreeVisitor
     Same problem as LinkedList
+
+Working Brylow Testcases
+------------------------
+NQueens
+BubbleSort
+Factorial
