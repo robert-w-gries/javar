@@ -202,7 +202,7 @@ public class MipsFrame extends Frame {
                     emit(OPER.sw(munchExp(m.src), munchExp(dst.exp), 0));
                 }
             } else {
-                emit(new Assem.MOVE("move\t`d0\t`s0", munchExp(m.dst), munchExp(m.src)));
+                emit(new Assem.MOVE("move\t`d0,\t`s0", munchExp(m.dst), munchExp(m.src)));
             }
         } else if (s instanceof CJUMP) {
             CJUMP c = (CJUMP)s;
@@ -398,6 +398,8 @@ public class MipsFrame extends Frame {
                 emit(OPER.jalr(defs, uses.toArray(new Temp[uses.size()])));
             }
             emit(OPER.call_sink(defs)); // call sink after jal/jalr
+
+            return new Temp(2);
         }
 
         return null;

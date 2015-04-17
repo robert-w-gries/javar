@@ -167,9 +167,7 @@ public class OPER extends Instr {
 
     public static OPER jal(Temp[] defs, Temp[] uses, Label label) {
         String assem = "jal\t" + label;
-        LinkedList<Label> jumps = new LinkedList<>();
-        jumps.add(label);
-        return new OPER(assem, defs, uses, jumps);
+        return new OPER(assem, defs, uses, null);
     }
 
     public static OPER jalr(Temp[] defs, Temp[] uses) {
@@ -177,9 +175,9 @@ public class OPER extends Instr {
         return new OPER(assem, defs, uses, new LinkedList<Label>());
     }
 
-    public static OPER call_sink(Temp[] defs) {
+    public static OPER call_sink(Temp[] uses) {
         String assem = "// Call sink";
-        return new OPER(assem, defs, new Temp[0], new LinkedList<Label>());
+        return new OPER(assem, null, uses, new LinkedList<Label>());
 
     }
 
