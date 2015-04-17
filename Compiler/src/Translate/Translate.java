@@ -13,6 +13,7 @@ import Types.FUNCTION;
 import Types.OBJECT;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class Translate{
     private ClassDecl currentClass;
 
     public Translate() {
-        frags = new ArrayList<Frag>();
+        frags = new LinkedList<Frag>();
         accesses = new SymbolTable<Access>();
         classes = new SymbolTable<OBJECT>();
     }

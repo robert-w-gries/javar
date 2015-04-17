@@ -20,7 +20,8 @@ public class Main {
             canonOutput = false,
             blockOutput = false,
             traceOutput = false,
-            prologOutput = false;
+            prologOutput = false,
+            parse = false;
 
     public static void usage() {
         System.err.println("Usage:  [-options] (file.java | -)");
@@ -53,11 +54,7 @@ public class Main {
                 InputStreamReader isr = new InputStreamReader(System.in);
                 reader = new BufferedReader(isr);
             } else if (arg.equals("--parse")) {
-                new MiniJavaParser(reader);
-                program = MiniJavaParser.Goal(); // parse MiniJava source file
-                new TypeChecker().visit(program); // typecheck the output program
-                translate = new Translate.Translate();
-                translate.visit(program); // translate the program to IR tree
+                parse = true;
             } else {
                 try {
                     reader = new FileReader(arg);
@@ -72,7 +69,14 @@ public class Main {
 
         LinkedList<Translate.Frag> frags = null;
 
-        if (program == null) {
+        if (parse) {
+            new MiniJavaParser(reader);
+            program = MiniJavaParser.Goal(); // parse MiniJava source file
+            new TypeChecker().visit(program); // typecheck the output program
+            translate = new Translate.Translate();
+            translate.visit(program); // translate the program to IR tree
+            frags = (LinkedList<Frag>)translate.results();
+        } else {
             try {
                 new ReadFrags(reader);
                 frags = ReadFrags.Program();
@@ -80,8 +84,6 @@ public class Main {
                 System.err.println(p.toString());
                 System.exit(-1);
             }
-        } else {
-            frags = (LinkedList<Frag>)translate.results();
         }
 
         process_frags(frags);
