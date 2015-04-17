@@ -1,9 +1,9 @@
 package Mips;
 
-import Assem.Instr;
 import Assem.OPER;
 import Frame.Frame;
 import Frame.Access;
+import Temp.Temp;
 import Temp.Label;
 import Tree.*;
 
@@ -18,26 +18,26 @@ import java.util.List;
  */
 public class MipsFrame extends Frame {
 
-    private Temp.Temp framePointer;
+    private Temp framePointer;
     private int argIndex = 0;
     private LinkedList<Assem.Instr> instructionList;
 
-    public static final Temp.Label _BADPTR = new Temp.Label("_BADPTR");
-    public Temp.Label badPtr() { return _BADPTR; }
+    public static final Label _BADPTR = new Label("_BADPTR");
+    public Label badPtr() { return _BADPTR; }
 
-    public static final Temp.Label _BADSUB = new Temp.Label("_BADSUB");
-    public Temp.Label badSub() {
+    public static final Label _BADSUB = new Label("_BADSUB");
+    public Label badSub() {
         return _BADSUB;
     }
 
     public MipsFrame() {
-        framePointer = new Temp.Temp(30);
-        formals = new LinkedList<Access>();
-        actuals = new LinkedList<Access>();
-        instructionList = new LinkedList<Instr>();
+        framePointer = new Temp(30);
+        formals = new LinkedList<>();
+        actuals = new LinkedList<>();
+        instructionList = new LinkedList<>();
     }
 
-    public Temp.Temp FP() { return framePointer; }
+    public Temp FP() { return framePointer; }
 
     public int wordSize() { return 4; }
 
@@ -45,7 +45,7 @@ public class MipsFrame extends Frame {
 
     public Access allocFormal() {
         // add a formal
-        InReg formal = new InReg(new Temp.Temp()); // formals are always temp registers
+        InReg formal = new InReg(new Temp()); // formals are always temp registers
         formals.add(formal);
 
         /*
@@ -59,7 +59,7 @@ public class MipsFrame extends Frame {
         if (argIndex < 4) {
             // "a" registers start at $4
             int tempIndex = (argIndex++) + 4;
-            actuals.add(new InReg(new Temp.Temp(tempIndex)));
+            actuals.add(new InReg(new Temp(tempIndex)));
         } else {
             // otherwise we need to allocate space on the stack for remaining args
             frameOffset += wordSize(); // Amount of bytes past the stack
@@ -73,7 +73,7 @@ public class MipsFrame extends Frame {
 
     public Access allocLocal() {
         // Since we have no escaping variables this is all that happens here
-        return new InReg(new Temp.Temp());
+        return new InReg(new Temp());
 
         /* // Code to be inserted in the case a boolean arg is required or we need escapes.
            // (Should never happen)
@@ -85,7 +85,7 @@ public class MipsFrame extends Frame {
             frameOffset += wordSize(); // Basically what happens in the else case in allocFormal
             return new InFrame(frameOffset);
         }else{
-            return new InReg(new Temp.Temp());
+            return new InReg(new Temp());
         }
 
         */
@@ -94,9 +94,9 @@ public class MipsFrame extends Frame {
 
     @Override
     public void procEntryExit1(List<Stm> stms) {
-        Temp.Temp ra = new Temp.Temp(), s0 = new Temp.Temp(), s1 = new Temp.Temp(), s2 = new Temp.Temp(),
-                s3 = new Temp.Temp(), s4 = new Temp.Temp(), s5 = new Temp.Temp(), s6 = new Temp.Temp(),
-                s7 = new Temp.Temp(), fp = new Temp.Temp();
+        Temp ra = new Temp(), s0 = new Temp(), s1 = new Temp(), s2 = new Temp(),
+                s3 = new Temp(), s4 = new Temp(), s5 = new Temp(), s6 = new Temp(),
+                s7 = new Temp(), fp = new Temp();
 
         TEMP _fp = new TEMP(framePointer);
 
@@ -113,18 +113,18 @@ public class MipsFrame extends Frame {
         // CALLEE SAVES
 
         // frame pointer
-        stms.add(0, new MOVE(new TEMP(fp), new TEMP(new Temp.Temp(30))));
+        stms.add(0, new MOVE(new TEMP(fp), new TEMP(new Temp(30))));
         // s registers
-        stms.add(0, new MOVE(new TEMP(s7), new TEMP(new Temp.Temp(23))));
-        stms.add(0, new MOVE(new TEMP(s6), new TEMP(new Temp.Temp(22))));
-        stms.add(0, new MOVE(new TEMP(s5), new TEMP(new Temp.Temp(21))));
-        stms.add(0, new MOVE(new TEMP(s4), new TEMP(new Temp.Temp(20))));
-        stms.add(0, new MOVE(new TEMP(s3), new TEMP(new Temp.Temp(19))));
-        stms.add(0, new MOVE(new TEMP(s2), new TEMP(new Temp.Temp(18))));
-        stms.add(0, new MOVE(new TEMP(s1), new TEMP(new Temp.Temp(17))));
-        stms.add(0, new MOVE(new TEMP(s0), new TEMP(new Temp.Temp(16))));
+        stms.add(0, new MOVE(new TEMP(s7), new TEMP(new Temp(23))));
+        stms.add(0, new MOVE(new TEMP(s6), new TEMP(new Temp(22))));
+        stms.add(0, new MOVE(new TEMP(s5), new TEMP(new Temp(21))));
+        stms.add(0, new MOVE(new TEMP(s4), new TEMP(new Temp(20))));
+        stms.add(0, new MOVE(new TEMP(s3), new TEMP(new Temp(19))));
+        stms.add(0, new MOVE(new TEMP(s2), new TEMP(new Temp(18))));
+        stms.add(0, new MOVE(new TEMP(s1), new TEMP(new Temp(17))));
+        stms.add(0, new MOVE(new TEMP(s0), new TEMP(new Temp(16))));
         // return address
-        stms.add(0, new MOVE(new TEMP(ra), new TEMP(new Temp.Temp(31))));
+        stms.add(0, new MOVE(new TEMP(ra), new TEMP(new Temp(31))));
 
         // at this point, the return address is saved first, followed by the s registers, then the frame pointer,
         // then by the arguments
@@ -140,18 +140,18 @@ public class MipsFrame extends Frame {
         // CALLEE RESTORES
 
         // frame pointer
-        stms.add(new MOVE(new TEMP(new Temp.Temp(30)), new TEMP(fp)));
+        stms.add(new MOVE(new TEMP(new Temp(30)), new TEMP(fp)));
         // s registers
-        stms.add(new MOVE(new TEMP(new Temp.Temp(23)), new TEMP(s7)));
-        stms.add(new MOVE(new TEMP(new Temp.Temp(22)), new TEMP(s6)));
-        stms.add(new MOVE(new TEMP(new Temp.Temp(21)), new TEMP(s5)));
-        stms.add(new MOVE(new TEMP(new Temp.Temp(20)), new TEMP(s4)));
-        stms.add(new MOVE(new TEMP(new Temp.Temp(19)), new TEMP(s3)));
-        stms.add(new MOVE(new TEMP(new Temp.Temp(18)), new TEMP(s2)));
-        stms.add(new MOVE(new TEMP(new Temp.Temp(17)), new TEMP(s1)));
-        stms.add(new MOVE(new TEMP(new Temp.Temp(16)), new TEMP(s0)));
+        stms.add(new MOVE(new TEMP(new Temp(23)), new TEMP(s7)));
+        stms.add(new MOVE(new TEMP(new Temp(22)), new TEMP(s6)));
+        stms.add(new MOVE(new TEMP(new Temp(21)), new TEMP(s5)));
+        stms.add(new MOVE(new TEMP(new Temp(20)), new TEMP(s4)));
+        stms.add(new MOVE(new TEMP(new Temp(19)), new TEMP(s3)));
+        stms.add(new MOVE(new TEMP(new Temp(18)), new TEMP(s2)));
+        stms.add(new MOVE(new TEMP(new Temp(17)), new TEMP(s1)));
+        stms.add(new MOVE(new TEMP(new Temp(16)), new TEMP(s0)));
         // return address
-        stms.add(new MOVE(new TEMP(new Temp.Temp(31)), new TEMP(ra)));
+        stms.add(new MOVE(new TEMP(new Temp(31)), new TEMP(ra)));
 
         // at this point, we save the callee save registers at the top, followed by the arguments
         // at the end of the method, we restore the callee save registers into their original registers
@@ -186,36 +186,33 @@ public class MipsFrame extends Frame {
 
         // TODO CJUMP(op,*,*,label,*) -> beq/bne/blt/bgt/ble/bge  Rs1, Rs2, label
 
-        // TODO CALL(NAME,*) -> (move/sw for params) jal label
-        // TODO CALL(*,*) -> (move/sw for params) jalr Rs
-
-        // TODO EXP_STM(CALL(*)) -> just do the call
+        // TODO EXP_STM(*) -> just call munchExp
     }
 
-    private Temp.Temp munchExp(Tree.Exp e) {
+    private Temp munchExp(Tree.Exp e) {
 
         if (e instanceof TEMP) {
             return ((TEMP)e).temp;
         } else if (e instanceof CONST) {
             CONST c = (CONST)e;
             // CONST(0) -> zero (aka $0)
-            if (c.value == 0) return new Temp.Temp(0);
+            if (c.value == 0) return new Temp(0);
             else if (c.value < 65536) { // CONST(CONST_16)
-                Temp.Temp t = new Temp.Temp();
+                Temp t = new Temp();
                 emit(OPER.addi_zero(t, c.value));
                 return t;
             } else { // CONST(*)
-                Temp.Temp t = new Temp.Temp();
+                Temp t = new Temp();
                 emit(OPER.li(t, c.value));
                 return t;
             }
         } else if (e instanceof NAME) {
-            Temp.Temp t = new Temp.Temp();
+            Temp t = new Temp();
             emit(OPER.la(t, ((NAME)e).label.toString()));
             return t;
         } else if (e instanceof BINOP) {
             BINOP b = (BINOP)e;
-            Temp.Temp t = new Temp.Temp();
+            Temp t = new Temp();
             switch (b.binop) {
                 case PLUS: {
                     if (b.left instanceof CONST && ((CONST)b.left).value < 65536) {
@@ -316,7 +313,7 @@ public class MipsFrame extends Frame {
             return t;
         } else if (e instanceof MEM) {
             MEM m = (MEM)e;
-            Temp.Temp t = new Temp.Temp();
+            Temp t = new Temp();
             if (m.exp instanceof BINOP && ((BINOP)m.exp).binop == BINOP.Operation.PLUS
                     && ((BINOP)m.exp).left instanceof CONST && ((CONST)((BINOP)m.exp).left).value < 65536) {
                 emit(OPER.lw(t, munchExp(((BINOP)m.exp).right), ((CONST)((BINOP)m.exp).left).value));
@@ -327,10 +324,35 @@ public class MipsFrame extends Frame {
                 emit(OPER.lw(t, munchExp(m.exp), 0));
             }
             return t;
+        } else if (e instanceof CALL) {
+            CALL c = (CALL)e;
+            LinkedList<Temp> uses = new LinkedList<>();
+
+            // ARGS
+            for (int i = 0; i < c.args.size(); i++) {
+                if (i < 4) uses.add(new Temp(4+i)); // put argument registers into uses list
+                munchStm(new MOVE(actuals.get(i).exp(new TEMP(framePointer)), c.args.get(i))); // move each arg into its access
+            }
+
+            // CALLER SAVE REGISTERS
+            Temp[] defs = new Temp[] {
+                    new Temp(31), new Temp(4), new Temp(5), new Temp(6),
+                    new Temp(7), new Temp(8), new Temp(9), new Temp(10),
+                    new Temp(11), new Temp(12), new Temp(13), new Temp(14),
+                    new Temp(15), new Temp(24), new Temp(25), new Temp(2), new Temp(3)
+            };
+
+            // JUMP AND LINK
+            if (c.func instanceof NAME) {
+                emit(OPER.jal(defs, uses.toArray(new Temp[uses.size()]), ((NAME)c.func).label));
+            } else {
+                uses.add(0, munchExp(c.func));
+                emit(OPER.jalr(defs, uses.toArray(new Temp[uses.size()])));
+            }
+            emit(OPER.call_sink(defs)); // call sink after jal/jalr
         }
 
         return null;
-
     }
 
     private void emit(Assem.Instr inst) {
@@ -348,7 +370,7 @@ public class MipsFrame extends Frame {
     }
 
     public void printFrame(java.io.PrintWriter printOut) {
-        String tab = "\t\t"; // 8 spaces. Generally 2 tabs but I wont risk it.
+        String tab = "\t\t"; // 8 spaces. Generally 2 tabs but I wont risk it. <- LIAR
         printOut.print(     "MipsFrame(" + "\n" + // Open frame
                             name + ":"   + "\n");
         printOut.print(     "Formals(");
