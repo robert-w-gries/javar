@@ -5,8 +5,8 @@ BinaryTree
     Same problem as LinkedList
 
 BinarySearch
-    Shorter Version => brokenArrayLengthField
-    Likely a Translate problem
+    Doesn't produce correct output
+    Similar to the LinearSearch problem
 
 LinearSearch
     Doesn't produce correct output
