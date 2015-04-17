@@ -1,8 +1,5 @@
 Broken Brylow Testcases
 -----------------------
-BinarySearch
-    Shorter Version => brokenArrayLengthField
-    Likely a Translate problem
 
 LinearSearch
     Doesn't produce correct output

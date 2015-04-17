@@ -3,11 +3,16 @@ package Types;
 /**
  * Type for arrays.
  */
-public class ARRAY extends Type {
+public class ARRAY extends OBJECT {
     public Type element;
 
     public ARRAY(Type element) {
+        super(new CLASS("**ARRAY**"));
         this.element = element;
+        this.myClass.instance = this;
+        this.myClass.parent = null;
+        this.initialized = true;
+        this.fields.put(new INT(), "length");
     }
 
     /**
