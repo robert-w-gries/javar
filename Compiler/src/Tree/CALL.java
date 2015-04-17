@@ -27,8 +27,8 @@ public class CALL extends Tree.Exp {
 
     @Override
     public Exp build(List<Exp> kids) {
-        Tree.Exp[] args = new Tree.Exp[this.args.size()];
-        for (int i = 0; i < this.args.size(); i++) args[i] = this.args.get(i);
+        Tree.Exp[] args = new Tree.Exp[kids.size()-1];
+        for (int i = 1; i < kids.size(); i++) args[i-1] = kids.get(i);
         return new CALL(kids.get(0), args);
     }
 

@@ -21,6 +21,7 @@ public class MipsFrame extends Frame {
     private Temp framePointer;
     private int argIndex = 0;
     private LinkedList<Assem.Instr> instructionList;
+    private int maxArgOffset = 0;
 
     public static final Label _BADPTR = new Label("_BADPTR");
     public Label badPtr() { return _BADPTR; }
@@ -98,7 +99,7 @@ public class MipsFrame extends Frame {
                 s3 = new Temp(), s4 = new Temp(), s5 = new Temp(), s6 = new Temp(),
                 s7 = new Temp(), fp = new Temp();
 
-        TEMP _fp = new TEMP(framePointer);
+        TEMP _sp = new TEMP(new Temp(29));
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
         // PROLOGUE: needs to happen in reverse order because we are inserting at the beginning of the list //
@@ -107,7 +108,7 @@ public class MipsFrame extends Frame {
         // MOVE(ACTUAL, FORMAL)
 
         for (int i = formals.size()-1; i >= 0; i--) {
-            stms.add(0, new MOVE(formals.get(i).exp(_fp), actuals.get(i).exp(_fp)));
+            stms.add(0, new MOVE(formals.get(i).exp(_sp), actuals.get(i).exp(_sp)));
         }
 
         // CALLEE SAVES
@@ -364,22 +365,29 @@ public class MipsFrame extends Frame {
             Temp t = new Temp();
             if (m.exp instanceof BINOP && ((BINOP)m.exp).binop == BINOP.Operation.PLUS
                     && ((BINOP)m.exp).left instanceof CONST && ((CONST)((BINOP)m.exp).left).value < 65536) {
-                emit(OPER.lw(t, munchExp(((BINOP)m.exp).right), ((CONST)((BINOP)m.exp).left).value));
+                emit(OPER.lw(t, munchExp(((BINOP)m.exp).right), ((CONST)((BINOP)m.exp).left).value, name.toString()));
             } else if (m.exp instanceof BINOP && ((BINOP)m.exp).binop == BINOP.Operation.PLUS
                     && ((BINOP)m.exp).right instanceof CONST && ((CONST)((BINOP)m.exp).right).value < 65536) {
-                emit(OPER.lw(t, munchExp(((BINOP)m.exp).left), ((CONST)((BINOP)m.exp).right).value));
+                emit(OPER.lw(t, munchExp(((BINOP)m.exp).left), ((CONST)((BINOP)m.exp).right).value, name.toString()));
             } else {
-                emit(OPER.lw(t, munchExp(m.exp), 0));
+                emit(OPER.lw(t, munchExp(m.exp), 0, name.toString()));
             }
             return t;
         } else if (e instanceof CALL) {
             CALL c = (CALL)e;
             LinkedList<Temp> uses = new LinkedList<>();
 
+            if (c.args.size()*wordSize() > maxArgOffset) maxArgOffset = c.args.size()*wordSize();
+
             // ARGS
             for (int i = 0; i < c.args.size(); i++) {
-                if (i < 4) uses.add(new Temp(4+i)); // put argument registers into uses list
-                munchStm(new MOVE(actuals.get(i).exp(new TEMP(framePointer)), c.args.get(i))); // move each arg into its access
+                if (i < 4) {
+                    uses.add(new Temp(4+i)); // put argument registers into uses list
+                    munchStm(new MOVE(new TEMP(new Temp(4+i)), c.args.get(i)));
+                } else {
+                    munchStm(new MOVE(new MEM(new BINOP(BINOP.Operation.PLUS, new CONST(i*wordSize()), new TEMP(framePointer))), c.args.get(i)));
+                }
+                //munchStm(new MOVE(actuals.get(i).exp(new TEMP(framePointer)), c.args.get(i))); // move each arg into its access
             }
 
             // CALLER SAVE REGISTERS
@@ -441,7 +449,7 @@ public class MipsFrame extends Frame {
         printOut.print(     ")"    + "\n");
         printOut.print(     "BadPtr(" + badPtr() + ")" + "\n");
         printOut.print(     "BadSub(" + badSub() + ")" + "\n");
-        printOut.print(     "maxArgOffset(0)" + "\n"); //TODO: figure out correct way to print maxArgOffset
+        printOut.print(     "maxArgOffset(" + maxArgOffset + ")" + "\n"); //TODO: figure out correct way to print maxArgOffset
         printOut.println(")"); // Close frame
     }
 

@@ -139,13 +139,18 @@ public class OPER extends Instr {
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
-    public static OPER lw(Temp dst, Temp src, int offset) {
-        String assem = "lw\t`d0,\t" + offset + "\t(`s0)";
+    public static OPER lw(Temp dst, Temp src, int offset, String name) {
+        String assem;
+        if (src.regIndex == 29) {
+            assem = "lw\t`d0,\t" + (offset+12) + "+" + name + "_framesize(`s0)";
+        } else {
+            assem = "lw\t`d0,\t" + offset + "\t(`s0)";
+        }
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER sw(Temp src, Temp dst, int offset) {
-        String assem = "sw\t`s0\t" + offset + "(`s1)";
+        String assem = "sw\t`s0,\t" + offset + "(`s1)";
         return new OPER(assem, new Temp[0], new Temp[] {src, dst}, new LinkedList<Label>());
     }
 

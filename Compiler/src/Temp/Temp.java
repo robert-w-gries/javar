@@ -9,7 +9,7 @@ package Temp;
 public class Temp {
 
     private static int regCount = 32;
-    private int regIndex;
+    public int regIndex;
 
     public Temp() {
         regIndex = regCount++;
