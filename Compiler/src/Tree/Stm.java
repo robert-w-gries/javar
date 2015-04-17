@@ -16,6 +16,4 @@ public abstract class Stm implements Tree.Hospitable {
     public abstract Stm build(List<Exp> kids);
 
     public abstract void accept(Tree.IntVisitor v);
-
-    public abstract void accept(Tree.CodeVisitor v);
 }
