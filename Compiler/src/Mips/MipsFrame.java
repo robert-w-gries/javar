@@ -173,10 +173,19 @@ public class MipsFrame extends Frame {
 
     private void munchStm(Tree.Stm s) {
 
-        // TODO JUMP(NAME) -> b label
-        // TODO JUMP(*) -> jr Rs
+        if (s instanceof JUMP) {
 
-        if (s instanceof LABEL) {
+            JUMP jumpS = (JUMP)s;
+            if (jumpS.exp instanceof NAME) {
+                emit(OPER.b(jumpS.target));
+            } else {
+                emit(OPER.jr(munchExp(jumpS.exp)));
+            }
+
+
+        }
+
+        else if (s instanceof LABEL) {
             emit(new Assem.LABEL(((LABEL)s).label.toString(), ((LABEL)s).label));
         } else if (s instanceof MOVE) {
             MOVE m = (MOVE)s;
