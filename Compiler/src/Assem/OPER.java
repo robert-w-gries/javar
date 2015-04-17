@@ -149,9 +149,15 @@ public class OPER extends Instr {
         return new OPER(assem, new Temp[0], new Temp[] {src, dst}, new LinkedList<Label>());
     }
 
-    public static OPER b(List<Label> labels) {
+    public static OPER b(Label label) {
+
         String assem = "b\t`j0";
+
+        LinkedList<Label> labels = new LinkedList<>();
+        labels.add(label);
+
         return new OPER(assem, null, null, labels);
+
     }
 
     public static OPER jr(Temp jumpreg) {
