@@ -151,14 +151,14 @@ public class OPER extends Instr {
     }
 
     public static OPER jal(Temp[] defs, Temp[] uses, Label label) {
-        String assem = "jal " + label;
+        String assem = "jal\t" + label;
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(label);
         return new OPER(assem, defs, uses, jumps);
     }
 
     public static OPER jalr(Temp[] defs, Temp[] uses) {
-        String assem = "jalr `s0";
+        String assem = "jalr\t`s0";
         return new OPER(assem, defs, uses, new LinkedList<Label>());
     }
 
@@ -166,6 +166,54 @@ public class OPER extends Instr {
         String assem = "// Call sink";
         return new OPER(assem, defs, new Temp[0], new LinkedList<Label>());
 
+    }
+
+    public static OPER beq(Temp src1, Temp src2, Label t, Label f) {
+        String assem = "beq\t`s0,\t`s1,\t`j0";
+        LinkedList<Label> jumps = new LinkedList<>();
+        jumps.add(t);
+        jumps.add(f);
+        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+    }
+
+    public static OPER bne(Temp src1, Temp src2, Label t, Label f) {
+        String assem = "bne\t`s0,\t`s1,\t`j0";
+        LinkedList<Label> jumps = new LinkedList<>();
+        jumps.add(t);
+        jumps.add(f);
+        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+    }
+
+    public static OPER blt(Temp src1, Temp src2, Label t, Label f) {
+        String assem = "blt\t`s0,\t`s1,\t`j0";
+        LinkedList<Label> jumps = new LinkedList<>();
+        jumps.add(t);
+        jumps.add(f);
+        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+    }
+
+    public static OPER bgt(Temp src1, Temp src2, Label t, Label f) {
+        String assem = "bgt\t`s0,\t`s1,\t`j0";
+        LinkedList<Label> jumps = new LinkedList<>();
+        jumps.add(t);
+        jumps.add(f);
+        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+    }
+
+    public static OPER ble(Temp src1, Temp src2, Label t, Label f) {
+        String assem = "ble\t`s0,\t`s1,\t`j0";
+        LinkedList<Label> jumps = new LinkedList<>();
+        jumps.add(t);
+        jumps.add(f);
+        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+    }
+
+    public static OPER bge(Temp src1, Temp src2, Label t, Label f) {
+        String assem = "bge\t`s0,\t`s1,\t`j0";
+        LinkedList<Label> jumps = new LinkedList<>();
+        jumps.add(t);
+        jumps.add(f);
+        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
     }
 
     // END OPERATIONS

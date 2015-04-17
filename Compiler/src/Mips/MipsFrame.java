@@ -172,21 +172,50 @@ public class MipsFrame extends Frame {
     }
 
     private void munchStm(Tree.Stm s) {
-        // TODO statements that we will see here: CALL, CJUMP, EXP_STM, JUMP, LABEL, MOVE
 
         // TODO JUMP(NAME) -> b label
         // TODO JUMP(*) -> jr Rs
 
-        // TODO LABEL -> label:
+        if (s instanceof LABEL) {
+            emit(new Assem.LABEL(((LABEL)s).label.toString(), ((LABEL)s).label));
+        }
 
         // TODO MOVE(MEM(+(*,CONST_16)),*) -> sw Rs, I_16(Rd)
         // TODO MOVE(MEM(+(CONST_16,*)),*) -> sw Rs, I_16(Rd)
         // TODO MOVE(MEM(*),*) -> sw Rs, 0(Rd)
         // TODO MOVE(*,*) -> move Rd, Rs
 
-        // TODO CJUMP(op,*,*,label,*) -> beq/bne/blt/bgt/ble/bge  Rs1, Rs2, label
-
-        // TODO EXP_STM(*) -> just call munchExp
+        if (s instanceof CJUMP) {
+            CJUMP c = (CJUMP)s;
+            switch (c.relop) {
+                case EQ: {
+                    emit(OPER.beq(munchExp(c.left), munchExp(c.right), c.iftrue, c.iffalse));
+                }
+                break;
+                case NE: {
+                    emit(OPER.bne(munchExp(c.left), munchExp(c.right), c.iftrue, c.iffalse));
+                }
+                break;
+                case LT: {
+                    emit(OPER.blt(munchExp(c.left), munchExp(c.right), c.iftrue, c.iffalse));
+                }
+                break;
+                case GT: {
+                    emit(OPER.bgt(munchExp(c.left), munchExp(c.right), c.iftrue, c.iffalse));
+                }
+                break;
+                case LE: {
+                    emit(OPER.ble(munchExp(c.left), munchExp(c.right), c.iftrue, c.iffalse));
+                }
+                break;
+                case GE: {
+                    emit(OPER.bge(munchExp(c.left), munchExp(c.right), c.iftrue, c.iffalse));
+                }
+                break;
+            }
+        } else if (s instanceof EXP_STM) {
+            munchExp(((EXP_STM)s).exp);
+        }
     }
 
     private Temp munchExp(Tree.Exp e) {
