@@ -28,9 +28,6 @@ class MoveCall extends Tree.Stm {
         throw new Error();
     }
 
-    public void accept(Tree.CodeVisitor v) {
-        throw new Error();
-    }
 }
 
 class ExpCall extends Tree.Stm {
@@ -51,10 +48,7 @@ class ExpCall extends Tree.Stm {
     public void accept(Tree.IntVisitor v) {
         throw new Error();
     }
-
-    public void accept(Tree.CodeVisitor v) {
-        throw new Error();
-    }
+    
 }
 
 class StmExpList {
