@@ -1,0 +1,11 @@
+Broken Brylow Testcases
+-----------------------
+BinarySearch
+    Shorter Version => brokenArrayLengthField
+
+LinearSearch
+    Doesn't produce correct output
+
+LinkedList
+    Shorter Version => brokenClassMethods
+
