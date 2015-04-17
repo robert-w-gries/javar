@@ -1,5 +1,9 @@
 Broken Brylow Testcases
 -----------------------
+BinaryTree
+    Shorter Version => brokenClassMethods
+    Same problem as LinkedList
+
 BinarySearch
     Shorter Version => brokenArrayLengthField
     Likely a Translate problem
@@ -11,3 +15,16 @@ LinearSearch
 LinkedList
     Shorter Version => brokenClassMethods
     Likely a Translate problem
+
+Parse1
+    Doesn't parse
+
+QuickSort
+    Doesn't produce correct output
+    Confirmed Translate problem
+
+ThreadGood
+    Doesn't parse
+
+TreeVisitor
+    Same problem as LinkedList
