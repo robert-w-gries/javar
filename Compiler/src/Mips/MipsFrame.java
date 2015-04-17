@@ -193,7 +193,6 @@ public class MipsFrame extends Frame {
     }
 
     private Temp.Temp munchExp(Tree.Exp e) {
-        // TODO expressions that we will see here: BINOP, CONST, MEM, NAME, TEMP
 
         if (e instanceof TEMP) {
             return ((TEMP)e).temp;
@@ -218,52 +217,117 @@ public class MipsFrame extends Frame {
             BINOP b = (BINOP)e;
             Temp.Temp t = new Temp.Temp();
             switch (b.binop) {
-                case PLUS:
+                case PLUS: {
                     if (b.left instanceof CONST && ((CONST)b.left).value < 65536) {
                         emit(OPER.addi(t, munchExp(b.right), ((CONST)b.left).value));
                     } else if (b.right instanceof CONST && ((CONST)b.right).value < 65536) {
                         emit(OPER.addi(t, munchExp(b.left), ((CONST)b.right).value));
+                    } else {
+                        emit(OPER.add(t, munchExp(b.left), munchExp(b.right)));
                     }
+                }
+                break;
+                case MINUS: {
+                    if (b.right instanceof CONST && ((CONST)b.right).value < 65536) {
+                        emit(OPER.addi(t, munchExp(b.left), -((CONST)b.right).value));
+                    } else {
+                        emit(OPER.sub(t, munchExp(b.left), munchExp(b.right)));
+                    }
+                }
+                break;
+                case MUL: {
+                    int log2 = -1;
+                    if (b.left instanceof CONST) log2 = log2(((CONST)b.left).value);
+                    else if (b.right instanceof CONST) log2 = log2(((CONST)b.right).value);
+                    if (b.left instanceof CONST && log2 != -1) {
+                        emit(OPER.sll(t, munchExp(b.right), log2));
+                    } else if (b.right instanceof CONST && log2 != -1) {
+                        emit(OPER.sll(t, munchExp(b.left), log2));
+                    } else {
+                        emit(OPER.mulo(t, munchExp(b.left), munchExp(b.right)));
+                    }
+                }
+                break;
+                case DIV: {
+                    int log2 = -1;
+                    if (b.right instanceof CONST) log2 = log2(((CONST)b.right).value);
+                    if (b.right instanceof CONST && log2 != -1) {
+                        emit(OPER.sra(t, munchExp(b.left), log2));
+                    } else {
+                        emit(OPER.div(t, munchExp(b.left), munchExp(b.right)));
+                    }
+                }
+                break;
+                case AND: case BITAND: { // not sure what Byrlow's looking for, but AND won't be used so just treat them both the same
+                    if (b.left instanceof CONST && ((CONST)b.left).value < 65536) {
+                        emit(OPER.andi(t, munchExp(b.right), ((CONST)b.left).value));
+                    } else if (b.right instanceof CONST && ((CONST)b.right).value < 65536) {
+                        emit(OPER.andi(t, munchExp(b.left), ((CONST)b.right).value));
+                    } else {
+                        emit(OPER.and(t, munchExp(b.left), munchExp(b.right)));
+                    }
+                }
+                break;
+                case OR: case BITOR: {// not sure what Byrlow's looking for, but OR won't be used so just treat them both the same
+                    if (b.left instanceof CONST && ((CONST)b.left).value < 65536) {
+                        emit(OPER.ori(t, munchExp(b.right), ((CONST)b.left).value));
+                    } else if (b.right instanceof CONST && ((CONST)b.right).value < 65536) {
+                        emit(OPER.ori(t, munchExp(b.left), ((CONST)b.right).value));
+                    } else {
+                        emit(OPER.or(t, munchExp(b.left), munchExp(b.right)));
+                    }
+                }
+                break;
+                case LSHIFT: {
+                    if (b.right instanceof CONST && ((CONST)b.right).value < 65536) {
+                        emit(OPER.sll(t, munchExp(b.left), ((CONST)b.right).value));
+                    } else {
+                        emit(OPER.sllv(t, munchExp(b.left), munchExp(b.right)));
+                    }
+                }
+                break;
+                case RSHIFT: {
+                    if (b.right instanceof CONST && ((CONST)b.right).value < 65536) {
+                        emit(OPER.srl(t, munchExp(b.left), ((CONST)b.right).value));
+                    } else {
+                        emit(OPER.srlv(t, munchExp(b.left), munchExp(b.right)));
+                    }
+                }
+                break;
+                case ARSHIFT: {
+                    if (b.right instanceof CONST && ((CONST)b.right).value < 65536) {
+                        emit(OPER.sra(t, munchExp(b.left), ((CONST)b.right).value));
+                    } else {
+                        emit(OPER.srav(t, munchExp(b.left), munchExp(b.right)));
+                    }
+                }
+                break;
+                case BITXOR: {
+                    if (b.left instanceof CONST && ((CONST)b.left).value < 65536) {
+                        emit(OPER.ori(t, munchExp(b.right), ((CONST)b.left).value));
+                    } else if (b.right instanceof CONST && ((CONST)b.right).value < 65536) {
+                        emit(OPER.ori(t, munchExp(b.left), ((CONST)b.right).value));
+                    } else {
+                        emit(OPER.or(t, munchExp(b.left), munchExp(b.right)));
+                    }
+                }
+                break;
+            }
+            return t;
+        } else if (e instanceof MEM) {
+            MEM m = (MEM)e;
+            Temp.Temp t = new Temp.Temp();
+            if (m.exp instanceof BINOP && ((BINOP)m.exp).binop == BINOP.Operation.PLUS
+                    && ((BINOP)m.exp).left instanceof CONST && ((CONST)((BINOP)m.exp).left).value < 65536) {
+                emit(OPER.lw(t, munchExp(((BINOP)m.exp).right), ((CONST)((BINOP)m.exp).left).value));
+            } else if (m.exp instanceof BINOP && ((BINOP)m.exp).binop == BINOP.Operation.PLUS
+                    && ((BINOP)m.exp).right instanceof CONST && ((CONST)((BINOP)m.exp).right).value < 65536) {
+                emit(OPER.lw(t, munchExp(((BINOP)m.exp).left), ((CONST)((BINOP)m.exp).right).value));
+            } else {
+                emit(OPER.lw(t, munchExp(m.exp), 0));
             }
             return t;
         }
-
-        // TODO BINOP(PLUS,*,*) -> add Rd, Rs1, Rs2
-
-        // TODO BINOP(MINUS,*,CONST_16) -> addi Rd, Rs, -I_16
-        // TODO BINOP(MINUS,*,*) -> sub Rd, Rs1, Rs2
-
-        // TODO BINOP(MUL,*,CONST_2^k) -> sll Rd, Rs, I_k
-        // TODO BINOP(MUL,CONST_2^k,*) -> sll Rd, Rs, I_k
-        // TODO BINOP(MUL,*,*) -> mulo Rd, Rs1, Rs2
-
-        // TODO BINOP(DIV,*,CONST_2^k) -> sra Rd, Rs, I_k
-        // TODO BINOP(DIV,*,*) -> div Rd, Rs1, Rs2
-
-        // TODO BINOP(AND,*,CONST_16) -> andi Rd, Rs, I_16
-        // TODO BINOP(AND,CONST_16,*) -> andi Rd, Rs, I_16
-        // TODO BINOP(AND,*,*) -> and Rd, Rs1, Rs2
-
-        // TODO BINOP(OR,*,CONST_16) -> ori Rd, Rs, I_16
-        // TODO BINOP(OR,CONST_16,*) -> ori Rd, Rs, I_16
-        // TODO BINOP(OR,*,*) -> or Rd, Rs1, Rs2
-
-        // TODO BINOP(LSHIFT,*,CONST_16) -> sllv Rd, Rs, I_16
-        // TODO BINOP(LSHIFT,*,*) -> sll Rd, Rs1, Rs2
-
-        // TODO BINOP(RSHIFT,*,CONST_16) -> srlv Rd, Rs, I_16
-        // TODO BINOP(RSHIFT,*,*) -> srl Rd, Rs1, Rs2
-
-        // TODO BINOP(ARSHIFT,*,CONST_16) -> srav Rd, Rs, I_16
-        // TODO BINOP(ARSHIFT,*,*) -> sra Rd, Rs1, Rs2
-
-        // TODO BINOP(BITXOR,*,CONST_16) -> xori Rd, Rs, I_16
-        // TODO BINOP(BITXOR,CONST_16,*) -> xori Rd, Rs, I_16
-        // TODO BINOP(BITXOR,*,*) -> xor Rd, Rs1, Rs2
-
-        // TODO MEM(+(CONST_16,*)) -> lw Rd, I_16(Rs)
-        // TODO MEM(+(*,CONST_16)) -> lw Rd, I_16(Rs)
-        // TODO MEM(*) -> lw Rd, 0(Rs)
 
         return null;
 
@@ -271,10 +335,16 @@ public class MipsFrame extends Frame {
 
     private void emit(Assem.Instr inst) {
 
-        //TODO: find out if emit only adds inst to list
-        //TODO: if emit only adds inst to instructionList, remove the emit function
         instructionList.add(inst);
 
+    }
+
+    private int log2(int n) {
+        if ((n & (n - 1)) == 0 && n > 0) { // n == 1, 2, 4, 8, ...
+            return 31 - Integer.numberOfLeadingZeros(n);
+        } else {
+            return -1;
+        }
     }
 
     public void printFrame(java.io.PrintWriter printOut) {
@@ -290,7 +360,7 @@ public class MipsFrame extends Frame {
 
         printOut.print(     ")"    + "\n");
         printOut.print(     "Actuals(");
-        
+
         for (Access curActual : actuals) {
             printOut.println(curActual);
             printOut.print(tab);

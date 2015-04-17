@@ -54,6 +54,31 @@ public class OPER extends Instr {
         return nolab1dst1src(assem, dst, src);
     }
 
+    public static OPER sll(Temp dst, Temp src, int value) {
+        String assem = "sll `d0, `s0, " + value;
+        return nolab1dst1src(assem, dst, src);
+    }
+
+    public static OPER sra(Temp dst, Temp src, int value) {
+        String assem = "sra `d0, `s0, " + value;
+        return nolab1dst1src(assem, dst, src);
+    }
+
+    public static OPER srl(Temp dst, Temp src, int value) {
+        String assem = "srl `d0, `s0, " + value;
+        return nolab1dst1src(assem, dst, src);
+    }
+
+    public static OPER andi(Temp dst, Temp src, int value) {
+        String assem = "andi `d0, `s0, " + value;
+        return nolab1dst1src(assem, dst, src);
+    }
+
+    public static OPER ori(Temp dst, Temp src, int value) {
+        String assem = "ori `d0, `s0, " + value;
+        return nolab1dst1src(assem, dst, src);
+    }
+
     public static OPER addi_zero(Temp dst, int value) {
         String assem = "addi `d0, zero, " + value;
         return nolab1dst0src(assem, dst);
@@ -72,6 +97,51 @@ public class OPER extends Instr {
     public static OPER add(Temp dst, Temp src1, Temp src2) {
         String assem = "add `d0, `s0, `s1";
         return nolab1dst2src(assem, dst, src1, src2);
+    }
+
+    public static OPER sub(Temp dst, Temp src1, Temp src2) {
+        String assem = "sub `d0, `s0, `s1";
+        return nolab1dst2src(assem, dst, src1, src2);
+    }
+
+    public static OPER mulo(Temp dst, Temp src1, Temp src2) {
+        String assem = "mulo `d0, `s0, `s1";
+        return nolab1dst2src(assem, dst, src1, src2);
+    }
+
+    public static OPER div(Temp dst, Temp src1, Temp src2) {
+        String assem = "div `d0, `s0, `s1";
+        return nolab1dst2src(assem, dst, src1, src2);
+    }
+
+    public static OPER and(Temp dst, Temp src1, Temp src2) {
+        String assem = "and `d0, `s0, `s1";
+        return nolab1dst2src(assem, dst, src1, src2);
+    }
+
+    public static OPER or(Temp dst, Temp src1, Temp src2) {
+        String assem = "or `d0, `s0, `s1";
+        return nolab1dst2src(assem, dst, src1, src2);
+    }
+
+    public static OPER sllv(Temp dst, Temp src1, Temp src2) {
+        String assem = "sllv `d0, `s0, `s1";
+        return nolab1dst2src(assem, dst, src1, src2);
+    }
+
+    public static OPER srlv(Temp dst, Temp src1, Temp src2) {
+        String assem = "srlv `d0, `s0, `s1";
+        return nolab1dst2src(assem, dst, src1, src2);
+    }
+
+    public static OPER srav(Temp dst, Temp src1, Temp src2) {
+        String assem = "srav `d0, `s0, `s1";
+        return nolab1dst2src(assem, dst, src1, src2);
+    }
+
+    public static OPER lw(Temp dst, Temp src, int offset) {
+        String assem = "lw `d0, " + offset + "(`s0)";
+        return nolab1dst1src(assem, dst, src);
     }
 
     // END OPERATIONS
