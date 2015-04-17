@@ -50,97 +50,97 @@ public class OPER extends Instr {
     // OPERATION IMPLEMENTATIONS
 
     public static OPER addi(Temp dst, Temp src, int value) {
-        String assem = "addi `d0, `s0, " + value;
+        String assem = "addi\t`d0,\t`s0,\t" + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER sll(Temp dst, Temp src, int value) {
-        String assem = "sll `d0, `s0, " + value;
+        String assem = "sll\t`d0,\t`s0,\t" + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER sra(Temp dst, Temp src, int value) {
-        String assem = "sra `d0, `s0, " + value;
+        String assem = "sra\t`d0,\t`s0,\t" + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER srl(Temp dst, Temp src, int value) {
-        String assem = "srl `d0, `s0, " + value;
+        String assem = "srl\t`d0,\t`s0,\t" + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER andi(Temp dst, Temp src, int value) {
-        String assem = "andi `d0, `s0, " + value;
+        String assem = "andi\t`d0,\t`s0,\t" + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER ori(Temp dst, Temp src, int value) {
-        String assem = "ori `d0, `s0, " + value;
+        String assem = "ori\t`d0,\t`s0,\t" + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER addi_zero(Temp dst, int value) {
-        String assem = "addi `d0, zero, " + value;
+        String assem = "addi\t`d0,\tzero, " + value;
         return nolab1dst0src(assem, dst);
     }
 
     public static OPER li(Temp dst, int value) {
-        String assem = "li `d0, " + value;
+        String assem = "li\t`d0,\t" + value;
         return nolab1dst0src(assem, dst);
     }
 
     public static OPER la(Temp dst, String value) {
-        String assem = "la `d0, " + value;
+        String assem = "la\t`d0,\t" + value;
         return nolab1dst0src(assem, dst);
     }
 
     public static OPER add(Temp dst, Temp src1, Temp src2) {
-        String assem = "add `d0, `s0, `s1";
+        String assem = "add\t`d0,\t`s0,\t`s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER sub(Temp dst, Temp src1, Temp src2) {
-        String assem = "sub `d0, `s0, `s1";
+        String assem = "sub\t`d0,\t`s0,\t`s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER mulo(Temp dst, Temp src1, Temp src2) {
-        String assem = "mulo `d0, `s0, `s1";
+        String assem = "mulo\t`d0,\t`s0,\t`s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER div(Temp dst, Temp src1, Temp src2) {
-        String assem = "div `d0, `s0, `s1";
+        String assem = "div\t`d0,\t`s0,\t`s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER and(Temp dst, Temp src1, Temp src2) {
-        String assem = "and `d0, `s0, `s1";
+        String assem = "and\t`d0,\t`s0,\t`s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER or(Temp dst, Temp src1, Temp src2) {
-        String assem = "or `d0, `s0, `s1";
+        String assem = "or\t`d0,\t`s0,\t`s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER sllv(Temp dst, Temp src1, Temp src2) {
-        String assem = "sllv `d0, `s0, `s1";
+        String assem = "sllv\t`d0,\t`s0,\t`s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER srlv(Temp dst, Temp src1, Temp src2) {
-        String assem = "srlv `d0, `s0, `s1";
+        String assem = "srlv\t`d0,\t`s0,\t`s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER srav(Temp dst, Temp src1, Temp src2) {
-        String assem = "srav `d0, `s0, `s1";
+        String assem = "srav\t`d0,\t`s0,\t`s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER lw(Temp dst, Temp src, int offset) {
-        String assem = "lw `d0, " + offset + "(`s0)";
+        String assem = "lw\t`d0,\t" + offset + "\t(`s0)";
         return nolab1dst1src(assem, dst, src);
     }
 
