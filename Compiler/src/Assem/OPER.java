@@ -144,5 +144,22 @@ public class OPER extends Instr {
         return nolab1dst1src(assem, dst, src);
     }
 
+    public static OPER jal(Temp[] defs, Temp[] uses, Label label) {
+        String assem = "jal " + label;
+        LinkedList<Label> jumps = new LinkedList<>();
+        jumps.add(label);
+        return new OPER(assem, defs, uses, jumps);
+    }
+
+    public static OPER jalr(Temp[] defs, Temp[] uses) {
+        String assem = "jalr `s0";
+        return new OPER(assem, defs, uses, new LinkedList<Label>());
+    }
+
+    public static OPER call_sink(Temp[] defs) {
+        String assem = "// Call sink";
+        return new OPER(assem, defs, new Temp[0], new LinkedList<Label>());
+    }
+
     // END OPERATIONS
 }
