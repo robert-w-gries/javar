@@ -152,7 +152,11 @@ public class OPER extends Instr {
     public static OPER b(List<Label> labels) {
         String assem = "b\t`j0";
         return new OPER(assem, null, null, labels);
+    }
 
+    public static OPER jr(Temp jumpreg) {
+        String assem = "jr\t`s0";
+        return new OPER(assem, null, new Temp[] { jumpreg }, null);
     }
 
     public static OPER jal(Temp[] defs, Temp[] uses, Label label) {
