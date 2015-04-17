@@ -5,11 +5,7 @@ class notExpr {
 }
 
 class LS {
-    int[] number ;
-    int size ;
-
-    // Invoke methods to initialize, print and search
-    // for elements on the array
+    
     public int Start(int sz) {
 
         int aux01;
