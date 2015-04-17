@@ -178,14 +178,24 @@ public class MipsFrame extends Frame {
 
         if (s instanceof LABEL) {
             emit(new Assem.LABEL(((LABEL)s).label.toString(), ((LABEL)s).label));
-        }
+        } else if (s instanceof MOVE) {
+            MOVE m = (MOVE)s;
 
-        // TODO MOVE(MEM(+(*,CONST_16)),*) -> sw Rs, I_16(Rd)
-        // TODO MOVE(MEM(+(CONST_16,*)),*) -> sw Rs, I_16(Rd)
-        // TODO MOVE(MEM(*),*) -> sw Rs, 0(Rd)
-        // TODO MOVE(*,*) -> move Rd, Rs
-
-        if (s instanceof CJUMP) {
+            if (m.dst instanceof MEM) {
+                MEM dst = (MEM)m.dst;
+                if (dst.exp instanceof BINOP && ((BINOP)dst.exp).binop == BINOP.Operation.PLUS
+                        && ((BINOP)dst.exp).left instanceof CONST && ((CONST)((BINOP)dst.exp).left).value < 65536) {
+                    emit(OPER.sw(munchExp(m.src), munchExp(((BINOP)dst.exp).right), ((CONST)((BINOP)dst.exp).left).value));
+                } else if (dst.exp instanceof BINOP && ((BINOP)dst.exp).binop == BINOP.Operation.PLUS
+                        && ((BINOP)dst.exp).right instanceof CONST && ((CONST)((BINOP)dst.exp).right).value < 65536) {
+                    emit(OPER.sw(munchExp(m.src), munchExp(((BINOP)dst.exp).left), ((CONST)((BINOP)dst.exp).right).value));
+                } else {
+                    emit(OPER.sw(munchExp(m.src), munchExp(dst.exp), 0));
+                }
+            } else {
+                emit(new Assem.MOVE("move\t`d0\t`s0", munchExp(m.dst), munchExp(m.src)));
+            }
+        } else if (s instanceof CJUMP) {
             CJUMP c = (CJUMP)s;
             switch (c.relop) {
                 case EQ: {

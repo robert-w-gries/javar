@@ -144,6 +144,11 @@ public class OPER extends Instr {
         return nolab1dst1src(assem, dst, src);
     }
 
+    public static OPER sw(Temp src, Temp dst, int offset) {
+        String assem = "sw\t`s0\t" + offset + "(`s1)";
+        return new OPER(assem, new Temp[0], new Temp[] {src, dst}, new LinkedList<Label>());
+    }
+
     public static OPER b(List<Label> labels) {
         String assem = "b\t`j0";
         return new OPER(assem, null, null, labels);

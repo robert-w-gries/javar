@@ -34,4 +34,7 @@ public class MOVE extends Tree.Stm {
         v.visit(this);
     }
 
+    @Override
+    public void accept(CodeVisitor v) {
+    }
 }
