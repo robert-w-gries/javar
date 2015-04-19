@@ -297,12 +297,12 @@ public class PrintVisitor implements Visitor{
             ast.returnType.accept(this);
         }
 
-        // print method name and start new line
-        printOut.print(" " + ast.name);
-
         if (ast.synced) {
             printOut.print(" synchronized");
         }
+
+        // print method name and start new line
+        printOut.print(" " + ast.name);
 
         printOut.println();
 
