@@ -27,6 +27,9 @@ compiler:
 			Tree/*.java			\
 			Types/*.java
 
+parser:
+	javacc -OUTPUT_DIRECTORY=Parse/ Parse/MiniJavaParser.jj
+
 clean:
 	rm -f Absyn/*.class     &
 	rm -f Assem/*.class		&
