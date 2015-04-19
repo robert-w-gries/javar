@@ -30,3 +30,9 @@ BubbleSort
 Factorial
 Parse1
 ThreadGood
+
+Possible issues
+---------------
+Parse1
+    Array Expressions aren't parsed correctly by reference impl.
+    We handle Parse1 correctly but reference doesn't
