@@ -236,7 +236,7 @@ void VarDeclaration(LinkedList<VarDecl> vars) : {
 	{ vars.add(new VarDecl(type, id.image, init)); }
 }
 
-// MethodDeclaration ::= "public" Type <ID> "(" ( "synchronized" )? ( Type <ID> ( "," Type <ID> )* )? ")" "{" ( VarDeclaration )* ( Statement )* "return" Expression ";" "}"
+// MethodDeclaration ::= "public" ( "synchronized" )? Type <ID> "(" ( Type <ID> ( "," Type <ID> )* )? ")" "{" ( VarDeclaration )* ( Statement )* "return" Expression ";" "}"
 void MethodDeclaration(LinkedList<MethodDecl> methods) : {
 	Type returnType;
 	Token id;
@@ -248,7 +248,7 @@ void MethodDeclaration(LinkedList<MethodDecl> methods) : {
 	LinkedList<Stmt> statements = new LinkedList<Stmt>();
 	Expr returnVal;
 } {
-	"public" returnType = Type() id = <ID> "(" [ "synchronized" { sync = true; } ] 
+	"public" [ "synchronized" { sync = true; } ] returnType = Type() id = <ID> "("
 		[ paramType = Type() paramId = <ID> { params.add(new Formal(paramType, paramId.image)); }
 		( "," paramType = Type() paramId = <ID> { params.add(new Formal(paramType, paramId.image)); } )* ] ")" "{"
 		( LOOKAHEAD(2) VarDeclaration(locals) )*
