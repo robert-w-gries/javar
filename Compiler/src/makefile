@@ -1,12 +1,36 @@
 all:
-	javac Absyn/*.java Parse/*.java Semant/*.java Symbol/*.java Types/*.java Translate/*.java
+	javac	Absyn/*.java        \
+			Assem/*.java        \
+			Canon/*.java        \
+			Frame/*.java        \
+			Mips/*.java         \
+			Parse/*.java        \
+			Semant/*.java       \
+			Symbol/*.java       \
+			Temp/*.java         \
+			Translate/*.java    \
+			Tree/*.java         \
+			Types/*.java
 
 compiler:
 	javacc -OUTPUT_DIRECTORY=Parse/ Parse/MiniJavaParser.jj
-	javac Absyn/*.java Frame/*.java Mips/*.java Parse/*.java Semant/*.java Symbol/*.java Temp/*.java Translate/*.java Tree/*.java Types/*.java 
+	javac	Absyn/*.java		\
+			Assem/*.java		\
+			Canon/*.java		\
+			Frame/*.java		\
+			Mips/*.java			\
+			Parse/*.java		\
+			Semant/*.java		\
+			Symbol/*.java		\
+			Temp/*.java			\
+			Translate/*.java	\
+			Tree/*.java			\
+			Types/*.java
 
 clean:
 	rm -f Absyn/*.class     &
+	rm -f Assem/*.class		&
+	rm -f Canon/*.class		&
 	rm -f Frame/*.class     &
 	rm -f Mips/*.class      &
 	rm -f Parse/*.class     &
