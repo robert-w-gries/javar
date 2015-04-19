@@ -1002,9 +1002,10 @@ public class MiniJavaParser implements MiniJavaParserConstants {
           break label_23;
         }
         jj_consume_token(8);
+                                                                                                                  exprs.add(null);
         jj_consume_token(9);
       }
-                                                                                                                         exprType = "newarr";
+                                                                                                                                              exprType = "newarr";
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case 40:

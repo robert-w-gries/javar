@@ -71,8 +71,18 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
         // loop through elements of abstract list and accept them
         for (int i = 0; i < list.size(); i++) {
+
             printOut.println();
-            ((Absyn.Absyn)list.get(i)).accept(this);
+
+            Absyn.Absyn curElement = (Absyn.Absyn) list.get(i);
+
+            if (curElement == null) {
+                printTabs();
+                printOut.print("null");
+            } else {
+                curElement.accept(this);
+            }
+
         }
 
         decrementTab();
