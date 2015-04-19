@@ -24,9 +24,6 @@ QuickSort
     Doesn't produce correct output
     Confirmed Translate problem
 
-ThreadGood
-    Doesn't parse
-
 TreeVisitor
     Same problem as LinkedList
 
@@ -35,3 +32,4 @@ Working Brylow Testcases
 NQueens
 BubbleSort
 Factorial
+ThreadGood
