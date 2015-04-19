@@ -3,25 +3,31 @@ Broken Brylow Testcases
 BinarySearch
     Doesn't produce correct output
     Similar to the LinearSearch problem
+    Problem with NotExpr
 
 BinaryTree
     Shorter Version => brokenClassMethods
     Same problem as LinkedList
+    Problem with NotExpr
 
 LinearSearch
     Doesn't produce correct output
     Confirmed as a Translate problem
+    Problem with NotExpr
 
 LinkedList
     Shorter Version => brokenClassMethods
     Likely a Translate problem
+    Problem with NotExpr
 
 QuickSort
     Doesn't produce correct output
     Confirmed Translate problem
+    Problem with NotExpr
 
 TreeVisitor
     Same problem as LinkedList
+    Problem with NotExpr
 
 Working Brylow Testcases
 ------------------------
