@@ -17,7 +17,8 @@ LinkedList
     Likely a Translate problem
 
 Parse1
-    Doesn't parse
+    Expected INT[][] but found INT[]
+    Type Checker problem
 
 QuickSort
     Doesn't produce correct output
