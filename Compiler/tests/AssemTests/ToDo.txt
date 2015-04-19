@@ -16,10 +16,6 @@ LinkedList
     Shorter Version => brokenClassMethods
     Likely a Translate problem
 
-Parse1
-    Expected INT[][] but found INT[]
-    Type Checker problem
-
 QuickSort
     Doesn't produce correct output
     Confirmed Translate problem
@@ -32,4 +28,5 @@ Working Brylow Testcases
 NQueens
 BubbleSort
 Factorial
+Parse1
 ThreadGood
