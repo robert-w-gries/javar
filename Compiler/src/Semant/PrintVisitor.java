@@ -585,6 +585,7 @@ public class PrintVisitor implements Types.Visitor, Absyn.Visitor {
 
     @Override
     public void visit(Types.BOOLEAN b) {
+        printTabs();
         printOut.print("BOOLEAN");
     }
 
