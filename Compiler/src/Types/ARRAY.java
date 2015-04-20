@@ -13,6 +13,7 @@ public class ARRAY extends OBJECT {
         this.myClass.parent = null;
         this.initialized = true;
         this.fields.put(new INT(), "length");
+        this.fields.get("length").index = -1;
     }
 
     /**
