@@ -4,3 +4,4 @@
 *.class
 /Compiler/tests/test.java
 /Compiler/tests/test.java.translator
+/Compiler/tests/test.java.checker
