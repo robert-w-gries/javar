@@ -377,7 +377,9 @@ public class MipsFrame extends Frame {
             CALL c = (CALL)e;
             LinkedList<Temp> uses = new LinkedList<>();
 
-            if (c.args.size()*wordSize() > maxArgOffset) maxArgOffset = c.args.size()*wordSize();
+            if (c.args.size()*wordSize() > maxArgOffset) {
+                maxArgOffset = c.args.size()*wordSize();
+            }
 
             // ARGS
             for (int i = 0; i < c.args.size(); i++) {
@@ -449,7 +451,7 @@ public class MipsFrame extends Frame {
         printOut.print(     ")"    + "\n");
         printOut.print(     "BadPtr(" + badPtr() + ")" + "\n");
         printOut.print(     "BadSub(" + badSub() + ")" + "\n");
-        printOut.print(     "maxArgOffset(" + maxArgOffset + ")" + "\n"); //TODO: figure out correct way to print maxArgOffset
+        printOut.print(     "maxArgOffset(" + maxArgOffset + ")" + "\n");
         printOut.println(")"); // Close frame
     }
 
