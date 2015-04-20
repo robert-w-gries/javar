@@ -1,31 +1,25 @@
 Broken Brylow Testcases
 -----------------------
-BinarySearch
-    Bug (?) in implementation.  'number[0] = sz;' must be included in Init()
-    Problem with Translate.NotExpr will cause incorrect output
-
-LinearSearch
-    Problem with Translate.NotExpr will cause incorrect output
-
-LinkedList
-    Code runs but reaches NullPointerException on Xinu router
-    Problem with Translate.NotExpr will cause incorrect output
-
-QuickSort
-    Problem with Translate.NotExpr will cause incorrect output
 
 Working Brylow Testcases
 ------------------------
 NQueens
+BinarySearch
 BubbleSort
 BinaryTree
 Factorial
+LinearSearch
+LinkedList
 Parse1
 ThreadGood
 TreeVisitor
+QuickSort
 
 Possible issues
 ---------------
-Parse1
-    Array Expressions aren't parsed correctly by reference impl.
-    We handle Parse1 correctly but reference doesn't
+BinarySearch
+    Bug (?) in implementation.  'number[0] = sz;' must be included in Init()
+
+Array Parsing
+    'b[0][0] = 20;' does not parse in implementation
+    We parse it lol
