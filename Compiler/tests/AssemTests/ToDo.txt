@@ -1,33 +1,26 @@
 Broken Brylow Testcases
 -----------------------
 BinarySearch
-    Doesn't produce correct output
-    Similar to the LinearSearch problem
-    Problem with NotExpr
+    Bug (?) in implementation.  'number[0] = sz;' must be included in Init()
+    Problem with Translate.NotExpr will cause incorrect output
 
-BinaryTree
-    Shorter Version => brokenClassMethods
-    Same problem as LinkedList
-    Problem with NotExpr
+BinaryTree => brokenClassMethods.java
+    NullPointerException because Object type not being set correctly
+    Problem with Translate.NotExpr will cause incorrect output
 
 LinearSearch
-    Doesn't produce correct output
-    Confirmed as a Translate problem
-    Problem with NotExpr
+    Problem with Translate.NotExpr will cause incorrect output
 
-LinkedList
-    Shorter Version => brokenClassMethods
-    Likely a Translate problem
-    Problem with NotExpr
+LinkedList => brokenClassMethods.java
+    NullPointerException because Object type not being set correctly
+    Problem with Translate.NotExpr will cause incorrect output
 
 QuickSort
-    Doesn't produce correct output
-    Confirmed Translate problem
-    Problem with NotExpr
+    Problem with Translate.NotExpr will cause incorrect output
 
-TreeVisitor
-    Same problem as LinkedList
-    Problem with NotExpr
+TreeVisitor => brokenClassMethods.java
+    NullPointerException because Object type not being set correctly
+    Problem with Translate.NotExpr will cause incorrect output
 
 Working Brylow Testcases
 ------------------------
