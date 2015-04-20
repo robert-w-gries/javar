@@ -67,7 +67,7 @@ public class Translate{
         // jumps for null and OOB checks
         Tree.CJUMP nullJump = new CJUMP(CJUMP.RelOperation.EQ, array, new Tree.CONST(0), nullLabel, nullCheck);
         Tree.CJUMP lowOobJump = new CJUMP(CJUMP.RelOperation.LT, index, new Tree.CONST(0), oobLabel, lowOobCheck);
-        Tree.MEM arrayLength = new Tree.MEM(new Tree.BINOP(Tree.BINOP.Operation.PLUS, array, new Tree.CONST(-4)));
+        Tree.MEM arrayLength = new Tree.MEM(new Tree.BINOP(Tree.BINOP.Operation.PLUS, array, new Tree.CONST(-1*frame.wordSize())));
         Tree.CJUMP highOobJump = new CJUMP(CJUMP.RelOperation.GE, index, arrayLength, oobLabel, highOobCheck);
 
         // assemble sequence that gets the array and index and performs checks
