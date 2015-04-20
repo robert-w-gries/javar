@@ -79,6 +79,11 @@ public class OPER extends Instr {
         return nolab1dst1src(assem, dst, src);
     }
 
+    public static OPER xori(Temp dst, Temp src, int value) {
+        String assem = "xori\t`d0,\t`s0,\t" + value;
+        return nolab1dst1src(assem, dst, src);
+    }
+
     public static OPER addi_zero(Temp dst, int value) {
         String assem = "addi\t`d0,\tzero, " + value;
         return nolab1dst0src(assem, dst);

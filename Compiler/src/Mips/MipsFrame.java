@@ -350,9 +350,9 @@ public class MipsFrame extends Frame {
                 break;
                 case BITXOR: {
                     if (b.left instanceof CONST && ((CONST)b.left).value < 65536) {
-                        emit(OPER.ori(t, munchExp(b.right), ((CONST)b.left).value));
+                        emit(OPER.xori(t, munchExp(b.right), ((CONST)b.left).value));
                     } else if (b.right instanceof CONST && ((CONST)b.right).value < 65536) {
-                        emit(OPER.ori(t, munchExp(b.left), ((CONST)b.right).value));
+                        emit(OPER.xori(t, munchExp(b.left), ((CONST)b.right).value));
                     } else {
                         emit(OPER.or(t, munchExp(b.left), munchExp(b.right)));
                     }
