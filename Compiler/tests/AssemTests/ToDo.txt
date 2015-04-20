@@ -4,31 +4,25 @@ BinarySearch
     Bug (?) in implementation.  'number[0] = sz;' must be included in Init()
     Problem with Translate.NotExpr will cause incorrect output
 
-BinaryTree => brokenClassMethods.java
-    NullPointerException because Object type not being set correctly
-    Problem with Translate.NotExpr will cause incorrect output
-
 LinearSearch
     Problem with Translate.NotExpr will cause incorrect output
 
-LinkedList => brokenClassMethods.java
-    NullPointerException because Object type not being set correctly
+LinkedList
+    Code runs but reaches NullPointerException on Xinu router
     Problem with Translate.NotExpr will cause incorrect output
 
 QuickSort
-    Problem with Translate.NotExpr will cause incorrect output
-
-TreeVisitor => brokenClassMethods.java
-    NullPointerException because Object type not being set correctly
     Problem with Translate.NotExpr will cause incorrect output
 
 Working Brylow Testcases
 ------------------------
 NQueens
 BubbleSort
+BinaryTree
 Factorial
 Parse1
 ThreadGood
+TreeVisitor
 
 Possible issues
 ---------------

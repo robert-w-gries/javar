@@ -197,8 +197,12 @@ public class Translate{
     public Exp visit(IdentifierExpr ast){
         Tree.Exp exp;
         if (accesses.get(ast.id) != null) {
+
             exp = accesses.get(ast.id).exp(new Tree.TEMP(frame.FP()));
-            if (classes.get(ast.id) != null) exp.type = classes.get(ast.id);
+            if (classes.get(ast.id) != null) {
+                exp.type = classes.get(ast.id);
+            }
+
         } else {
             // if it's not a local variable then it's an instance variable
             exp = new FieldExpr(new ThisExpr(), ast.id).accept(this).unEx();
@@ -243,6 +247,9 @@ public class Translate{
         accesses.put("**THIS**", frame.allocFormal());
         for (Formal f : ast.params) {
             accesses.put(f.name, frame.allocFormal());
+            if (f.checktype instanceof OBJECT) {
+                classes.put(f.name, (OBJECT)f.checktype);
+            }
         }
 
         Tree.Stm vars = null;

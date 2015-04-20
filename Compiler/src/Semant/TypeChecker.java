@@ -263,7 +263,8 @@ public class TypeChecker implements TypeVisitor {
 
     @Override
     public Type visit(Absyn.Formal ast) {
-        return ast.type.accept(this);
+        ast.checktype = ast.type.accept(this);
+        return ast.checktype;
     }
 
     // types
