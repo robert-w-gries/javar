@@ -1,0 +1,3 @@
+[submodule "Compiler/test"]
+	path = Compiler/test
+	url = https://github.com/cosc4400/test.git
