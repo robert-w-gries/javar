@@ -2,6 +2,7 @@
 
 ##Installation
 > git clone <repo_url>
+
 > make all
 
 ##Usage
