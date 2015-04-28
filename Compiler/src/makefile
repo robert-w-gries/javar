@@ -14,7 +14,8 @@ $(VERBOSE).SILENT:
 JJFILES =	Parse/MiniJavaParser.jj		\
 			Semant/ReadAbsyn.jj			\
 			Translate/ReadTypes.jj		\
-			Assem/ReadFrags.jj
+			Assem/ReadFrags.jj			\
+			RegAlloc/ReadAssem.jj
 
 # Packages
 ABSYN :=		$(wildcard Absyn/*.java)
