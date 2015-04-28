@@ -13,19 +13,19 @@ import java.util.List;
  */
 public abstract class Instr {
     public String assem;
-    public Temp[] use;
-    public Temp[] def;
+    public List<Temp> use;
+    public List<Temp> def;
     public List<Label> jumps;
 
     public void output(PrintWriter writer) {
-        if ((def != null) && (def.length > 0)) {
+        if ((def != null) && (def.size() > 0)) {
             writer.print(" defs(");
             for (Temp aDef : def) {
                 writer.print(aDef + " ");
             }
             writer.print(")");
         }
-        if ((use != null) && (use.length > 0)) {
+        if ((use != null) && (use.size() > 0)) {
             writer.print(" uses(");
             for (Temp anUse : use) {
                 writer.print(anUse + " ");
@@ -46,8 +46,8 @@ public abstract class Instr {
      */
     public void replaceUse(Temp olduse, Temp newuse) {
         if (use != null) {
-            for (int i = 0; i < use.length; i++) {
-                if (use[i] == olduse) use[i] = newuse;
+            for (int i = 0; i < use.size(); i++) {
+                if (use.get(i) == olduse) use.set(i, newuse);
             }
         }
     }
@@ -57,8 +57,8 @@ public abstract class Instr {
      */
     public void replaceDef(Temp olddef, Temp newdef) {
         if (def != null) {
-            for (int i = 0; i < def.length; i++) {
-                if (def[i] == olddef) def[i] = newdef;
+            for (int i = 0; i < def.size(); i++) {
+                if (def.get(i) == olddef) def.set(i, newdef);
             }
         }
     }
@@ -74,12 +74,12 @@ public abstract class Instr {
                 switch (assem.charAt(++i)) {
                     case 's': {
                         int n = Character.digit(assem.charAt(++i), 10);
-                        s.append(use[n].toString());
+                        s.append(use.get(n).toString());
                         break;
                     }
                     case 'd': {
                         int n = Character.digit(assem.charAt(++i), 10);
-                        s.append(def[n].toString());
+                        s.append(def.get(n).toString());
                         break;
                     }
                     case 'j': {

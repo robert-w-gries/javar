@@ -1,4 +1,7 @@
-package FlowGraph;
+package RegAlloc;
+
+import Assem.Instr;
+import Assem.MOVE;
 
 import java.util.List;
 
@@ -8,21 +11,27 @@ import java.util.List;
  * Date: 4/27/15
  * Time: 10:59 PM
  */
-public abstract class FlowGraph extends Graph.Graph {
+public class FlowGraph extends Graph.Graph<Instr> {
 
     /**
      * The set of temporaries defined by this instruction or block
      */
-    public abstract List<Temp.Temp> def(Node node);
+    public List<Temp.Temp> def(Node node) {
+        return node.getElement().def;
+    }
 
     /**
      * The set of temporaries used by this instruction or block
      */
-    public abstract List<Temp.Temp> use(Node node);
+    public List<Temp.Temp> use(Node node) {
+        return node.getElement().use;
+    }
 
     /**
      * True if this node represents a <strong>move</strong> instruction,
      * i.e. one that can be deleted if def=use.
      */
-    public abstract boolean isMove(Node node);
+    public boolean isMove(Node node) {
+        return node.getElement() instanceof MOVE;
+    }
 }

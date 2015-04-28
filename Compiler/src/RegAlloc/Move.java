@@ -1,7 +1,5 @@
 package RegAlloc;
 
-import Graph.Node;
-
 /**
  * Created with IntelliJ IDEA.
  * User: jchitel
@@ -9,5 +7,5 @@ import Graph.Node;
  * Time: 11:05 PM
  */
 public class Move {
-    public Node src, dst;
+    public Graph.Graph.Node src, dst;
 }

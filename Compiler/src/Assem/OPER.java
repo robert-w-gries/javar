@@ -5,6 +5,7 @@ package Assem;
 import Temp.Temp;
 import Temp.Label;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import java.util.List;
  */
 
 public class OPER extends Instr {
-    public OPER(String a, Temp[] d, Temp[] s, List<Label> j) {
+    public OPER(String a, List<Temp> d, List<Temp> s, List<Label> j) {
         assem = a;
         use = s;
         def = d;
@@ -29,20 +30,31 @@ public class OPER extends Instr {
 
     // UTILITY FUNCTIONS FOR CREATING OPERS
 
-    private static OPER nolabels(String a, Temp[] d, Temp[] s) {
+    private static OPER nolabels(String a, List<Temp> d, List<Temp> s) {
         return new OPER(a, d, s, new LinkedList<Label>());
     }
 
     private static OPER nolab1dst1src(String a, Temp d, Temp s) {
-        return nolabels(a, new Temp[] { d }, new Temp[] { s });
+        List<Temp> ds = new ArrayList<>();
+        ds.add(d);
+        List<Temp> ss = new ArrayList<>();
+        ss.add(s);
+        return nolabels(a, ds, ss);
     }
 
     private static OPER nolab1dst2src(String a, Temp d, Temp s1, Temp s2) {
-        return nolabels(a, new Temp[] { d }, new Temp[] { s1, s2 });
+        List<Temp> ds = new ArrayList<>();
+        ds.add(d);
+        List<Temp> ss = new ArrayList<>();
+        ss.add(s1);
+        ss.add(s2);
+        return nolabels(a, ds, ss);
     }
 
     private static OPER nolab1dst0src(String a, Temp d) {
-        return nolabels(a, new Temp[] { d }, new Temp[0]);
+        List<Temp> ds = new ArrayList<>();
+        ds.add(d);
+        return nolabels(a, ds, new ArrayList<Temp>());
     }
 
     // END UTILITY FUNCTIONS
@@ -156,7 +168,10 @@ public class OPER extends Instr {
 
     public static OPER sw(Temp src, Temp dst, int offset) {
         String assem = "sw\t`s0,\t" + offset + "(`s1)";
-        return new OPER(assem, new Temp[0], new Temp[] {src, dst}, new LinkedList<Label>());
+        List<Temp> ss = new ArrayList<>();
+        ss.add(src);
+        ss.add(dst);
+        return new OPER(assem, new ArrayList<Temp>(), ss, new LinkedList<Label>());
     }
 
     public static OPER b(Label label) {
@@ -172,20 +187,22 @@ public class OPER extends Instr {
 
     public static OPER jr(Temp jumpreg) {
         String assem = "jr\t`s0";
-        return new OPER(assem, null, new Temp[] { jumpreg }, null);
+        List<Temp> ss = new ArrayList<>();
+        ss.add(jumpreg);
+        return new OPER(assem, null, ss, null);
     }
 
-    public static OPER jal(Temp[] defs, Temp[] uses, Label label) {
+    public static OPER jal(List<Temp> defs, List<Temp> uses, Label label) {
         String assem = "jal\t" + label;
         return new OPER(assem, defs, uses, null);
     }
 
-    public static OPER jalr(Temp[] defs, Temp[] uses) {
+    public static OPER jalr(List<Temp> defs, List<Temp> uses) {
         String assem = "jalr\t`s0";
         return new OPER(assem, defs, uses, new LinkedList<Label>());
     }
 
-    public static OPER call_sink(Temp[] uses) {
+    public static OPER call_sink(List<Temp> uses) {
         String assem = "// Call sink";
         return new OPER(assem, null, uses, new LinkedList<Label>());
 
@@ -196,7 +213,10 @@ public class OPER extends Instr {
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
-        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+        List<Temp> ss = new ArrayList<>();
+        ss.add(src1);
+        ss.add(src2);
+        return new OPER(assem, null, ss, jumps);
     }
 
     public static OPER bne(Temp src1, Temp src2, Label t, Label f) {
@@ -204,7 +224,10 @@ public class OPER extends Instr {
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
-        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+        List<Temp> ss = new ArrayList<>();
+        ss.add(src1);
+        ss.add(src2);
+        return new OPER(assem, null, ss, jumps);
     }
 
     public static OPER blt(Temp src1, Temp src2, Label t, Label f) {
@@ -212,7 +235,10 @@ public class OPER extends Instr {
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
-        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+        List<Temp> ss = new ArrayList<>();
+        ss.add(src1);
+        ss.add(src2);
+        return new OPER(assem, null, ss, jumps);
     }
 
     public static OPER bgt(Temp src1, Temp src2, Label t, Label f) {
@@ -220,7 +246,10 @@ public class OPER extends Instr {
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
-        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+        List<Temp> ss = new ArrayList<>();
+        ss.add(src1);
+        ss.add(src2);
+        return new OPER(assem, null, ss, jumps);
     }
 
     public static OPER ble(Temp src1, Temp src2, Label t, Label f) {
@@ -228,7 +257,10 @@ public class OPER extends Instr {
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
-        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+        List<Temp> ss = new ArrayList<>();
+        ss.add(src1);
+        ss.add(src2);
+        return new OPER(assem, null, ss, jumps);
     }
 
     public static OPER bge(Temp src1, Temp src2, Label t, Label f) {
@@ -236,7 +268,10 @@ public class OPER extends Instr {
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
-        return new OPER(assem, new Temp[0], new Temp[] { src1, src2 }, jumps);
+        List<Temp> ss = new ArrayList<>();
+        ss.add(src1);
+        ss.add(src2);
+        return new OPER(assem, null, ss, jumps);
     }
 
     // END OPERATIONS

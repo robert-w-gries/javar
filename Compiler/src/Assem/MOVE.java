@@ -4,6 +4,8 @@ package Assem;
 
 import Temp.Temp;
 
+import java.util.ArrayList;
+
 /**
  * Holds an assembly-language instruction that performs only data transfer
  */
@@ -11,8 +13,10 @@ import Temp.Temp;
 public class MOVE extends Instr {
     public MOVE(String a, Temp d, Temp s) {
         assem = a;
-        use = new Temp[]{s};
-        def = new Temp[]{d};
+        use = new ArrayList<>();
+        use.add(s);
+        def = new ArrayList<>();
+        def.add(d);
         jumps = null;
     }
 
@@ -26,13 +30,13 @@ public class MOVE extends Instr {
      * Returns a list dst.
      */
     public Temp dst() {
-        return def[0];
+        return def.get(0);
     }
 
     /**
      * Returns a list src.
      */
     public Temp src() {
-        return use[0];
+        return use.get(0);
     }
 }

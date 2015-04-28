@@ -7,6 +7,7 @@ import Temp.Temp;
 import Temp.Label;
 import Tree.*;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -393,19 +394,17 @@ public class MipsFrame extends Frame {
             }
 
             // CALLER SAVE REGISTERS
-            Temp[] defs = new Temp[] {
-                    new Temp(31), new Temp(4), new Temp(5), new Temp(6),
-                    new Temp(7), new Temp(8), new Temp(9), new Temp(10),
-                    new Temp(11), new Temp(12), new Temp(13), new Temp(14),
-                    new Temp(15), new Temp(24), new Temp(25), new Temp(2), new Temp(3)
-            };
+            List<Temp> defs = Arrays.asList(new Temp(31), new Temp(4), new Temp(5),
+                    new Temp(6), new Temp(7), new Temp(8), new Temp(9), new Temp(10),
+                    new Temp(11), new Temp(12), new Temp(13), new Temp(14), new Temp(15),
+                    new Temp(24), new Temp(25), new Temp(2), new Temp(3));
 
             // JUMP AND LINK
             if (c.func instanceof NAME) {
-                emit(OPER.jal(defs, uses.toArray(new Temp[uses.size()]), ((NAME)c.func).label));
+                emit(OPER.jal(defs, uses, ((NAME)c.func).label));
             } else {
                 uses.add(0, munchExp(c.func));
-                emit(OPER.jalr(defs, uses.toArray(new Temp[uses.size()])));
+                emit(OPER.jalr(defs, uses));
             }
             emit(OPER.call_sink(defs)); // call sink after jal/jalr
 
