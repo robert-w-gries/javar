@@ -1,7 +1,5 @@
 package FlowGraph;
 
-import Graph.Node;
-
 import java.util.List;
 
 /**
@@ -10,7 +8,7 @@ import java.util.List;
  * Date: 4/27/15
  * Time: 10:59 PM
  */
-public abstract class FlowGraph {
+public abstract class FlowGraph extends Graph.Graph {
 
     /**
      * The set of temporaries defined by this instruction or block
