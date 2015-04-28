@@ -28,7 +28,9 @@ public class FlowGraph extends Graph.Graph<Instr> {
 
         Node prev = null;
         for (Instr inst : code) {
-            Node n = newNode(inst);
+            Node n;
+            if (inst instanceof LABEL) n = labelMap.get(((LABEL)inst).label);
+            else n = newNode(inst);
 
             // if the previous instruction falls to this one, add it as a pred
             if (prev != null) n.addPred(prev);
