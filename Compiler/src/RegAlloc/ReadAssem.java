@@ -22,9 +22,8 @@ import java.util.List;
             if (null == tempVector)
                 {
                     tempVector = new Vector<Temp.Temp>();
-                    Temp.Temp[] regs = Mips.MipsFrame.registers;
-                    for (int i = 0; i < regs.length; i++)
-                        { tempVector.add(regs[i]); }
+            for (int i = 0; i < 32; i++)
+            { tempVector.add(new Temp.Temp(i)); }
                 }
 
             for (int i = tempVector.size(); i <= num; i++)
@@ -188,8 +187,7 @@ import java.util.List;
     jj_consume_token(LPAREN);
     name = jj_consume_token(ID);
     jj_consume_token(COLON);
-                          frame = (Mips.MipsFrame)(masterFrame.newFrame(
-                                                                                Symbol.Symbol.get(name.image)));
+                          frame = new Mips.MipsFrame(); frame.name = new Temp.Label(name.image);
     formals = FormalList();
                              frame.formals = formals;
     actuals = FormalList();
@@ -226,8 +224,7 @@ import java.util.List;
       jj_consume_token(LPAREN);
       maxArg = jj_consume_token(NUM);
       jj_consume_token(RPAREN);
-            ((Mips.MipsFrame)frame).maxArgOffset =
-                                (new Integer(maxArg.toString())).intValue();
+            ((Mips.MipsFrame)frame).maxArgOffset = new Integer(maxArg.toString());
       break;
     default:
       jj_la1[7] = jj_gen;
