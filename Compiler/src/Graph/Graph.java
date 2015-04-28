@@ -22,8 +22,8 @@ public class Graph<T> {
         return nodes;
     }
 
-    public Node newNode() {
-        Node n = new Node(nodecount++);
+    public Node newNode(T el) {
+        Node n = new Node(nodecount++, el);
         nodes.add(n);
         return n;
     }
@@ -33,8 +33,9 @@ public class Graph<T> {
         private final int id;
         private Set<Node> succ, pred;
 
-        public Node(int id) {
+        public Node(int id, T el) {
             this.id = id;
+            this.element = el;
             this.succ = new HashSet<>();
             this.pred = new HashSet<>();
         }

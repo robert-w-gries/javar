@@ -19,16 +19,8 @@ public class RegAlloc {
         this.frame = frame;
         this.code = code;
 
-        FlowGraph flowGraph = generateFlowGraph(code);
+        FlowGraph flowGraph = new FlowGraph(code);
         // TODO produce interference graph from control flow graph
 
-    }
-
-    private FlowGraph generateFlowGraph(List<Instr> code) {
-        FlowGraph g = new FlowGraph();
-
-        // TODO produce control flow graph from code
-
-        return g;
     }
 }
