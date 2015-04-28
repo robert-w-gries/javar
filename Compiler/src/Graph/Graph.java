@@ -1,5 +1,6 @@
 package Graph;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,28 +11,40 @@ import java.util.List;
  */
 public class Graph {
 
-    int nodecount = 0;
-    public List<Node> nodes;
+    private int nodecount = 0;
+    private List<Node> nodes;
 
-    public Node newNode() {
-        return new Node(this);
+    public Graph() {
+        nodes = new LinkedList<>();
     }
 
-    void check(Node n) {
-        if (n.mygraph != this)
-            throw new Error("Graph.addEdge using nodes from the wrong graph");
+    public List<Node> getNodes() {
+        return nodes;
+    }
+
+    public Node newNode() {
+        Node n = new Node();
+        n.setKey(nodecount++);
+        n.setGraph(this);
+        nodes.add(n);
+        return n;
+    }
+
+    private void check(Node n) {
+        if (n.getGraph() != this) throw new Error("Graph.addEdge using nodes from the wrong graph");
     }
 
     public void addEdge(Node from, Node to) {
         check(from);
         check(to);
+
         if (from.goesTo(to)) return;
-        to.preds.add(0, from);
-        from.succs.add(0, to);
+        to.addPred(from);
+        from.addPred(to);
     }
 
     public void rmEdge(Node from, Node to) {
-        to.preds.remove(from);
-        from.preds.remove(to);
+        to.getPreds().remove(from);
+        from.getPreds().remove(to);
     }
 }

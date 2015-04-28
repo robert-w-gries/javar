@@ -10,18 +10,48 @@ import java.util.List;
  * Time: 10:42 PM
  */
 public class Node {
-    public Graph mygraph;
+    private Graph graph;
+    private int key;
 
-    int mykey;
+    private List<Node> succs;
+    private List<Node> preds;
 
-    public Node(Graph g) {
-        mygraph = g;
-        mykey = g.nodecount++;
-        g.nodes.add(this);
+    public Node() {
+        succs = new LinkedList<>();
+        preds = new LinkedList<>();
     }
 
-    List<Node> succs;
-    List<Node> preds;
+    public Graph getGraph() {
+        return graph;
+    }
+
+    public void setGraph(Graph g) {
+        graph = g;
+    }
+
+    public int getKey() {
+        return key;
+    }
+
+    public void setKey(int key) {
+        this.key = key;
+    }
+
+    public void addSucc(Node n) {
+        succs.add(n);
+    }
+
+    public void addPred(Node n) {
+        preds.add(n);
+    }
+
+    public List<Node> getPreds() {
+        return preds;
+    }
+
+    public List<Node> getSuccs() {
+        return succs;
+    }
 
     public List<Node> adj() {
         List<Node> nodes = succs;
@@ -49,11 +79,11 @@ public class Node {
         return preds.contains(n);
     }
 
-    public boolean adj(Node n) {
+    public boolean isAdjacent(Node n) {
         return goesTo(n) || comesFrom(n);
     }
 
     public String toString() {
-        return String.valueOf(mykey);
+        return String.valueOf(key);
     }
 }
