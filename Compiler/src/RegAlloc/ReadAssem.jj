@@ -5,7 +5,7 @@
 // 2009 Apr 15            //
 ////////////////////////////
 PARSER_BEGIN(ReadAssem)
-package Parse;
+package RegAlloc;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.Iterator;
