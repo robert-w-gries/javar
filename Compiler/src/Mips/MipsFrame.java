@@ -21,7 +21,7 @@ public class MipsFrame extends Frame {
     private Temp framePointer;
     private int argIndex = 0;
     private LinkedList<Assem.Instr> instructionList;
-    private int maxArgOffset = 0;
+    public int maxArgOffset = 0;
 
     public static final Label _BADPTR = new Label("_BADPTR");
     public Label badPtr() { return _BADPTR; }

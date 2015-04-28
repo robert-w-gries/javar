@@ -1,0 +1,370 @@
+////////////////////////////
+// Stage 7 Input Parser   //
+// COSC 170 Spring 2009   //
+// D.W.Brylow             //
+// 2009 Apr 15            //
+////////////////////////////
+PARSER_BEGIN(ReadAssem)
+package RegAlloc;
+import java.util.HashMap;
+import java.util.Vector;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+    public class ReadAssem
+    {
+	static private Mips.MipsFrame masterFrame = new Mips.MipsFrame();
+
+	static Vector<Temp.Temp>  tempVector = null;
+	static Vector<Temp.Label> labelVector = null;
+
+	static Temp.Temp getTemp(int num)
+	{
+	    if (num < 0)
+		{
+		    System.err.println("ERROR: getTemp(" + num + ")");
+		    return null;
+		}
+	    if (null == tempVector)
+		{
+		    tempVector = new Vector<Temp.Temp>();
+            for (int i = 0; i < 32; i++)
+            { tempVector.add(new Temp.Temp(i)); }
+		}
+
+	    for (int i = tempVector.size(); i <= num; i++)
+		tempVector.add(new Temp.Temp());
+	    return tempVector.elementAt(num);
+	}
+
+	static Temp.Label getLabel(String s)
+	{
+	    if (null == labelVector) labelVector = new Vector<Temp.Label>();
+
+	    int num = Integer.MIN_VALUE;
+	    if (s.startsWith("L"))
+		num = parseInt(s.substring(1));
+	    if (num == Integer.MIN_VALUE) return new Temp.Label(s);
+
+	    for (int i = labelVector.size(); i <= num; i++)
+		labelVector.add(new Temp.Label());
+	    return labelVector.elementAt(num);
+	}
+
+	static int parseInt(String s)
+	{
+	    try
+		{
+		    return Integer.parseInt(s);
+		}
+	    catch (Exception e)
+		{
+		    // System.err.println("ERROR: parseInt(" + s + ")");
+		    return Integer.MIN_VALUE;
+		}
+	}
+
+    }
+PARSER_END(ReadAssem)
+
+/* WHITE SPACE */
+
+SKIP :
+{
+  " " | "\t" | "\n" | "\r" | "\f"
+}
+
+/* RESERVED WORDS, OPERATORS, etc  */
+
+TOKEN :
+{
+  < DOT:   "." >
+| < LPAREN:"(" >
+| < RPAREN:")" >
+| < LANGLE:"<" >
+| < RANGLE:">" >
+| < COMMA: "," >
+| < COLON: ":" >
+| < DQUOTE: "\"">
+
+| < ALIGN: "align" >
+| < ASCIZ: "asciiz" >
+| < DATA:  "data" >
+| < WORD:  "word" >
+
+| < DATAFRAG: "DataFrag" >
+| < PROCFRAG: "ProcFrag" >
+| < MIPSFRAME:"MipsFrame">
+| < ACTUALS:  "Actuals" >
+| < FORMALS:  "Formals" >
+| < BADPTR:   "BadPtr" >
+| < BADSUB:   "BadSub" >
+| < INREG:    "InReg" >
+| < INFRAME:  "InFrame" >
+| < MAXARG:   "maxArgOffset" >
+
+| < MOVE:   "MOVE" >
+| < OPER:   "OPER" >
+| < LABEL:  "LABEL" >
+
+| < DEFS:   "defs" >
+| < USES:   "uses" >
+| < JUMPS:  "jumps" >
+
+/* LITERALS */
+
+| < NUM:    ( "-")? ( ["1"-"9"] (["0"-"9"])* | "0" ) >
+
+/* IDENTIFIERS */
+
+| < ID: ( ["A" - "Z"] | ["a" - "z"] | ["0" - "9"] | "_" )
+	       ( ["A" - "Z"] | ["a" - "z"] | ["0" - "9"] | "_" | "." )* >
+| <STRINGVAL: "\""  (~["\""])*  "\"" >
+
+}
+
+
+/********************************
+ * Language grammar starts here *
+ ********************************/
+
+LinkedList<Translate.Frag> Program() :
+{
+    LinkedList<Translate.Frag> frags = new LinkedList<Translate.Frag>();
+    Translate.Frag frag = null;
+}
+{
+    ( 
+      frag = DataFrag() { frags.add(frag); }
+      |
+      frag = ProcFrag() { frags.add(frag); }
+    )*
+    { return frags; }
+}
+
+Translate.Frag DataFrag() :
+{
+    Token name = null;
+    Token num = null;
+    String s = new String();
+}
+{
+	<DATAFRAG> <LPAREN>
+    <DOT> <DATA> { s = s + "\t.data\n"; }
+    [ <DOT> <ALIGN> 	{ s = s + "\t.align"; }
+      [ num = <NUM> ]
+        {
+	    if (null == num) s = s + "\n"; else s = s + " " + num.image + "\n";
+	}
+    ]
+    name = <ID> <COLON> { s = s + name.image + ":\n"; }
+    (
+     LOOKAHEAD(2) <DOT> <ASCIZ> name = <STRINGVAL>
+	{ s = s.substring(0,s.length() - 1)
+	  + "\t.asciiz\t" + name.image;}
+     |
+     (LOOKAHEAD(2)  <DOT> <WORD> name = <ID>
+	 { s = s + "\t.word " + name.image + "\n";}
+      )*
+    )
+	<RPAREN>
+    { return new Translate.DataFrag(s); }
+}
+
+
+Translate.Frag ProcFrag() :
+{
+    Frame.Frame frame = null;
+	List<Assem.Instr> code = new LinkedList<Assem.Instr>();
+	Assem.Instr instr;
+}
+{
+	<PROCFRAG> <LPAREN>
+	frame = Frame()
+	( instr = Instr() { code.add(instr); } )*
+	<RPAREN>
+    { return new Translate.ProcFrag(code, frame); }
+}
+
+Frame.Frame Frame() :
+{
+    Token name, maxArg;
+    Mips.MipsFrame frame = null;
+
+    LinkedList formals = null;
+    LinkedList actuals = null;
+}
+{
+	<MIPSFRAME> <LPAREN>
+    name = <ID> <COLON> { frame = new Mips.MipsFrame(); frame.name = new Temp.Label(name.image); }
+    formals = FormalList() { frame.formals = formals; }
+    actuals = FormalList() { frame.actuals = actuals; }
+    [ <BADPTR> <LPAREN> name = <ID> <RPAREN>
+      { if (!(frame.badPtr().toString().equals(name.image)))
+	  	   System.err.println("badPtr name does not match! " + name.image);
+	  } ]
+    [ <BADSUB> <LPAREN> name = <ID> <RPAREN>
+      { if (!(frame.badSub().toString().equals(name.image)))
+	  	   System.err.println("badSub name does not match! " + name.image);		
+	  } ]
+	[ <MAXARG> <LPAREN> maxArg = <NUM> <RPAREN>
+	  { ((Mips.MipsFrame)frame).maxArgOffset = new Integer(maxArg.toString());
+	  } ]
+
+	<RPAREN>
+	{ return frame; }
+}
+
+LinkedList FormalList() :
+{
+    LinkedList list = new LinkedList();
+    Token t = null;
+    String s;
+    int tempNum = 0;
+    Frame.Access access = null;
+}
+{
+	( <FORMALS> | <ACTUALS> )
+    <LPAREN>
+	(
+	  access = InReg() { list.add(access); }
+       |
+	  access = InFrame() { list.add(access); }
+    )*
+	 <RPAREN>
+	{ return list; }
+}
+
+Frame.Access InReg() :
+{
+    Token t;
+    String s;
+    int tempNum;
+}
+{
+    <INREG> <LPAREN> t = <ID> <RPAREN>
+	{
+		 s = t.image.substring(1);
+		 tempNum = parseInt(s);
+		 return new Mips.InReg(getTemp(tempNum));
+	}
+}
+
+Frame.Access InFrame() :
+{
+    Token t;
+}
+{
+    <INFRAME> <LPAREN> t = <NUM> <RPAREN>
+	{
+	    return new Mips.InFrame(parseInt(t.image));
+	}
+}
+
+Assem.Instr Instr():
+{
+	Assem.Instr instr;
+}
+{
+	(
+	 instr = MOVE()
+|
+	 instr = OPER()
+|
+	 instr = LABEL()
+	)
+	{ return instr; }	
+}
+
+
+Assem.Instr LABEL():
+{
+	Assem.Instr instr;
+	Temp.Temp[] d = null, s = null;
+	Token t = null;
+}
+{
+	<LABEL> <LPAREN>
+		   t = <STRINGVAL>
+	<RPAREN>
+	{ 
+	  String str = t.image.substring(1, t.image.length()-1);
+	  return new Assem.LABEL(str + ":", getLabel(str));
+	}
+}
+
+
+Assem.Instr MOVE():
+{
+	Assem.Instr instr;
+	Temp.Temp[] d = null, s = null;
+	Token str = null;
+}
+{
+	<MOVE> <LPAREN>
+		   str = <STRINGVAL>
+		   ( s = Uses()
+		   | d = Defs() )*
+	<RPAREN>
+	{ return new Assem.MOVE(str.image.substring(1,str.image.length()-1),
+								d[0], s[0]); }
+}
+
+
+Assem.Instr OPER():
+{
+	Assem.Instr instr;
+	Temp.Temp[] d = null, s = null;
+	List<Temp.Label> j = null;
+	Token str = null;
+}
+{
+	<OPER> <LPAREN>
+		   str = <STRINGVAL>
+		   ( s = Uses()
+		   | d = Defs()
+		   | j = Jumps() )*
+	<RPAREN>
+	{ return new Assem.OPER(str.image.substring(1,str.image.length()-1),
+												 d, s, j); }
+}
+
+
+Temp.Temp[] Uses():
+{
+	List<Temp.Temp> uses = new LinkedList<Temp.Temp>();
+	Token t;
+}
+{
+	<USES> <LPAREN>
+	( t = <ID> { uses.add(getTemp(parseInt(t.image.substring(1)))); } )*
+	<RPAREN>
+	{ return uses.toArray(new Temp.Temp[1]); }
+}
+
+Temp.Temp[] Defs():
+{
+	List<Temp.Temp> defs = new LinkedList<Temp.Temp>();
+	Token t;
+}
+{
+	<DEFS> <LPAREN>
+	( t = <ID> { defs.add(getTemp(parseInt(t.image.substring(1)))); } )*
+	<RPAREN>
+	{ return defs.toArray(new Temp.Temp[1]); }
+}
+
+List<Temp.Label> Jumps():
+{
+	List<Temp.Label> jumps = new LinkedList<Temp.Label>();
+	Token t;
+}
+{
+	<JUMPS> <LPAREN>
+	( t = <ID> { jumps.add(getLabel(t.image)); } )*
+	<RPAREN>
+	{ return jumps; }
+}
+
+
