@@ -1,10 +1,11 @@
 package RegAlloc;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
-import java.io.FileNotFoundException;
 import java.util.LinkedList;
 
 public class Main {
@@ -74,13 +75,12 @@ public class Main {
                 }
             } else {
                 Translate.ProcFrag p = (Translate.ProcFrag)frag;
-                p.frame.procEntryExit2(p.code);
-                RegAlloc.RegAlloc alloc =
-                        new RegAlloc.RegAlloc(p.frame, p.code);
+                p.frame.procEntryExit2(p.code); // TODO MipsFrame.procEntryExit2
+                RegAlloc.RegAlloc alloc = new RegAlloc.RegAlloc(p.frame, p.code); // TODO create RegAlloc class
                 if (colorDump) {
-                    alloc.show(writer);
+                    alloc.show(writer); // TODO RegAlloc.show
                 }
-                p.frame.procEntryExit3(p.code);
+                p.frame.procEntryExit3(p.code); // TODO MipsFrame.procEntryExit3
                 // Remove redundant MOVEs
                 for (java.util.ListIterator<Assem.Instr> code =
                      p.code.listIterator(0);
@@ -89,14 +89,13 @@ public class Main {
                     if (i instanceof Assem.MOVE) {
                         Temp.Temp src = ((Assem.MOVE)i).src();
                         Temp.Temp dst = ((Assem.MOVE)i).dst();
-                        if (alloc.tempMap(src, p.frame).equals(
-                                alloc.tempMap(dst, p.frame))) {
+                        if (alloc.tempMap(src, p.frame).equals(alloc.tempMap(dst, p.frame))) { // TODO RegAlloc.tempMap
                             if (removeMoves) code.remove();
                         }
                     }
                 }
                 for (Assem.Instr i : p.code) {
-                    writer.println(i.format(p.frame, alloc));
+                    writer.println(i.format(p.frame, alloc)); // TODO Instr.format
                     //writer.println(i);
                     //i.output(writer);
                 }
