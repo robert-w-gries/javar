@@ -56,9 +56,10 @@ public class Main {
             }
         }
         if (null == reader) usage();
-        LinkedList<Translate.Frag> frags;
+        LinkedList<Translate.Frag> frags = null;
         try {
-            frags = new ReadAssem(reader).Program();
+            new ReadAssem(reader);
+            frags = ReadAssem.Program();
         } catch (ParseException p) {
             System.err.println(p.toString());
             System.exit(-1);
@@ -76,7 +77,7 @@ public class Main {
             } else {
                 Translate.ProcFrag p = (Translate.ProcFrag)frag;
                 p.frame.procEntryExit2(p.code); // TODO MipsFrame.procEntryExit2
-                RegAlloc.RegAlloc alloc = new RegAlloc.RegAlloc(p.frame, p.code); // TODO create RegAlloc class
+                RegAlloc alloc = new RegAlloc(p.frame, p.code);
                 if (colorDump) {
                     alloc.show(writer); // TODO RegAlloc.show
                 }
