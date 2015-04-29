@@ -2,6 +2,7 @@
  * All rights reserved.  */
 package Assem;
 
+import RegAlloc.RegAlloc;
 import Temp.Temp;
 import Temp.Label;
 
@@ -98,4 +99,9 @@ public abstract class Instr {
         }
         return s.toString();
     }
+
+    public String format(Frame.Frame frame, RegAlloc alloc) {
+        return null;
+    }
+
 }

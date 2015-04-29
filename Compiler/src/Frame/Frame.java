@@ -1,5 +1,6 @@
 package Frame;
 
+import Assem.Instr;
 import Tree.Stm;
 
 import java.util.LinkedList;
@@ -25,6 +26,8 @@ public abstract class Frame {
 
     /* Methods for Assembler */
     public abstract void procEntryExit1(List<Stm> stms);
+    public abstract void procEntryExit2(List<Instr> instrs);
+    public abstract void procEntryExit3(List<Instr> instr);
     public abstract List<Assem.Instr> codeGen(List<Stm> stms);
 
 }
