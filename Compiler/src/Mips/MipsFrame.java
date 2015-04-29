@@ -1,5 +1,6 @@
 package Mips;
 
+import Assem.Instr;
 import Assem.OPER;
 import Frame.Frame;
 import Frame.Access;
@@ -161,6 +162,16 @@ public class MipsFrame extends Frame {
         //////////////////
         // END EPILOGUE //
         //////////////////
+    }
+
+    @Override
+    public void procEntryExit2(List<Instr> instrs) {
+        System.out.println("In procEntryExit2()");
+    }
+
+    @Override
+    public void procEntryExit3(List<Instr> instrs) {
+        System.out.println("In procEntryExit3()");
     }
 
     @Override

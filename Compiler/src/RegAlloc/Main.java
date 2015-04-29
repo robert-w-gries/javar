@@ -97,8 +97,6 @@ public class Main {
                 }
                 for (Assem.Instr i : p.code) {
                     writer.println(i.format(p.frame, alloc)); // TODO Instr.format
-                    //writer.println(i);
-                    //i.output(writer);
                 }
             }
         }
