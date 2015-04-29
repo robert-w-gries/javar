@@ -1,7 +1,24 @@
 #!/bin/bash
+
 SCRIPTDIR="$(echo ~brylow/cosc4400/Projects)"
-OUT="./main"
 USAGE="Usage: ./brylowreference.sh [-o OUT_PATH] [-s starting_phase] [-f final_phase] inputfile.java"
+
+PHASES="parser checker translator assem allocator"
+
+listcontains() {
+    for word in $1; do
+        [[ "$word" == "$2" ]] && return 0
+    done
+    return 1
+}
+
+STRINGLIST=""
+printlist() {
+    for word in $1; do
+        STRINGLIST="$STRINGLIST '$word'"
+    done
+    echo "Available Phases: $STRINGLIST"
+}
 
 #Check for empty arguments and quit
 if [[ -z "$1" ]]
@@ -16,22 +33,29 @@ for INPUTFILE; do :; done
 #Start phase is parse and end phase is reg allocator by default
 STARTPHASE="parser"
 FINALPHASE="alloc"
-EXT="S"
+OUT=""
 
 #parse options of script
 while getopts :o:s:l: opt
 do      case $opt in
         o)
-            echo "-o was triggered. Parameter: $OPTARG" >&2
             OUT=$OPTARG
             ;;
         s)
-            echo "-s was triggered. Parameter: $OPTARG" >&2
             STARTPHASE=$OPTARG
+            if ! listcontains "$PHASES" "$OPTARG"; then 
+                echo "ERROR:  Incorrect argument '$OPTARG'"
+                printlist "$PHASES";
+                exit 2;
+            fi
             ;;
         l)
-            echo "-l was trigged. Parameter: $OPTARG" >&2
             FINALPHASE=$OPTARG
+            if ! listcontains "$PHASES" "$OPTARG"; then
+                echo "ERROR:  Incorrect argument '$OPTARG'"
+                printlist "$PHASES";
+                exit 2;
+            fi
             ;;
         \?)
             echo "Invalid option: -$OPTARG" >&2
@@ -57,7 +81,6 @@ if [ "$CURPHASE" == "parser" ]; then
     if [ "$CURPHASE" == "$FINALPHASE" ]; then
         CURPHASE=""
         COMMAND="$COMMAND$SUBCOMMAND"
-        EXT="ast"
     else
         INPUTFILE="-"
         CURPHASE="checker"
@@ -71,7 +94,6 @@ if [ "$CURPHASE" == "checker" ]; then
     if [ "$CURPHASE" == "$FINALPHASE" ]; then
         CURPHASE=""
         COMMAND=$COMMAND$SUBCOMMAND
-        EXT="ast.types"
     else
         INPUTFILE="-"
         CURPHASE="translator"
@@ -85,7 +107,6 @@ if [ "$CURPHASE" == "translator" ]; then
     if [ "$CURPHASE" == "$FINALPHASE" ]; then
         CURPHASE=""
         COMMAND=$COMMAND$SUBCOMMAND
-        EXT="tree"
     else
         INPUTFILE="-"
         CURPHASE="assem"
@@ -99,7 +120,6 @@ if [ "$CURPHASE" == "assem" ]; then
     if [ "$CURPHASE" == "$FINALPHASE" ]; then
         CURPHASE=""
         COMMAND=$COMMAND$SUBCOMMAND
-        EXT="instr"
     else
         INPUTFILE="-"
         CURPHASE="allocator"
@@ -115,8 +135,11 @@ if [ "$CURPHASE" == "allocator" ]; then
 fi
 
 #Append output file
-COMMAND="$COMMAND > $OUT.$EXT"
+if [[ ! -z "$OUT" ]]; then
+    COMMAND="$COMMAND > $OUT"
+    echo "Output to $OUT"
+fi
 
 #Run command
 eval $COMMAND
-echo "Output to $OUT.$EXT"
+exit 0
