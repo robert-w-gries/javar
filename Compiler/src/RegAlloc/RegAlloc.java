@@ -24,6 +24,7 @@ public class RegAlloc {
 
         FlowGraph flowGraph = new FlowGraph(code);
         InterferenceGraph interferenceGraph = livenessAnalysis(flowGraph);
+        allocate(interferenceGraph);
     }
 
     private InterferenceGraph livenessAnalysis(FlowGraph f) {
@@ -81,6 +82,17 @@ public class RegAlloc {
             }
         }
         return inter;
+    }
+
+    private void allocate(InterferenceGraph inter) {
+        // TODO simplify - One at a time, remove non-move-related nodes of low (< K) degree from the graph
+        // TODO coallesce - Coallesce moves into single nodes and jump back to simplify
+        // TODO freeze - freeze moves that don't apply to simplify or coallesce, jump back to simplify
+        // TODO potential spill - select a high degree node and push it on the stack, jump back to simplify
+        // TODO select - pop the entire stack, assigning colors
+        // TODO actual spill - check for actual spills, modify the program and start over the whole process if so
+
+        // TODO if we made it here, we're good
     }
 
     private <T> Set<T> union(Collection<T> left, Collection<T> right) {
