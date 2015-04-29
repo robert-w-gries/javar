@@ -20,15 +20,15 @@ printlist() {
     echo "Available Phases: $STRINGLIST"
 }
 
+#grab last argument in script
+for INPUTFILE; do :; done
+
 #Check for empty arguments and quit
-if [[ -z "$1" ]]
+if [[ -z "$INPUTFILE" ]]
     then
         echo $USAGE 
         exit 2
 fi
-
-#grab last argument in script
-for INPUTFILE; do :; done
 
 #Start phase is parse and end phase is reg allocator by default
 STARTPHASE="parser"
@@ -40,6 +40,12 @@ while getopts :o:s:l: opt
 do      case $opt in
         o)
             OUT=$OPTARG
+            #Check if option is last argument
+            if [ "$OPTARG" == "$INPUTFILE" ]; then
+                echo "Missing input java file"
+                echo $USAGE
+                exit 2;
+            fi
             ;;
         s)
             STARTPHASE=$OPTARG
@@ -48,12 +54,24 @@ do      case $opt in
                 printlist "$PHASES";
                 exit 2;
             fi
+            #Check if option is last argument
+            if [ "$OPTARG" == "$INPUTFILE" ]; then
+                echo "Missing input java file"
+                echo $USAGE
+                exit 2;
+            fi
             ;;
         l)
             FINALPHASE=$OPTARG
+            #Check if option is last argument
             if ! listcontains "$PHASES" "$OPTARG"; then
                 echo "ERROR:  Incorrect argument '$OPTARG'"
                 printlist "$PHASES";
+                exit 2;
+            fi
+            if [ "$OPTARG" == "$INPUTFILE" ]; then
+                echo "Missing input java file"
+                echo $USAGE
                 exit 2;
             fi
             ;;
