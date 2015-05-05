@@ -14,9 +14,13 @@ public class Temp {
 
     public Temp() {
         regIndex = regCount++;
+        isMoveRelated = false;
     }
 
-    public Temp(int reg) { regIndex = reg; }
+    public Temp(int reg) {
+        regIndex = reg;
+        isMoveRelated = false;
+    }
 
     public String toString() {
         return "t" + Integer.toString(this.regIndex);
