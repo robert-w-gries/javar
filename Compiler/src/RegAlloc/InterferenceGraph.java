@@ -1,10 +1,9 @@
 package RegAlloc;
 
+import Graph.Graph;
 import Temp.Temp;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -12,34 +11,98 @@ import java.util.Map;
  * Date: 4/27/15
  * Time: 11:03 PM
  */
-public class InterferenceGraph extends Graph.Graph<Temp> {
+public class InterferenceGraph extends Graph<Temp, InterferenceGraph.Edge> {
 
-    private Map<Temp, Node> tempNodeMap;
+    private Set<Temp> removed;
 
     public InterferenceGraph() {
-        tempNodeMap = new HashMap<>();
+        removed = new HashSet<>();
     }
 
-    public void addEdge(Temp t1, Temp t2) {
-        Node n1, n2;
-        if (!tempNodeMap.containsKey(t1)) {
-            n1 = newNode(t1);
-            tempNodeMap.put(t1, n1);
-        } else n1 = tempNodeMap.get(t1);
-
-        if (!tempNodeMap.containsKey(t2)) {
-            n2 = newNode(t2);
-            tempNodeMap.put(t2, n2);
-        } else n2 = tempNodeMap.get(t2);
-
-        n1.addSucc(n2);
+    @Override
+    protected InterferenceGraph.Edge createEdge(Temp n1, Temp n2, Graph.Direction dir) {
+        return null;
     }
 
-    public void removeNode(Node n) {
-        for (Node adj : n.getAdjacent()) {
-            n.remove(adj);
-            adj.remove(n);
+    @Override
+    protected InterferenceGraph.Edge createEdge(Temp n1, Temp n2) {
+        return new InterferenceGraph.Edge(n1, n2);
+    }
+
+    public void addMoveEdge(Temp t1, Temp t2) {
+        newEdge(t1, t2).setMove(true);
+    }
+
+    public void removeNode(Temp n) {
+        removed.add(n);
+    }
+
+    public Set<Temp> getNodes() {
+        Set<Temp> nodes = new HashSet<>();
+        for (Temp node : this.nodes.keySet()) {
+            if (!removed.contains(node)) nodes.add(node);
         }
-        nodes.remove(n);
+        return nodes;
+    }
+
+    public int getDegree(Temp n) {
+        int degree = 0;
+        for (Temp t : this.adj.get(n)) {
+            if (!removed.contains(t)) degree++;
+        }
+        return degree;
+    }
+
+    public Set<Temp> getAdj(Temp n) {
+        Set<Temp> adj = new HashSet<>();
+        for (Temp t : this.adj.get(n)) {
+            if (!removed.contains(t)) adj.add(t);
+        }
+        return adj;
+    }
+
+    public InterferenceGraph.Edge getEdge(Temp n1, Temp n2) {
+        return findEdges.get(n1).get(n2);
+    }
+
+    public Set<InterferenceGraph.Edge> getEdges() {
+        Set<InterferenceGraph.Edge> edges = new HashSet<>();
+        for (InterferenceGraph.Edge edge : this.edges) {
+            if (!removed.contains(edge.getN1()) && !removed.contains(edge.getN1())) edges.add(edge);
+        }
+        return edges;
+    }
+
+    public void removeEdge(InterferenceGraph.Edge edge) {
+        edges.remove(edge);
+        adj.get(edge.getN1()).remove(edge.getN2());
+        adj.get(edge.getN2()).remove(edge.getN1());
+        findEdges.get(edge.getN1()).remove(edge.getN2());
+        findEdges.get(edge.getN2()).remove(edge.getN1());
+    }
+
+    public static class Edge extends Graph.Edge<Temp> {
+        private boolean move, coalesced;
+
+        public Edge(Temp n1, Temp n2) {
+            super(n1, n2);
+        }
+
+        public boolean isMoveEdge() {
+            return move;
+        }
+
+        public void setMove(boolean move) {
+            this.move = move;
+        }
+
+        public boolean isCoalescedEdge() {
+            return coalesced;
+        }
+
+        public void setCoalesced(boolean coalesced) {
+            this.coalesced = coalesced;
+            if (coalesced) move = false; // we don't want to consider this an "edge" of any kind anymore
+        }
     }
 }
