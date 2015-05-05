@@ -8,9 +8,7 @@ import Temp.Temp;
 import Temp.Label;
 import Tree.*;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,10 +18,12 @@ import java.util.List;
  */
 public class MipsFrame extends Frame {
 
+    public int maxArgOffset = 0;
     private Temp framePointer;
     private int argIndex = 0;
     private LinkedList<Assem.Instr> instructionList;
-    public int maxArgOffset = 0;
+    private static Set<Temp> reservedRegs;
+    private static Map<Temp, String> tempMap;
 
     public static final Label _BADPTR = new Label("_BADPTR");
     public Label badPtr() { return _BADPTR; }
@@ -38,6 +38,58 @@ public class MipsFrame extends Frame {
         formals = new LinkedList<>();
         actuals = new LinkedList<>();
         instructionList = new LinkedList<>();
+
+        reservedRegs = new HashSet<>();
+        initReservedRegs();
+
+        tempMap = new HashMap<>();
+        initTempMap();
+
+    }
+
+    private void initReservedRegs() {
+        reservedRegs.add(new Temp(0)); //zero
+        reservedRegs.add(new Temp(1)); //MOVE related meta-reg
+        reservedRegs.add(new Temp(26)); //kernel reg
+        reservedRegs.add(new Temp(27)); //kernel reg
+        reservedRegs.add(new Temp(28)); //gp
+        reservedRegs.add(new Temp(29)); //sp
+    }
+
+    private void initTempMap() {
+        tempMap.put(new Temp(0), "$zero");
+        tempMap.put(new Temp(2), "$v0");
+        tempMap.put(new Temp(3), "$v1");
+        tempMap.put(new Temp(4), "$a0");
+        tempMap.put(new Temp(5), "$a1");
+        tempMap.put(new Temp(6), "$a2");
+        tempMap.put(new Temp(7), "$a3");
+        tempMap.put(new Temp(8), "$t0");
+        tempMap.put(new Temp(9), "$t1");
+        tempMap.put(new Temp(10), "$t2");
+        tempMap.put(new Temp(11), "$t3");
+        tempMap.put(new Temp(12), "$t4");
+        tempMap.put(new Temp(13), "$t5");
+        tempMap.put(new Temp(14), "$t6");
+        tempMap.put(new Temp(15), "$t7");
+        tempMap.put(new Temp(16), "$s0");
+        tempMap.put(new Temp(17), "$s1");
+        tempMap.put(new Temp(18), "$s2");
+        tempMap.put(new Temp(19), "$s3");
+        tempMap.put(new Temp(20), "$s4");
+        tempMap.put(new Temp(21), "$s5");
+        tempMap.put(new Temp(22), "$s6");
+        tempMap.put(new Temp(23), "$s7");
+        tempMap.put(new Temp(24), "$t8");
+        tempMap.put(new Temp(25), "$t9");
+        tempMap.put(new Temp(28), "$gp");
+        tempMap.put(new Temp(29), "$sp");
+        tempMap.put(new Temp(30), "$fp");
+        tempMap.put(new Temp(31), "$ra");
+    }
+
+    public static String getTempName(Temp t) {
+        return tempMap.get(t);
     }
 
     public Temp FP() { return framePointer; }
@@ -471,5 +523,13 @@ public class MipsFrame extends Frame {
 
     public int numRegs() {
         return 32;
+    }
+
+    public Set<Temp> getReservedRegs() {
+        return reservedRegs;
+    }
+
+    public int numAvailableRegs() {
+        return numRegs() - reservedRegs.size();
     }
 }

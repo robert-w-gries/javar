@@ -1,5 +1,7 @@
 package RegAlloc;
 
+import Mips.MipsFrame;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -90,7 +92,7 @@ public class Main {
                     if (i instanceof Assem.MOVE) {
                         Temp.Temp src = ((Assem.MOVE)i).src();
                         Temp.Temp dst = ((Assem.MOVE)i).dst();
-                        if (alloc.tempMap(src, p.frame).equals(alloc.tempMap(dst, p.frame))) { // TODO RegAlloc.tempMap
+                        if (MipsFrame.getTempName(src).equals(MipsFrame.getTempName(dst))) { // TODO RegAlloc.tempMap
                             if (removeMoves) code.remove();
                         }
                     }
