@@ -1,13 +1,14 @@
 package Graph;
 
 /**
+ *
  * Created by rgries on 5/5/15.
  */
 public abstract class Node<T> {
 
     private T value;
 
-    public Node(T value) {
+    Node(T value) {
         this.value = value;
     }
 
