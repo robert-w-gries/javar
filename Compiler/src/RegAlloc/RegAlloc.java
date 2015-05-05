@@ -2,6 +2,7 @@ package RegAlloc;
 
 import Assem.Instr;
 import Assem.MOVE;
+import RegAlloc.InterferenceGraph.Node;
 import Temp.Temp;
 
 import java.util.*;
@@ -16,7 +17,7 @@ public class RegAlloc {
 
     private Frame.Frame frame;
     private List<Instr> code;
-    private Stack<Temp> stack;
+    private Stack<Node> stack;
 
     public RegAlloc(Frame.Frame frame, List<Instr> code) {
         this.frame = frame;
@@ -66,11 +67,11 @@ public class RegAlloc {
                     if (o == def) continue; // ignore self
                     if (n instanceof MOVE) {
                         // if the instruction is a move, we ignore the source register
-                        if (o != ((MOVE)n).src()) inter.newEdge(def, o);
-                        else inter.addMoveEdge(def, o);
+                        if (o != ((MOVE)n).src()) inter.newEdge(new Node(def), new Node(o));
+                        else inter.addMoveEdge(new Node(def), new Node(o));
                     } else {
                         // otherwise, add an edge
-                        inter.newEdge(def, o);
+                        inter.newEdge(new Node(def), new Node(o));
                     }
                 }
             }
@@ -87,9 +88,9 @@ public class RegAlloc {
         return livenessAnalysis(flowGraph);
     }
 
-    private Temp findSimplifiableNode(InterferenceGraph graph) {
-        for (Temp node : graph.getNodes()) {
-            if (!node.isMoveRelated() && !this.frame.isRealRegister(node) && graph.getDegree(node) < this.frame.numRegs())
+    private Node findSimplifiableNode(InterferenceGraph graph) {
+        for (Node node : graph.getNodes()) {
+            if (!node.getValue().isMoveRelated() && !this.frame.isRealRegister(node.getValue()) && graph.getDegree(node) < this.frame.numRegs())
                 return node;
         }
         return null; // can't simplify graph
@@ -99,12 +100,12 @@ public class RegAlloc {
         edge_loop: for (InterferenceGraph.Edge edge : graph.getEdges()) {
             if (!edge.isMoveEdge()) continue; // must be a move edge
             // every neighbor of n1 must have degree < K or be a neighbor of n2
-            for (Temp n : graph.getAdj(edge.getN1())) {
+            for (Node n : graph.getAdj(edge.getN1())) {
                 if (graph.getDegree(n) >= this.frame.numRegs() && !graph.getAdj(edge.getN2()).contains(n))
                     continue edge_loop; // if degree(n) >= K and n is not an element of adj(b), this is not a valid edge
             }
             // every neighbor of n2 must have degree < K or be a neighbor of n1
-            for (Temp n : graph.getAdj(edge.getN2())) {
+            for (Node n : graph.getAdj(edge.getN2())) {
                 if (graph.getDegree(n) >= this.frame.numRegs() && !graph.getAdj(edge.getN1()).contains(n))
                     continue edge_loop; // if degree(n) >= K and n is not an element of adj(a), this is not a valid edge
             }
@@ -114,26 +115,26 @@ public class RegAlloc {
         return null; // can't coalesce any edges in graph
     }
 
-    private Temp findFreezableNode(InterferenceGraph graph) {
-        for (Temp node : graph.getNodes()) {
-            if (node.isMoveRelated() && graph.getDegree(node) < this.frame.numRegs()) return node;
+    private Node findFreezableNode(InterferenceGraph graph) {
+        for (Node node : graph.getNodes()) {
+            if (node.getValue().isMoveRelated() && graph.getDegree(node) < this.frame.numRegs()) return node;
         }
         return null;
     }
 
-    private void freezeNode(InterferenceGraph graph, Temp node) {
+    private void freezeNode(InterferenceGraph graph, Node node) {
         // remove all move edges connected to this node
-        for (Temp n : graph.getAdj(node)) {
+        for (Node n : graph.getAdj(node)) {
             InterferenceGraph.Edge edge = graph.getEdge(node, n);
             if (edge.isMoveEdge()) graph.removeEdge(edge);
         }
         // this node is no longer to be considered move-related
-        node.setMoveRelated(false);
+        node.getValue().setMoveRelated(false);
     }
 
-    private Temp findPotentialSpillNode(InterferenceGraph graph) {
-        for (Temp node : graph.getNodes()) {
-            if (node.regIndex >= this.frame.numRegs()) return node;
+    private Node findPotentialSpillNode(InterferenceGraph graph) {
+        for (Node node : graph.getNodes()) {
+            if (node.getValue().regIndex >= this.frame.numRegs()) return node;
         }
         return null;
     }
@@ -145,7 +146,7 @@ public class RegAlloc {
 
             while (true) {
                 // simplify
-                Temp node = findSimplifiableNode(graph);
+                Node node = findSimplifiableNode(graph);
                 if (node != null) {
                     stack.push(node);
                     graph.removeNode(node);
@@ -179,6 +180,11 @@ public class RegAlloc {
             }
 
             // TODO select - pop the entire stack, assigning colors
+            while (!stack.isEmpty()) {
+                Node popNode = stack.pop();
+                //TODO: do stuff with the popped node
+            }
+
             // TODO actual spill - check for actual spills, modify the program and start over the whole process if so
             done = true;
         }
