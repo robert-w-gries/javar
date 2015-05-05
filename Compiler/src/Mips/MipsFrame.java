@@ -465,4 +465,11 @@ public class MipsFrame extends Frame {
         printOut.println(")"); // Close frame
     }
 
+    public boolean isRealRegister(Temp temp) {
+         return temp.regIndex < numRegs();
+    }
+
+    public int numRegs() {
+        return 32;
+    }
 }

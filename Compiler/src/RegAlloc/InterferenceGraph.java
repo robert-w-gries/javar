@@ -35,20 +35,11 @@ public class InterferenceGraph extends Graph.Graph<Temp> {
         n1.addSucc(n2);
     }
 
-
-    public Node tnode(Temp temp) {
-
-    }
-
-    public Temp gtemp(Node node) {
-
-    }
-
-    public List<Move> moves() {
-
-    }
-
-    public int spillCost(Node node) {
-        return 1;
+    public void removeNode(Node n) {
+        for (Node adj : n.getAdjacent()) {
+            n.remove(adj);
+            adj.remove(n);
+        }
+        nodes.remove(n);
     }
 }

@@ -25,11 +25,13 @@ public class RegAlloc {
     private Frame.Frame frame;
     private List<Instr> code;
     private State state;
+    private Stack<Temp> stack;
 
     public RegAlloc(Frame.Frame frame, List<Instr> code) {
         this.frame = frame;
         this.code = code;
         this.state = State.Simplify;
+        this.stack = new Stack<>();
 
         allocate();
     }
@@ -87,6 +89,11 @@ public class RegAlloc {
                     }
                 }
             }
+
+            if (n.getElement() instanceof MOVE) {
+                ((MOVE)n.getElement()).src().setMoveRelated(true);
+                ((MOVE)n.getElement()).dst().setMoveRelated(true);
+            }
         }
         return inter;
     }
@@ -94,6 +101,25 @@ public class RegAlloc {
     private InterferenceGraph build() {
         FlowGraph flowGraph = new FlowGraph(code);
         return livenessAnalysis(flowGraph);
+    }
+
+    private State simplify(InterferenceGraph graph) {
+
+        for (InterferenceGraph.Node node : graph.getNodes()) {
+
+            if (!node.getElement().isMoveRelated() && !this.frame.isRealRegister(node.getElement()) && node.getDegree() <= this.frame.numRegs()) {
+                stack.push(node.getElement());
+                graph.removeNode(node);
+            }
+
+        }
+
+        return State.Coalesce;
+
+    }
+
+    private State coallesce(InterferenceGraph graph) {
+        return null;
     }
 
     private void allocate() {
@@ -106,13 +132,14 @@ public class RegAlloc {
 
                 switch (state) {
 
-                    // TODO simplify - One at a time, remove non-move-related nodes of low (< K) degree from the graph
                     case Simplify: {
+                        state = simplify(builtGraph);
                         break;
                     }
 
                     // TODO coallesce - Coallesce moves into single nodes and jump back to simplify
                     case Coalesce: {
+                        state = coallesce(builtGraph);
                         break;
                     }
 

@@ -29,5 +29,7 @@ public abstract class Frame {
     public abstract void procEntryExit2(List<Instr> instrs);
     public abstract void procEntryExit3(List<Instr> instr);
     public abstract List<Assem.Instr> codeGen(List<Stm> stms);
+    public abstract boolean isRealRegister(Temp.Temp temp);
+    public abstract int numRegs();
 
 }

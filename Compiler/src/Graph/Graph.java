@@ -11,8 +11,8 @@ import java.util.Set;
  */
 public class Graph<T> {
 
-    private int nodecount = 0;
-    private Set<Node> nodes;
+    protected int nodecount = 0;
+    protected Set<Node> nodes;
 
     public Graph() {
         nodes = new HashSet<>();
@@ -62,6 +62,11 @@ public class Graph<T> {
             n.succ.add(n);
         }
 
+        public void remove(Node n) {
+            succ.remove(n);
+            pred.remove(n);
+        }
+
         public void removeSucc(Node n) {
             succ.remove(n);
             n.pred.remove(this);
@@ -79,6 +84,10 @@ public class Graph<T> {
             Set<Node> adj = new HashSet<>(pred);
             adj.addAll(succ);
             return adj;
+        }
+
+        public int getDegree() {
+            return succ.size() + pred.size();
         }
     }
 }
