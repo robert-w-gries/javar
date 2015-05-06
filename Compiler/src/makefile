@@ -22,6 +22,7 @@ ABSYN :=		$(wildcard Absyn/*.java)
 ASSEM :=		$(wildcard Assem/*.java)
 CANON :=		$(wildcard Canon/*.java)
 FRAME :=		$(wildcard Frame/*.java)
+GRAPH :=		$(wildcard Graph/*.java)
 MIPS :=			$(wildcard Mips/*.java)
 PARSE :=		$(wildcard Parse/*.java)
 REGALLOC :=		$(wildcard RegAlloc/*.java)
@@ -37,6 +38,7 @@ JAVAFILES =	$(ABSYN)		\
 			$(ASSEM)		\
 			$(CANON)		\
 			$(FRAME)		\
+			$(GRAPH)		\
 			$(MIPS)			\
 			$(PARSE)		\
 			$(REGALLOC)		\
