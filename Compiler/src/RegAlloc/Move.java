@@ -7,5 +7,5 @@ package RegAlloc;
  * Time: 11:05 PM
  */
 public class Move {
-    public Graph.Graph.Node src, dst;
+    public Graph.Node src, dst;
 }
