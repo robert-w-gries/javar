@@ -34,13 +34,17 @@ public class FlowGraph extends Graph<Instr, FlowNode, FlowEdge> {
             // if the previous instruction falls to this one, add it as a pred
             if (prev != null) newEdge(prev, n, Edge.Direction.RIGHT);
 
-            // add a succ for every jump
-            for (Label l : inst.jumps) {
-                newEdge(n, labelMap.get(l), Edge.Direction.RIGHT);
+            if (inst.jumps != null) {
+
+                // add a succ for every jump
+                for (Label l : inst.jumps) {
+                    newEdge(n, labelMap.get(l), Edge.Direction.RIGHT);
+                }
+
             }
 
             // if there were no jumps, it will always move to the next one
-            if (inst.jumps.size() == 0) prev = n;
+            if (inst.jumps == null || inst.jumps.size() == 0) prev = n;
             // otherwise, we don't want the next node to have this one as a pred
             else prev = null;
         }
