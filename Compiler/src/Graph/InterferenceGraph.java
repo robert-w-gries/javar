@@ -50,6 +50,10 @@ public class InterferenceGraph extends Graph<Temp, InterferenceNode, Interferenc
         removed.add(n);
     }
 
+    public void readdNode(InterferenceNode n) {
+        removed.remove(n);
+    }
+
     public Set<InterferenceNode> getNodes() {
         Set<InterferenceNode> nodes = new HashSet<>();
         for (InterferenceNode node : this.nodes.keySet()) {
