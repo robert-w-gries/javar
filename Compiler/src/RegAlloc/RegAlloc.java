@@ -3,7 +3,9 @@ package RegAlloc;
 import Assem.Instr;
 import Assem.MOVE;
 import Graph.*;
+import Mips.MipsFrame;
 import Temp.Temp;
+import Tree.TEMP;
 
 import java.util.*;
 
@@ -140,9 +142,27 @@ public class RegAlloc {
         return null;
     }
 
+    private Temp selectColor(InterferenceGraph graph, InterferenceNode node) {
+
+        Set<Temp> okColors = new HashSet<>(MipsFrame.getAvailableRegs());
+
+        for (InterferenceNode adjNode : graph.getAdj(node)) {
+            if (adjNode.getColor() != null) {
+                okColors.remove(adjNode.getColor());
+            }
+        }
+
+        if (okColors.isEmpty()) {
+            return null;
+        }
+
+        return null;
+
+    }
+
     private void allocate() {
         boolean done = false;
-        while (!done) {
+        while (true) {
             InterferenceGraph graph = build();
 
             while (true) {
@@ -157,7 +177,7 @@ public class RegAlloc {
                 // coalesce
                 InterferenceEdge edge = findCoalescableEdge(graph);
                 if (edge != null) {
-                    edge.setCoalesced(true);
+                    graph.coalesceEdge(edge);
                     continue;
                 }
 
@@ -181,13 +201,29 @@ public class RegAlloc {
             }
 
             // TODO select - pop the entire stack, assigning colors
+            List<InterferenceNode> spilledNodes = new ArrayList<>();
             while (!stack.isEmpty()) {
-                Node popNode = stack.pop();
-                //TODO: do stuff with the popped node
+
+                InterferenceNode popNode = stack.pop();
+                Temp selected = selectColor(graph, popNode);
+
+                if (selected == null) {
+                    spilledNodes.add(popNode);
+                    continue;
+                }
+
+                popNode.setColor(selected);
+
             }
 
             // TODO actual spill - check for actual spills, modify the program and start over the whole process if so
-            done = true;
+            if (!spilledNodes.isEmpty()) {
+                //TODO: spill has occurred, let's rewrite the program!
+                continue;
+            }
+
+            break;
+
         }
         // TODO if we made it here, we're good
     }
