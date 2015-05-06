@@ -18,10 +18,13 @@ import java.util.*;
  */
 public class MipsFrame extends Frame {
 
-    public int maxArgOffset = 0;
     private Temp framePointer;
     private int argIndex = 0;
+    public int maxArgOffset = 0;
     private LinkedList<Assem.Instr> instructionList;
+
+    private static final int NUM_REGS = 32;
+    private static Set<Temp> availableRegs;
     private static Set<Temp> reservedRegs;
     private static Map<Temp, String> tempMap;
 
@@ -39,11 +42,14 @@ public class MipsFrame extends Frame {
         actuals = new LinkedList<>();
         instructionList = new LinkedList<>();
 
+        tempMap = new HashMap<>();
+        initTempMap();
+
         reservedRegs = new HashSet<>();
         initReservedRegs();
 
-        tempMap = new HashMap<>();
-        initTempMap();
+        availableRegs = new HashSet<>();
+        initAvaialableRegs();
 
     }
 
@@ -56,8 +62,24 @@ public class MipsFrame extends Frame {
         reservedRegs.add(new Temp(29)); //sp
     }
 
+    private void initAvaialableRegs() {
+
+        //grab all regs from tempMap
+        availableRegs = tempMap.keySet();
+        for (Temp t : availableRegs) {
+
+            //if reg is reserved, remove from set
+            if (reservedRegs.contains(t)) {
+                availableRegs.remove(t);
+            }
+
+        }
+
+    }
+
     private void initTempMap() {
         tempMap.put(new Temp(0), "$zero");
+        tempMap.put(new Temp(1), "$1");
         tempMap.put(new Temp(2), "$v0");
         tempMap.put(new Temp(3), "$v1");
         tempMap.put(new Temp(4), "$a0");
@@ -82,6 +104,8 @@ public class MipsFrame extends Frame {
         tempMap.put(new Temp(23), "$s7");
         tempMap.put(new Temp(24), "$t8");
         tempMap.put(new Temp(25), "$t9");
+        tempMap.put(new Temp(26), "$26");
+        tempMap.put(new Temp(27), "$27");
         tempMap.put(new Temp(28), "$gp");
         tempMap.put(new Temp(29), "$sp");
         tempMap.put(new Temp(30), "$fp");
@@ -522,14 +546,19 @@ public class MipsFrame extends Frame {
     }
 
     public int numRegs() {
-        return 32;
-    }
-
-    public Set<Temp> getReservedRegs() {
-        return reservedRegs;
+        return NUM_REGS;
     }
 
     public int numAvailableRegs() {
-        return numRegs() - reservedRegs.size();
+        return availableRegs.size();
     }
+
+    public static Set<Temp> getReservedRegs() {
+        return reservedRegs;
+    }
+
+    public static Set<Temp> getAvailableRegs() {
+        return availableRegs;
+    }
+
 }
