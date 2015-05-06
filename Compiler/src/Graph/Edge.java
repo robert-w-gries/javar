@@ -14,7 +14,7 @@ public abstract class Edge<T extends Node> {
     }
 
     private final Direction dir;
-    private final T n1, n2;
+    private T n1, n2;
 
     Edge(T n1, T n2) {
         this(n1, n2, Direction.UNDIRECTED);
@@ -33,6 +33,10 @@ public abstract class Edge<T extends Node> {
     public T getN2() {
         return n2;
     }
+
+    public void setN1(T n1) { this.n1 = n1; }
+
+    public void setN2(T n2) { this.n2 = n2; }
 
     public Direction getDir() {
         return dir;
