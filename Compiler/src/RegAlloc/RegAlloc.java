@@ -130,7 +130,7 @@ public class RegAlloc {
         return null;
     }
 
-    private void freezeNode(InterferenceGraph graph, InterferenceNode node) {
+    private void freezeNode(InterferenceNode node) {
         // remove all move edges connected to this node
         for (InterferenceNode n : new HashSet<>(node.getMoves())) {
             node.removeMove(n);
@@ -146,7 +146,7 @@ public class RegAlloc {
         return null;
     }
 
-    private Temp selectColor(InterferenceGraph graph, InterferenceNode node) {
+    private Temp selectColor(InterferenceNode node) {
 
         Set<Temp> okColors = new HashSet<>(MipsFrame.getAvailableRegs());
 
@@ -185,7 +185,7 @@ public class RegAlloc {
                 // freeze
                 node = findFreezableNode(graph);
                 if (node != null) {
-                    freezeNode(graph, node);
+                    freezeNode(node);
                     continue;
                 }
 
@@ -206,7 +206,7 @@ public class RegAlloc {
             while (!stack.isEmpty()) {
 
                 InterferenceNode popNode = stack.pop();
-                Temp selected = selectColor(graph, popNode);
+                Temp selected = selectColor(popNode);
 
                 if (selected == null) {
                     spilledNodes.add(popNode);
