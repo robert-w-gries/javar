@@ -10,7 +10,7 @@ import Tree.CONST;
  */
 public class InFrame extends Frame.Access {
 
-    int offset;
+    private int offset;
 
     public InFrame(int x) {
         offset = x;
@@ -18,6 +18,10 @@ public class InFrame extends Frame.Access {
 
     public Tree.Exp exp(Tree.Exp framePtr) {
         return new Tree.MEM(new Tree.BINOP(Tree.BINOP.Operation.PLUS, framePtr, new CONST(offset)));
+    }
+
+    public int getOffset() {
+        return offset;
     }
 
 }
