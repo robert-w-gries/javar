@@ -66,13 +66,11 @@ public class MipsFrame extends Frame {
 
         //grab all regs from tempMap
         availableRegs = tempMap.keySet();
-        for (Temp t : availableRegs) {
-
-            //if reg is reserved, remove from set
-            if (reservedRegs.contains(t)) {
-                availableRegs.remove(t);
-            }
-
+        Iterator<Temp> it = availableRegs.iterator();
+        while (it.hasNext()) {
+            Temp t = it.next();
+            // if reg is reserved, remove from set
+            if (reservedRegs.contains(t)) it.remove();
         }
 
     }

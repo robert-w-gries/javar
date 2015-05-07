@@ -24,4 +24,16 @@ public class LABEL extends Instr {
         super.output(writer);
         writer.println(")");
     }
+
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof LABEL)) return false;
+
+        LABEL l = (LABEL)o;
+
+        return label.equals(l.label);
+    }
+
+    public int hashCode() {
+        return label.hashCode();
+    }
 }

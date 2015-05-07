@@ -24,6 +24,16 @@ public class Node<T> {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        return o != null && o instanceof Node && value.equals(((Node)o).value);
+    }
+
+    @Override
+    public int hashCode() {
+        return value.hashCode();
+    }
+
     public T getValue() {
         return value;
     }

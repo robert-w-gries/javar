@@ -63,26 +63,28 @@ public class RegAlloc {
         // for each instruction
         for (Node<Instr> n : out.keySet()) {
             // for each def of that instruction
-            for (Temp def : n.getValue().def) {
+            if (n.getValue().def != null) for (Temp def : n.getValue().def) {
                 // for each temp that is live out from that instruction
                 for (Temp o : out.get(n)) {
                     if (o == def) continue; // ignore self
                     if (n.getValue() instanceof MOVE) {
                         // if the instruction is a move, we ignore the source register
-                        if (o != ((MOVE)n.getValue()).src()) inter.newNode(def).addEdge(inter.newNode(o));
-                        else inter.newNode(def).addMove(inter.newNode(o));
+                        if (o != ((MOVE)n.getValue()).src()) inter.node(def).addEdge(inter.node(o));
+                        else inter.node(def).addMove(inter.node(o));
                     } else {
                         // otherwise, add an edge
-                        inter.newNode(def).addEdge(inter.newNode(o));
+                        inter.node(def).addEdge(inter.node(o));
                     }
                 }
             }
             if (n.getValue() instanceof MOVE) {
-                InterferenceNode src = inter.getNode(((MOVE)n.getValue()).src()), dst = inter.getNode(((MOVE)n.getValue()).dst());
+                InterferenceNode src = inter.node(((MOVE)n.getValue()).src()), dst = inter.node(((MOVE)n.getValue()).dst());
                 src.getValue().setMoveRelated(true);
                 dst.getValue().setMoveRelated(true);
             }
         }
+        //System.out.println(inter.toString());
+        //System.exit(0);
         return inter;
     }
 
@@ -230,6 +232,8 @@ public class RegAlloc {
     }
 
     private <T> Set<T> union(Collection<T> left, Collection<T> right) {
+        if (left == null) return new HashSet<>(right);
+        if (right == null) return new HashSet<>(left);
         Set<T> set = new HashSet<>();
         set.addAll(left);
         set.addAll(right);
@@ -237,6 +241,8 @@ public class RegAlloc {
     }
 
     private <T> Set<T> subtract(Collection<T> left, Collection<T> right) {
+        if (left == null) return new HashSet<>();
+        if (right == null) return new HashSet<>(left);
         Set<T> set = new HashSet<>();
         for (T t : left) if (!right.contains(t)) set.add(t);
         return set;

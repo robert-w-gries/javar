@@ -32,4 +32,18 @@ public class Temp {
         isMoveRelated = m;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof Temp)) return false;
+
+        Temp t = (Temp)o;
+
+        return regIndex == t.regIndex;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(regIndex);
+    }
+
 }

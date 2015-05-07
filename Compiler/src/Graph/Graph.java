@@ -1,6 +1,8 @@
 package Graph;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -12,10 +14,12 @@ import java.util.Set;
 public abstract class Graph<T, N extends Node<T>> {
 
     protected Set<N> nodes;
+    protected Map<T, N> lookup;
     protected boolean bidirectional;
 
     protected Graph(boolean bidirectional) {
         nodes = new HashSet<>();
+        lookup = new HashMap<>();
         this.bidirectional = bidirectional;
     }
 
@@ -23,9 +27,11 @@ public abstract class Graph<T, N extends Node<T>> {
         return nodes;
     }
 
-    public N newNode(T el) {
+    public N node(T el) {
+        if (lookup.containsKey(el)) return lookup.get(el);
         N n = createNode(el, bidirectional);
         nodes.add(n);
+        lookup.put(el, n);
         return n;
     }
 
@@ -33,5 +39,6 @@ public abstract class Graph<T, N extends Node<T>> {
 
     public void removeNode(N node) {
         nodes.remove(node);
+        lookup.remove(node.getValue());
     }
 }

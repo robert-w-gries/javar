@@ -25,4 +25,16 @@ public class Label {
         return name;
     }
 
+    public boolean equals(Object o) {
+        if (o == null || !(o instanceof Label)) return false;
+
+        Label l = (Label)o;
+
+        return name.equals(l.name);
+    }
+
+    public int hashCode() {
+        return name.hashCode();
+    }
+
 }
