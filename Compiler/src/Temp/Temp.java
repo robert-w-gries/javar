@@ -10,26 +10,17 @@ public class Temp {
 
     private static int regCount = 32;
     public int regIndex;
-    private boolean isMoveRelated;
 
     public Temp() {
         regIndex = regCount++;
-        isMoveRelated = false;
     }
 
     public Temp(int reg) {
         regIndex = reg;
-        isMoveRelated = false;
     }
 
     public String toString() {
         return "t" + Integer.toString(this.regIndex);
-    }
-
-    public boolean isMoveRelated() { return isMoveRelated; }
-
-    public void setMoveRelated(boolean m) {
-        isMoveRelated = m;
     }
 
     @Override

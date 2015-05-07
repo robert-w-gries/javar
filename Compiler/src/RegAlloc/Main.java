@@ -95,7 +95,7 @@ public class Main {
                 }
             } else {
                 ProcFrag p = (ProcFrag)frag;
-                //p.frame.procEntryExit2(p.code); // TODO MipsFrame.procEntryExit2
+                p.frame.procEntryExit2(p.code);
                 RegAlloc alloc = new RegAlloc(p.frame, p.code);
                 if (colorDump) {
                     //alloc.show(writer); // TODO RegAlloc.show

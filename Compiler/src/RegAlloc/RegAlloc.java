@@ -62,36 +62,41 @@ public class RegAlloc {
         }
 
         // TODO this prints the liveness info and kills the program
-        //printLivenessInfo(f, in, out);
+        printLivenessInfo(f, in, out);
         //System.exit(0);
 
         // create interference graph
         InterferenceGraph inter = new InterferenceGraph();
+        // add all move edges
+        for (Node<Instr> n : out.keySet()) {
+            if (n.getValue() instanceof MOVE) {
+                MOVE m = (MOVE)n.getValue();
+                inter.addMoveRelatedTemp(m.dst());
+                inter.addMoveRelatedTemp(m.src());
+                inter.node(m.dst()).addMove(inter.node(m.src()));
+            }
+        }
+        System.out.println(inter.toString());
+        //System.exit(0);
         // for each instruction
         for (Node<Instr> n : out.keySet()) {
             // for each def of that instruction
             if (n.getValue().def != null) for (Temp def : n.getValue().def) {
                 // for each temp that is live out from that instruction
-                for (Temp o : out.get(n)) {
-                    if (o == def) continue; // ignore self
-                    if (n.getValue() instanceof MOVE) {
-                        // if the instruction is a move, we ignore the source register
-                        if (o != ((MOVE)n.getValue()).src()) inter.node(def).addEdge(inter.node(o));
-                        else inter.node(def).addMove(inter.node(o));
-                    } else {
-                        // otherwise, add an edge
-                        inter.node(def).addEdge(inter.node(o));
-                    }
+                for (Temp out_temp : out.get(n)) {
+                    // we add an edge between the def and the out_temp unless the out_temp is the source register, then we add a move edge
+                    if (n.getValue() instanceof MOVE && out_temp.equals(((MOVE)n.getValue()).src())) continue;
+                    else inter.node(def).addEdge(inter.node(out_temp));
                 }
             }
             if (n.getValue() instanceof MOVE) {
                 InterferenceNode src = inter.node(((MOVE)n.getValue()).src()), dst = inter.node(((MOVE)n.getValue()).dst());
-                src.getValue().setMoveRelated(true);
-                dst.getValue().setMoveRelated(true);
+                inter.addMoveRelatedTemp(src.getValue());
+                inter.addMoveRelatedTemp(dst.getValue());
             }
         }
         // TODO this prints the interference graph and kills the program
-        //System.out.println(inter.toString());
+        System.out.println(inter.toString());
         //System.exit(0);
         return inter;
     }
@@ -129,7 +134,7 @@ public class RegAlloc {
 
     private InterferenceNode findSimplifiableNode(InterferenceGraph graph) {
         for (InterferenceNode node : graph.getNodes()) {
-            if (!node.getValue().isMoveRelated() && !this.frame.isRealRegister(node.getValue()) && node.getDegree() < this.frame.numRegs())
+            if (!graph.isMoveRelatedNode(node) && !node.isPrecolored(this.frame) && node.getDegree() < this.frame.numRegs())
                 return node;
         }
         return null; // can't simplify graph
@@ -161,23 +166,24 @@ public class RegAlloc {
 
     private InterferenceNode findFreezableNode(InterferenceGraph graph) {
         for (InterferenceNode node : graph.getNodes()) {
-            if (node.getValue().isMoveRelated() && node.getDegree() < this.frame.numRegs()) return node;
+            if (graph.isMoveRelatedNode(node) && node.getDegree() < this.frame.numRegs()) return node;
         }
         return null;
     }
 
-    private void freezeNode(InterferenceNode node) {
+    private void freezeNode(InterferenceGraph graph, InterferenceNode node) {
         // remove all move edges connected to this node
         for (InterferenceNode n : new HashSet<>(node.getMoves())) {
             node.removeMove(n);
         }
         // this node is no longer to be considered move-related
-        node.getValue().setMoveRelated(false);
+        graph.removeMoveRelatedTemp(node.getValue());
+        for (Temp t : node.getCoalescedTemps()) graph.removeMoveRelatedTemp(t);
     }
 
     private InterferenceNode findPotentialSpillNode(InterferenceGraph graph) {
         for (InterferenceNode node : graph.getNodes()) {
-            if (node.getValue().regIndex >= this.frame.numRegs()) return node;
+            if (!node.isPrecolored(this.frame)) return node;
         }
         return null;
     }
@@ -211,17 +217,17 @@ public class RegAlloc {
                 InterferenceNode node = findSimplifiableNode(graph);
                 if (node != null) {
                     stack.push(node);
-                    graph.removeNode(node);
+                    node.setRemoved(true);
                     continue;
                 }
 
                 // coalesce
-                if (!tryToCoalesceNodes(graph)) continue;
+                if (tryToCoalesceNodes(graph)) continue;
 
                 // freeze
                 node = findFreezableNode(graph);
                 if (node != null) {
-                    freezeNode(node);
+                    freezeNode(graph, node);
                     continue;
                 }
 
@@ -229,7 +235,7 @@ public class RegAlloc {
                 node = findPotentialSpillNode(graph);
                 if (node != null) {
                     stack.push(node);
-                    graph.removeNode(node);
+                    node.setRemoved(true);
                     continue;
                 }
 
@@ -242,6 +248,7 @@ public class RegAlloc {
             while (!stack.isEmpty()) {
 
                 InterferenceNode popNode = stack.pop();
+                popNode.setRemoved(false);
                 Temp selected = selectColor(popNode);
 
                 if (selected == null) {
