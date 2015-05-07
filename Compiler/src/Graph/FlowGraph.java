@@ -36,12 +36,14 @@ public class FlowGraph extends Graph<Instr, Node<Instr>> {
             if (prev != null) prev.addSucc(n);
 
             // add a succ for every jump
-            for (Label l : inst.jumps) {
-                n.addSucc(labelMap.get(l));
+            if (inst.jumps != null) {
+                for (Label l : inst.jumps) {
+                    n.addSucc(labelMap.get(l));
+                }
             }
 
             // if there were no jumps, it will always move to the next one
-            if (inst.jumps.size() == 0) prev = n;
+            if (inst.jumps == null || inst.jumps.size() == 0) prev = n;
             // otherwise, we don't want the next node to have this one as a pred
             else prev = null;
         }
