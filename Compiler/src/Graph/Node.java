@@ -71,6 +71,7 @@ public class Node<T> {
     }
 
     public void addEdge(Node<T> node) {
+        if (this.equals(node)) return;
         this.adj.add(node);
         node.adj.add(this);
     }
@@ -87,6 +88,10 @@ public class Node<T> {
 
     public boolean hasEdge(Node<T> node) {
         return adj.contains(node);
+    }
+
+    public String toString() {
+        return value.toString();
     }
 
 }

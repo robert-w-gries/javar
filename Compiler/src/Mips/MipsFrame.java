@@ -240,7 +240,20 @@ public class MipsFrame extends Frame {
 
     @Override
     public void procEntryExit2(List<Instr> instrs) {
-        System.out.println("In procEntryExit2()");
+        List<Temp> returnUses = new ArrayList<>();
+        returnUses.add(new Temp(0));
+        returnUses.add(new Temp(31));
+        returnUses.add(new Temp(29));
+        returnUses.add(new Temp(30));
+        returnUses.add(new Temp(16));
+        returnUses.add(new Temp(17));
+        returnUses.add(new Temp(18));
+        returnUses.add(new Temp(19));
+        returnUses.add(new Temp(20));
+        returnUses.add(new Temp(21));
+        returnUses.add(new Temp(22));
+        returnUses.add(new Temp(23));
+        instrs.add(new Assem.OPER("// Return sink", null, returnUses, null));
     }
 
     @Override
