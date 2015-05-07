@@ -150,7 +150,8 @@ public class MipsFrame extends Frame {
 
     public Access allocLocal() {
         // Since we have no escaping variables this is all that happens here
-        return new InReg(new Temp());
+        frameOffset += wordSize();
+        return new InFrame(frameOffset);
 
         /* // Code to be inserted in the case a boolean arg is required or we need escapes.
            // (Should never happen)
