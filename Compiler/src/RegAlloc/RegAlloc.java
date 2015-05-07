@@ -2,7 +2,10 @@ package RegAlloc;
 
 import Assem.Instr;
 import Assem.MOVE;
+import Assem.OPER;
+import Frame.Access;
 import Graph.*;
+import Mips.InFrame;
 import Mips.MipsFrame;
 import Temp.Temp;
 
@@ -194,12 +197,12 @@ public class RegAlloc {
             return null;
         }
 
-        return null;
+        return okColors.iterator().next();
 
     }
 
     private void allocate() {
-        boolean done = false;
+
         while (true) {
             InterferenceGraph graph = build();
 
@@ -234,7 +237,7 @@ public class RegAlloc {
                 break;
             }
 
-            // TODO select - pop the entire stack, assigning colors
+            // select
             List<InterferenceNode> spilledNodes = new ArrayList<>();
             while (!stack.isEmpty()) {
 
@@ -250,10 +253,40 @@ public class RegAlloc {
 
             }
 
-            // TODO actual spill - check for actual spills, modify the program and start over the whole process if so
+            // actual spill
             if (!spilledNodes.isEmpty()) {
-                //TODO: spill has occurred, let's rewrite the program!
+
+                //allocate memory for each spilledNode
+                for (InterferenceNode spilledNode : spilledNodes) {
+
+                    InFrame f = (InFrame)frame.allocLocal();
+                    //create temp for each def/use
+                    for (int i = 0; i < code.size(); i++) {
+
+                        Instr line = code.get(i);
+                        //insert store instruction
+                        for (Temp t : line.def) {
+                            if (t.equals(spilledNode.getValue())) {
+                                code.add(i+1, OPER.sw(t, frame.FP(), f.getOffset()));
+                                i++;
+                                break;
+                            }
+                        }
+
+                        //insert fetch instruction
+                        for (Temp t : line.use) {
+                            if (t.equals(spilledNode.getValue())) {
+                                code.add(i, OPER.lw(t, frame.FP(), f.getOffset(), ""));
+                                i++;
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
                 continue;
+
             }
 
             break;
