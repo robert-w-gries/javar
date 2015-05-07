@@ -29,19 +29,19 @@ public class RegAlloc {
     }
 
     private InterferenceGraph livenessAnalysis(FlowGraph f) {
-        Map<FlowNode, Set<Temp>> in = new HashMap<>();
-        Map<FlowNode, Set<Temp>> out = new HashMap<>();
+        Map<Node<Instr>, Set<Temp>> in = new HashMap<>();
+        Map<Node<Instr>, Set<Temp>> out = new HashMap<>();
         // add in and out sets for each node
-        for (FlowNode n : f.getNodes()) {
+        for (Node<Instr> n : f.getNodes()) {
             in.put(n, new HashSet<Temp>());
             out.put(n, new HashSet<Temp>());
         }
         // compute in and out sets for each node
         while (true) {
             // in' and out'
-            Map<FlowNode, Set<Temp>> in_ = new HashMap<>();
-            Map<FlowNode, Set<Temp>> out_ = new HashMap<>();
-            for (FlowNode n : f.getNodes()) {
+            Map<Node<Instr>, Set<Temp>> in_ = new HashMap<>();
+            Map<Node<Instr>, Set<Temp>> out_ = new HashMap<>();
+            for (Node<Instr> n : f.getNodes()) {
                 // in'[n] <- in[n]; out'[n] <- out[n]
                 in_.put(n, new HashSet<>(in.get(n)));
                 out_.put(n, new HashSet<>(out.get(n)));
@@ -49,11 +49,11 @@ public class RegAlloc {
                 in.put(n, union(n.getValue().use, subtract(out.get(n), n.getValue().def)));
                 // out[n] <- UNION(s in succ[n]) in[s]
                 out.put(n, new HashSet<Temp>());
-                for (FlowNode s : f.getSucc(n)) out.put(n, union(out.get(n), in.get(s)));
+                for (Node<Instr> s : n.getSucc()) out.put(n, union(out.get(n), in.get(s)));
             }
             // until in'[n] = in[n] and out'[n] = out[n] for all n
             boolean brk = false;
-            for (FlowNode n : f.getNodes())
+            for (Node<Instr> n : f.getNodes())
                 if (in.get(n).equals(in_.get(n)) && out.get(n).equals(out_.get(n)))
                     brk = true;
             if (brk) break;
@@ -61,7 +61,7 @@ public class RegAlloc {
         // create interference graph
         InterferenceGraph inter = new InterferenceGraph();
         // for each instruction
-        for (FlowNode n : out.keySet()) {
+        for (Node<Instr> n : out.keySet()) {
             // for each def of that instruction
             for (Temp def : n.getValue().def) {
                 // for each temp that is live out from that instruction
@@ -69,11 +69,11 @@ public class RegAlloc {
                     if (o == def) continue; // ignore self
                     if (n.getValue() instanceof MOVE) {
                         // if the instruction is a move, we ignore the source register
-                        if (o != ((MOVE)n.getValue()).src()) inter.newEdge(inter.newNode(def), inter.newNode(o));
-                        else inter.addMoveEdge(inter.newNode(def), inter.newNode(o));
+                        if (o != ((MOVE)n.getValue()).src()) inter.newNode(def).addEdge(inter.newNode(o));
+                        else inter.newNode(def).addMove(inter.newNode(o));
                     } else {
                         // otherwise, add an edge
-                        inter.newEdge(inter.newNode(def), inter.newNode(o));
+                        inter.newNode(def).addEdge(inter.newNode(o));
                     }
                 }
             }
@@ -93,43 +93,47 @@ public class RegAlloc {
 
     private InterferenceNode findSimplifiableNode(InterferenceGraph graph) {
         for (InterferenceNode node : graph.getNodes()) {
-            if (!node.getValue().isMoveRelated() && !this.frame.isRealRegister(node.getValue()) && graph.getDegree(node) < this.frame.numRegs())
+            if (!node.getValue().isMoveRelated() && !this.frame.isRealRegister(node.getValue()) && node.getDegree() < this.frame.numRegs())
                 return node;
         }
         return null; // can't simplify graph
     }
 
-    private InterferenceEdge findCoalescableEdge(InterferenceGraph graph) {
-        edge_loop: for (InterferenceEdge edge : graph.getEdges()) {
-            if (!edge.isMoveEdge()) continue; // must be a move edge
-            // every neighbor of n1 must have degree < K or be a neighbor of n2
-            for (InterferenceNode n : graph.getAdj(edge.getN1())) {
-                if (graph.getDegree(n) >= this.frame.numRegs() && !graph.getAdj(edge.getN2()).contains(n))
-                    continue edge_loop; // if degree(n) >= K and n is not an element of adj(b), this is not a valid edge
+    private boolean tryToCoalesceNodes(InterferenceGraph graph) {
+        for (InterferenceNode a : graph.getNodes()) {
+            if (a.getMoves().size() == 0) continue;
+
+            move_loop: for (InterferenceNode b : a.getMoves()) {
+                for (Node<Temp> _n : a.getAdj()) {
+                    InterferenceNode n = (InterferenceNode)_n;
+                    if (n.getDegree() >= this.frame.numRegs() && !b.getAdj().contains(n))
+                        continue move_loop; // if n.degree >= K && !b.adj.contains(n), a and b can't be coalesced
+                }
+
+                for (Node<Temp> _n : b.getAdj()) {
+                    InterferenceNode n = (InterferenceNode)_n;
+                    if (n.getDegree() >= this.frame.numRegs() && !a.getAdj().contains(n))
+                        continue move_loop; // if n.degree >= K && !a.adj.contains(n), a and b can't be coalesced
+                }
+
+                graph.coalesceNodes(a, b);
+                return true; // we were successfully able to coalesce two nodes
             }
-            // every neighbor of n2 must have degree < K or be a neighbor of n1
-            for (InterferenceNode n : graph.getAdj(edge.getN2())) {
-                if (graph.getDegree(n) >= this.frame.numRegs() && !graph.getAdj(edge.getN1()).contains(n))
-                    continue edge_loop; // if degree(n) >= K and n is not an element of adj(a), this is not a valid edge
-            }
-            // if we are here, it means that all neighbors of both sides are valid and we can use this edge
-            return edge;
         }
-        return null; // can't coalesce any edges in graph
+        return false; // no moves were coalescable
     }
 
     private InterferenceNode findFreezableNode(InterferenceGraph graph) {
         for (InterferenceNode node : graph.getNodes()) {
-            if (node.getValue().isMoveRelated() && graph.getDegree(node) < this.frame.numRegs()) return node;
+            if (node.getValue().isMoveRelated() && node.getDegree() < this.frame.numRegs()) return node;
         }
         return null;
     }
 
     private void freezeNode(InterferenceGraph graph, InterferenceNode node) {
         // remove all move edges connected to this node
-        for (InterferenceNode n : graph.getAdj(node)) {
-            InterferenceEdge edge = graph.getEdge(node, n);
-            if (edge.isMoveEdge()) graph.removeEdge(edge);
+        for (InterferenceNode n : new HashSet<>(node.getMoves())) {
+            node.removeMove(n);
         }
         // this node is no longer to be considered move-related
         node.getValue().setMoveRelated(false);
@@ -146,7 +150,8 @@ public class RegAlloc {
 
         Set<Temp> okColors = new HashSet<>(MipsFrame.getAvailableRegs());
 
-        for (InterferenceNode adjNode : graph.getAdj(node)) {
+        for (Node<Temp> _adjNode : node.getAdj()) {
+            InterferenceNode adjNode = (InterferenceNode)_adjNode;
             if (adjNode.getColor() != null) {
                 okColors.remove(adjNode.getColor());
             }
@@ -175,11 +180,7 @@ public class RegAlloc {
                 }
 
                 // coalesce
-                InterferenceEdge edge = findCoalescableEdge(graph);
-                if (edge != null) {
-                    graph.coalesceEdge(edge);
-                    continue;
-                }
+                if (!tryToCoalesceNodes(graph)) continue;
 
                 // freeze
                 node = findFreezableNode(graph);
