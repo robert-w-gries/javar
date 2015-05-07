@@ -22,41 +22,22 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Main {
-    static final String VERSION = "COSC 170" +
-            " Register Allocator" +
-            " Spring 2009" +
-            " v1.1";
-
-    public static boolean spill = true;
-    public static boolean coalesce = true;
-
-    private static boolean assemOutput = false,
-            canonOutput = false,
-            blockOutput = false,
-            traceOutput = false,
-            prologOutput = false,
-            parse = false;
+    private static boolean parse = false;
 
     public static void usage() {
         System.err.println("Usage:  [-options] (file.java | -)");
         System.err.println("\twhere options include:");
         System.err.println("\t-c\tColoring information dump");
         System.err.println("\t-r\tRedundant MOVEs should remain in");
-        System.err.println("\t-v\tPrint version and exit");
         System.exit(-2);
     }
 
     public static void main(String args[]) throws Parse.ParseException {
         boolean removeMoves = true, colorDump = false;
         Reader reader = null;
-        Program program = null;
-        Translate.Translate translate = null;
 
-        /*for (String arg : args) {
+        for (String arg : args) {
             switch (arg) {
-                case "-v":
-                    System.out.println(VERSION);
-                    System.exit(0);
                 case "-c":
                     colorDump = true;
                     break;
@@ -68,6 +49,9 @@ public class Main {
                             new InputStreamReader(System.in);
                     reader = new BufferedReader(isr);
                     break;
+                case "--parse":
+                    parse = true;
+                    break;
                 default:
                     try {
                         reader = new FileReader(arg);
@@ -77,41 +61,15 @@ public class Main {
                     }
                     break;
             }
-        }*/
-
-        for (String arg : args) {
-            if (arg.equals("-a")) {
-                assemOutput = true;
-            } else if (arg.equals("-b")) {
-                blockOutput = true;
-            } else if (arg.equals("-c")) {
-                canonOutput = true;
-            } else if (arg.equals("-p")) {
-                prologOutput = true;
-            } else if (arg.equals("-t")) {
-                traceOutput = true;
-            } else if (arg.equals("-")) {
-                InputStreamReader isr = new InputStreamReader(System.in);
-                reader = new BufferedReader(isr);
-            } else if (arg.equals("--parse")) {
-                parse = true;
-            } else {
-                try {
-                    reader = new FileReader(arg);
-                } catch (FileNotFoundException fnfe) {
-                    System.err.println("File Not Found: " + arg);
-                    System.exit(-1);
-                }
-            }
         }
         if (null == reader) usage();
 
         LinkedList<Translate.Frag> frags = null;
         if (parse) {
             new MiniJavaParser(reader);
-            program = MiniJavaParser.Goal(); // parse MiniJava source file
+            Program program = MiniJavaParser.Goal(); // parse MiniJava source file
             new TypeChecker().visit(program); // typecheck the output program
-            translate = new Translate.Translate();
+            Translate.Translate translate = new Translate.Translate();
             translate.visit(program); // translate the program to IR tree
             frags = (LinkedList<Frag>)translate.results();
             proccessFrags(frags);
@@ -124,6 +82,7 @@ public class Main {
                 System.exit(-1);
             }
         }
+
         PrintWriter writer = new PrintWriter(System.out);
         writer.println("#include <mips.h>");
         boolean dropfirst = true;
@@ -165,7 +124,7 @@ public class Main {
         for (Frag frag : frags) {
             if (frag instanceof ProcFrag) {
                 Translate.ProcFrag p = (Translate.ProcFrag) frag;
-                List<Stm> traced = new LinkedList<Tree.Stm>();
+                List<Stm> traced = new LinkedList<>();
                 if (p.body != null) {
                     LinkedList<Tree.Stm> stms = Canon.Canon.linearize(p.body);
                     Canon.BasicBlocks blocks = new Canon.BasicBlocks(stms);
