@@ -5,7 +5,6 @@ import Assem.MOVE;
 import Graph.*;
 import Mips.MipsFrame;
 import Temp.Temp;
-import Tree.TEMP;
 
 import java.util.*;
 
@@ -52,12 +51,17 @@ public class RegAlloc {
                 for (Node<Instr> s : n.getSucc()) out.put(n, union(out.get(n), in.get(s)));
             }
             // until in'[n] = in[n] and out'[n] = out[n] for all n
-            boolean brk = false;
+            boolean brk = true;
             for (Node<Instr> n : f.getNodes())
-                if (in.get(n).equals(in_.get(n)) && out.get(n).equals(out_.get(n)))
-                    brk = true;
+                if (!in.get(n).equals(in_.get(n)) || !out.get(n).equals(out_.get(n)))
+                    brk = false;
             if (brk) break;
         }
+
+        // TODO this prints the liveness info and kills the program
+        //printLivenessInfo(f, in, out);
+        //System.exit(0);
+
         // create interference graph
         InterferenceGraph inter = new InterferenceGraph();
         // for each instruction
@@ -83,9 +87,36 @@ public class RegAlloc {
                 dst.getValue().setMoveRelated(true);
             }
         }
+        // TODO this prints the interference graph and kills the program
         //System.out.println(inter.toString());
         //System.exit(0);
         return inter;
+    }
+
+    private void printLivenessInfo(FlowGraph f, Map<Node<Instr>, Set<Temp>> in, Map<Node<Instr>, Set<Temp>> out) {
+        System.out.format("%-40s%-50s%-50s%-100s%s\n\n", "Instruction", "|Defs", "|Uses", "|Ins", "|Outs");
+        for (Instr inst : this.code) {
+            Node<Instr> node = f.node(inst);
+            // column 1: instruction
+            String instruction = inst.toString();
+            // column 2: def set
+            String defs = "|";
+            if (inst.def != null) {
+                for (Temp t : inst.def) defs += t.regIndex + " ";
+            }
+            // column 3: use set
+            String uses = "|";
+            if (inst.use != null) {
+                for (Temp t : inst.use) uses += t.regIndex + " ";
+            }
+            // column 4: in set
+            String ins = "|";
+            for (Temp t : in.get(node)) ins += t.regIndex + " ";
+            // column 5: out set
+            String outs = "|";
+            for (Temp t : out.get(node)) outs += t.regIndex + " ";
+            System.out.format("%-40s%-50s%-50s%-100s%s\n", instruction, defs, uses, ins, outs);
+        }
     }
 
     private InterferenceGraph build() {

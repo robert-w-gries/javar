@@ -62,112 +62,112 @@ public class OPER extends Instr {
     // OPERATION IMPLEMENTATIONS
 
     public static OPER addi(Temp dst, Temp src, int value) {
-        String assem = "addi\t`d0,\t`s0,\t" + value;
+        String assem = "addi `d0, `s0, " + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER sll(Temp dst, Temp src, int value) {
-        String assem = "sll\t`d0,\t`s0,\t" + value;
+        String assem = "sll `d0, `s0, " + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER sra(Temp dst, Temp src, int value) {
-        String assem = "sra\t`d0,\t`s0,\t" + value;
+        String assem = "sra `d0, `s0, " + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER srl(Temp dst, Temp src, int value) {
-        String assem = "srl\t`d0,\t`s0,\t" + value;
+        String assem = "srl `d0, `s0, " + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER andi(Temp dst, Temp src, int value) {
-        String assem = "andi\t`d0,\t`s0,\t" + value;
+        String assem = "andi `d0, `s0, " + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER ori(Temp dst, Temp src, int value) {
-        String assem = "ori\t`d0,\t`s0,\t" + value;
+        String assem = "ori `d0, `s0, " + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER xori(Temp dst, Temp src, int value) {
-        String assem = "xori\t`d0,\t`s0,\t" + value;
+        String assem = "xori `d0, `s0, " + value;
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER addi_zero(Temp dst, int value) {
-        String assem = "addi\t`d0,\tzero, " + value;
+        String assem = "addi `d0, zero, " + value;
         return nolab1dst0src(assem, dst);
     }
 
     public static OPER li(Temp dst, int value) {
-        String assem = "li\t`d0,\t" + value;
+        String assem = "li `d0, " + value;
         return nolab1dst0src(assem, dst);
     }
 
     public static OPER la(Temp dst, String value) {
-        String assem = "la\t`d0,\t" + value;
+        String assem = "la `d0, " + value;
         return nolab1dst0src(assem, dst);
     }
 
     public static OPER add(Temp dst, Temp src1, Temp src2) {
-        String assem = "add\t`d0,\t`s0,\t`s1";
+        String assem = "add `d0, `s0, `s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER sub(Temp dst, Temp src1, Temp src2) {
-        String assem = "sub\t`d0,\t`s0,\t`s1";
+        String assem = "sub `d0, `s0, `s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER mulo(Temp dst, Temp src1, Temp src2) {
-        String assem = "mulo\t`d0,\t`s0,\t`s1";
+        String assem = "mulo `d0, `s0, `s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER div(Temp dst, Temp src1, Temp src2) {
-        String assem = "div\t`d0,\t`s0,\t`s1";
+        String assem = "div `d0, `s0, `s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER and(Temp dst, Temp src1, Temp src2) {
-        String assem = "and\t`d0,\t`s0,\t`s1";
+        String assem = "and `d0, `s0, `s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER or(Temp dst, Temp src1, Temp src2) {
-        String assem = "or\t`d0,\t`s0,\t`s1";
+        String assem = "or `d0, `s0, `s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER sllv(Temp dst, Temp src1, Temp src2) {
-        String assem = "sllv\t`d0,\t`s0,\t`s1";
+        String assem = "sllv `d0, `s0, `s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER srlv(Temp dst, Temp src1, Temp src2) {
-        String assem = "srlv\t`d0,\t`s0,\t`s1";
+        String assem = "srlv `d0, `s0, `s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER srav(Temp dst, Temp src1, Temp src2) {
-        String assem = "srav\t`d0,\t`s0,\t`s1";
+        String assem = "srav `d0, `s0, `s1";
         return nolab1dst2src(assem, dst, src1, src2);
     }
 
     public static OPER lw(Temp dst, Temp src, int offset, String name) {
         String assem;
         if (src.regIndex == 29) {
-            assem = "lw\t`d0,\t" + (offset+12) + "+" + name + "_framesize(`s0)";
+            assem = "lw `d0, " + (offset+12) + "+" + name + "_framesize(`s0)";
         } else {
-            assem = "lw\t`d0,\t" + offset + "\t(`s0)";
+            assem = "lw `d0, " + offset + " (`s0)";
         }
         return nolab1dst1src(assem, dst, src);
     }
 
     public static OPER sw(Temp src, Temp dst, int offset) {
-        String assem = "sw\t`s0,\t" + offset + "(`s1)";
+        String assem = "sw `s0, " + offset + "(`s1)";
         List<Temp> ss = new ArrayList<>();
         ss.add(src);
         ss.add(dst);
@@ -176,7 +176,7 @@ public class OPER extends Instr {
 
     public static OPER b(Label label) {
 
-        String assem = "b\t`j0";
+        String assem = "b `j0";
 
         LinkedList<Label> labels = new LinkedList<>();
         labels.add(label);
@@ -186,19 +186,19 @@ public class OPER extends Instr {
     }
 
     public static OPER jr(Temp jumpreg) {
-        String assem = "jr\t`s0";
+        String assem = "jr `s0";
         List<Temp> ss = new ArrayList<>();
         ss.add(jumpreg);
         return new OPER(assem, null, ss, null);
     }
 
     public static OPER jal(List<Temp> defs, List<Temp> uses, Label label) {
-        String assem = "jal\t" + label;
+        String assem = "jal " + label;
         return new OPER(assem, defs, uses, null);
     }
 
     public static OPER jalr(List<Temp> defs, List<Temp> uses) {
-        String assem = "jalr\t`s0";
+        String assem = "jalr `s0";
         return new OPER(assem, defs, uses, new LinkedList<Label>());
     }
 
@@ -209,7 +209,7 @@ public class OPER extends Instr {
     }
 
     public static OPER beq(Temp src1, Temp src2, Label t, Label f) {
-        String assem = "beq\t`s0,\t`s1,\t`j0";
+        String assem = "beq `s0, `s1, `j0";
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
@@ -220,7 +220,7 @@ public class OPER extends Instr {
     }
 
     public static OPER bne(Temp src1, Temp src2, Label t, Label f) {
-        String assem = "bne\t`s0,\t`s1,\t`j0";
+        String assem = "bne `s0, `s1, `j0";
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
@@ -231,7 +231,7 @@ public class OPER extends Instr {
     }
 
     public static OPER blt(Temp src1, Temp src2, Label t, Label f) {
-        String assem = "blt\t`s0,\t`s1,\t`j0";
+        String assem = "blt `s0, `s1, `j0";
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
@@ -242,7 +242,7 @@ public class OPER extends Instr {
     }
 
     public static OPER bgt(Temp src1, Temp src2, Label t, Label f) {
-        String assem = "bgt\t`s0,\t`s1,\t`j0";
+        String assem = "bgt `s0, `s1, `j0";
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
@@ -253,7 +253,7 @@ public class OPER extends Instr {
     }
 
     public static OPER ble(Temp src1, Temp src2, Label t, Label f) {
-        String assem = "ble\t`s0,\t`s1,\t`j0";
+        String assem = "ble `s0, `s1, `j0";
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);
@@ -264,7 +264,7 @@ public class OPER extends Instr {
     }
 
     public static OPER bge(Temp src1, Temp src2, Label t, Label f) {
-        String assem = "bge\t`s0,\t`s1,\t`j0";
+        String assem = "bge `s0, `s1, `j0";
         LinkedList<Label> jumps = new LinkedList<>();
         jumps.add(t);
         jumps.add(f);

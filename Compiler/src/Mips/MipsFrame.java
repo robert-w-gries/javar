@@ -289,7 +289,7 @@ public class MipsFrame extends Frame {
                     emit(OPER.sw(munchExp(m.src), munchExp(dst.exp), 0));
                 }
             } else {
-                emit(new Assem.MOVE("move\t`d0,\t`s0", munchExp(m.dst), munchExp(m.src)));
+                emit(new Assem.MOVE("move `d0, `s0", munchExp(m.dst), munchExp(m.src)));
             }
         } else if (s instanceof CJUMP) {
             CJUMP c = (CJUMP)s;
@@ -514,7 +514,7 @@ public class MipsFrame extends Frame {
     }
 
     public void printFrame(java.io.PrintWriter printOut) {
-        String tab = "\t\t"; // 8 spaces. Generally 2 tabs but I wont risk it. <- LIAR
+        String tab = "  "; // 8 spaces. Generally 2 tabs but I wont risk it. <- LIAR
         printOut.print(     "MipsFrame(" + "\n" + // Open frame
                             name + ":"   + "\n");
         printOut.print(     "Formals(");
