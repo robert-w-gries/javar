@@ -47,8 +47,8 @@ public class InterferenceNode extends Node<Temp> {
         return coalescedTemps;
     }
 
-    public void addCoalescedTemp(Temp t) {
-        coalescedTemps.add(t);
+    public void clearCoalescedTemps() {
+        coalescedTemps.clear();
     }
 
     public boolean isPrecolored(Frame frame) {

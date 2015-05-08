@@ -3,7 +3,6 @@ package RegAlloc;
 import Assem.Instr;
 import Assem.MOVE;
 import Assem.OPER;
-import Frame.Access;
 import Graph.*;
 import Mips.InFrame;
 import Mips.MipsFrame;
@@ -22,11 +21,13 @@ public class RegAlloc {
     private Frame.Frame frame;
     private List<Instr> code;
     private Stack<InterferenceNode> stack;
+    private Map<Temp, Temp> colorMap;
 
     public RegAlloc(Frame.Frame frame, List<Instr> code) {
         this.frame = frame;
         this.code = code;
         this.stack = new Stack<>();
+        colorMap = new HashMap<>();
         allocate();
     }
 
@@ -61,10 +62,6 @@ public class RegAlloc {
             if (brk) break;
         }
 
-        // TODO this prints the liveness info and kills the program
-        printLivenessInfo(f, in, out);
-        //System.exit(0);
-
         // create interference graph
         InterferenceGraph inter = new InterferenceGraph();
         // add all move edges
@@ -76,8 +73,7 @@ public class RegAlloc {
                 inter.node(m.dst()).addMove(inter.node(m.src()));
             }
         }
-        System.out.println(inter.toString());
-        //System.exit(0);
+
         // for each instruction
         for (Node<Instr> n : out.keySet()) {
             // for each def of that instruction
@@ -85,8 +81,8 @@ public class RegAlloc {
                 // for each temp that is live out from that instruction
                 for (Temp out_temp : out.get(n)) {
                     // we add an edge between the def and the out_temp unless the out_temp is the source register, then we add a move edge
-                    if (n.getValue() instanceof MOVE && out_temp.equals(((MOVE)n.getValue()).src())) continue;
-                    else inter.node(def).addEdge(inter.node(out_temp));
+                    if (!(n.getValue() instanceof MOVE) || !out_temp.equals(((MOVE)n.getValue()).src()))
+                        inter.node(def).addEdge(inter.node(out_temp));
                 }
             }
             if (n.getValue() instanceof MOVE) {
@@ -95,9 +91,7 @@ public class RegAlloc {
                 inter.addMoveRelatedTemp(dst.getValue());
             }
         }
-        // TODO this prints the interference graph and kills the program
-        System.out.println(inter.toString());
-        //System.exit(0);
+
         return inter;
     }
 
@@ -209,8 +203,10 @@ public class RegAlloc {
 
     private void allocate() {
 
+        InterferenceGraph graph;
+
         while (true) {
-            InterferenceGraph graph = build();
+            graph = build();
 
             while (true) {
                 // simplify
@@ -272,7 +268,7 @@ public class RegAlloc {
 
                         Instr line = code.get(i);
                         //insert store instruction
-                        for (Temp t : line.def) {
+                        if (line.def != null) for (Temp t : line.def) {
                             if (t.equals(spilledNode.getValue())) {
                                 code.add(i+1, OPER.sw(t, frame.FP(), f.getOffset()));
                                 i++;
@@ -281,7 +277,7 @@ public class RegAlloc {
                         }
 
                         //insert fetch instruction
-                        for (Temp t : line.use) {
+                        if (line.use != null) for (Temp t : line.use) {
                             if (t.equals(spilledNode.getValue())) {
                                 code.add(i, OPER.lw(t, frame.FP(), f.getOffset(), ""));
                                 i++;
@@ -292,14 +288,28 @@ public class RegAlloc {
 
                 }
 
-                continue;
-
+            } else {
+                break;
             }
 
-            break;
-
         }
-        // TODO if we made it here, we're good
+
+        populateColorMap(graph);
+
+        // set each temp to its color
+        for (Instr inst : this.code) {
+            if (inst.def != null) for (Temp t : inst.def) t.regIndex = colorMap.get(t).regIndex;
+            if (inst.use != null) for (Temp t : inst.use) t.regIndex = colorMap.get(t).regIndex;
+        }
+    }
+
+    private void populateColorMap(InterferenceGraph graph) {
+        for (InterferenceNode node : graph.getNodes()) {
+            colorMap.put(node.getValue(), node.getColor());
+            for (Temp t : node.getCoalescedTemps()) {
+                colorMap.put(t, node.getColor());
+            }
+        }
     }
 
     private <T> Set<T> union(Collection<T> left, Collection<T> right) {
