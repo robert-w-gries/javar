@@ -105,7 +105,7 @@ public abstract class Instr {
     public String formatTemp(Frame.Frame frame) {
         StringBuilder s = new StringBuilder();
 
-        if (!(this instanceof LABEL)) {
+        if (this instanceof OPER || this instanceof MOVE) {
             s.append("\t");
         }
 

@@ -22,6 +22,13 @@ public class OPER extends Instr {
         jumps = j;
     }
 
+    public OPER(String a) {
+        assem = a;
+        use = null;
+        def = null;
+        jumps = null;
+    }
+
     public void output(java.io.PrintWriter writer) {
         writer.print("  OPER(\"" + assem + "\"");
         super.output(writer);
