@@ -245,16 +245,6 @@ public class MipsFrame extends Frame {
 
     @Override
     public void procEntryExit2(List<Instr> instrs) {
-
-        List<Instr> entryInstrs = new LinkedList<>();
-
-        entryInstrs.add(new Assem.OPER(".text"));
-        entryInstrs.add(new Assem.OPER(".align\t4"));
-        entryInstrs.add(new Assem.OPER(".globl\t" + this.name.toString()));
-        entryInstrs.add(new Assem.LABEL(this.name.toString(), this.name));
-        entryInstrs.add(new Assem.DIRECTIVE(this.name.toString() + "_framsize=" + frameOffset));
-        instrs.addAll(0, entryInstrs);
-
         List<Temp> returnUses = new ArrayList<>();
         returnUses.add(new Temp(0));
         returnUses.add(new Temp(31));
@@ -276,7 +266,15 @@ public class MipsFrame extends Frame {
 
     @Override
     public void procEntryExit3(List<Instr> instrs) {
-        return;
+
+        List<Instr> entryInstrs = new LinkedList<>();
+
+        entryInstrs.add(new Assem.OPER(".text"));
+        entryInstrs.add(new Assem.OPER(".align\t4"));
+        entryInstrs.add(new Assem.OPER(".globl\t" + this.name.toString()));
+        entryInstrs.add(new Assem.LABEL(this.name.toString(), this.name));
+        entryInstrs.add(new Assem.DIRECTIVE(this.name.toString() + "_framsize=" + frameOffset));
+        instrs.addAll(0, entryInstrs);
     }
 
     @Override
