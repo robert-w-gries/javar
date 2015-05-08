@@ -95,7 +95,7 @@ public class Main {
                     if (i instanceof MOVE && ((MOVE)i).src().equals(((MOVE)i).dst())) it.remove();
                 }
                 for (Instr i : p.code) {
-                    writer.println(i.toString());
+                    writer.println(i.formatTemp(p.frame));
                 }
             }
         }

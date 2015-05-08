@@ -97,8 +97,8 @@ public class OPER extends Instr {
     }
 
     public static OPER addi_zero(Temp dst, int value) {
-        String assem = "addi `d0, zero, " + value;
-        return nolab1dst0src(assem, dst);
+        String assem = "addi `d0, `s0, " + value;
+        return nolab1dst1src(assem, dst, new Temp(0));
     }
 
     public static OPER li(Temp dst, int value) {

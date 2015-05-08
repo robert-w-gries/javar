@@ -2,6 +2,7 @@
  * All rights reserved.  */
 package Assem;
 
+import Mips.MipsFrame;
 import RegAlloc.RegAlloc;
 import Temp.Temp;
 import Temp.Label;
@@ -97,11 +98,42 @@ public abstract class Instr {
             }
             else s.append(assem.charAt(i));
         }
+        if (this instanceof LABEL) s.append(":");
         return s.toString();
     }
 
-    public String format(Frame.Frame frame, RegAlloc alloc) {
-        return null;
+    public String formatTemp(Frame.Frame frame) {
+        StringBuilder s = new StringBuilder();
+        int len = assem.length();
+        for (int i = 0; i < len; i++) {
+            if (assem.charAt(i) == '`') {
+                switch (assem.charAt(++i)) {
+                    case 's': {
+                        int n = Character.digit(assem.charAt(++i), 10);
+                        s.append(MipsFrame.getTempName(use.get(n)));
+                        break;
+                    }
+                    case 'd': {
+                        int n = Character.digit(assem.charAt(++i), 10);
+                        s.append(MipsFrame.getTempName(def.get(n)));
+                        break;
+                    }
+                    case 'j': {
+                        int n = Character.digit(assem.charAt(++i), 10);
+                        s.append(jumps.get(n).toString());
+                        break;
+                    }
+                    case '`':
+                        s.append('`');
+                        break;
+                    default:
+                        throw new Error("bad Assem format:" + assem);
+                }
+            }
+            else s.append(assem.charAt(i));
+        }
+        if (this instanceof LABEL) s.append(":");
+        return s.toString();
     }
 
 }

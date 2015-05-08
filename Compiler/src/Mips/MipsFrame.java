@@ -65,7 +65,7 @@ public class MipsFrame extends Frame {
     private void initAvaialableRegs() {
 
         //grab all regs from tempMap
-        availableRegs = tempMap.keySet();
+        availableRegs = new HashSet<>(tempMap.keySet());
         Iterator<Temp> it = availableRegs.iterator();
         while (it.hasNext()) {
             Temp t = it.next();
@@ -76,38 +76,38 @@ public class MipsFrame extends Frame {
     }
 
     private void initTempMap() {
-        tempMap.put(new Temp(0), "$zero");
-        tempMap.put(new Temp(1), "$1");
-        tempMap.put(new Temp(2), "$v0");
-        tempMap.put(new Temp(3), "$v1");
-        tempMap.put(new Temp(4), "$a0");
-        tempMap.put(new Temp(5), "$a1");
-        tempMap.put(new Temp(6), "$a2");
-        tempMap.put(new Temp(7), "$a3");
-        tempMap.put(new Temp(8), "$t0");
-        tempMap.put(new Temp(9), "$t1");
-        tempMap.put(new Temp(10), "$t2");
-        tempMap.put(new Temp(11), "$t3");
-        tempMap.put(new Temp(12), "$t4");
-        tempMap.put(new Temp(13), "$t5");
-        tempMap.put(new Temp(14), "$t6");
-        tempMap.put(new Temp(15), "$t7");
-        tempMap.put(new Temp(16), "$s0");
-        tempMap.put(new Temp(17), "$s1");
-        tempMap.put(new Temp(18), "$s2");
-        tempMap.put(new Temp(19), "$s3");
-        tempMap.put(new Temp(20), "$s4");
-        tempMap.put(new Temp(21), "$s5");
-        tempMap.put(new Temp(22), "$s6");
-        tempMap.put(new Temp(23), "$s7");
-        tempMap.put(new Temp(24), "$t8");
-        tempMap.put(new Temp(25), "$t9");
-        tempMap.put(new Temp(26), "$26");
-        tempMap.put(new Temp(27), "$27");
-        tempMap.put(new Temp(28), "$gp");
-        tempMap.put(new Temp(29), "$sp");
-        tempMap.put(new Temp(30), "$fp");
-        tempMap.put(new Temp(31), "$ra");
+        tempMap.put(new Temp(0), "zero");
+        tempMap.put(new Temp(1), "at");
+        tempMap.put(new Temp(2), "v0");
+        tempMap.put(new Temp(3), "v1");
+        tempMap.put(new Temp(4), "a0");
+        tempMap.put(new Temp(5), "a1");
+        tempMap.put(new Temp(6), "a2");
+        tempMap.put(new Temp(7), "a3");
+        tempMap.put(new Temp(8), "t0");
+        tempMap.put(new Temp(9), "t1");
+        tempMap.put(new Temp(10), "t2");
+        tempMap.put(new Temp(11), "t3");
+        tempMap.put(new Temp(12), "t4");
+        tempMap.put(new Temp(13), "t5");
+        tempMap.put(new Temp(14), "t6");
+        tempMap.put(new Temp(15), "t7");
+        tempMap.put(new Temp(16), "s0");
+        tempMap.put(new Temp(17), "s1");
+        tempMap.put(new Temp(18), "s2");
+        tempMap.put(new Temp(19), "s3");
+        tempMap.put(new Temp(20), "s4");
+        tempMap.put(new Temp(21), "s5");
+        tempMap.put(new Temp(22), "s6");
+        tempMap.put(new Temp(23), "s7");
+        tempMap.put(new Temp(24), "t8");
+        tempMap.put(new Temp(25), "t9");
+        tempMap.put(new Temp(26), "k0");
+        tempMap.put(new Temp(27), "k1");
+        tempMap.put(new Temp(28), "gp");
+        tempMap.put(new Temp(29), "sp");
+        tempMap.put(new Temp(30), "fp");
+        tempMap.put(new Temp(31), "ra");
     }
 
     public static String getTempName(Temp t) {
@@ -255,6 +255,9 @@ public class MipsFrame extends Frame {
         returnUses.add(new Temp(22));
         returnUses.add(new Temp(23));
         instrs.add(new Assem.OPER("// Return sink", null, returnUses, null));
+        List<Temp> ra = new LinkedList<>();
+        ra.add(new Temp(31));
+        instrs.add(new Assem.OPER("jr `s0", null, ra, null));
     }
 
     @Override
