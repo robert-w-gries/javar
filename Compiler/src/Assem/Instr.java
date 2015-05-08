@@ -104,6 +104,11 @@ public abstract class Instr {
 
     public String formatTemp(Frame.Frame frame) {
         StringBuilder s = new StringBuilder();
+
+        if (!(this instanceof LABEL)) {
+            s.append("\t");
+        }
+
         int len = assem.length();
         for (int i = 0; i < len; i++) {
             if (assem.charAt(i) == '`') {

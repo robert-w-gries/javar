@@ -76,6 +76,11 @@ public class Main {
 
         PrintWriter writer = new PrintWriter(System.out);
         writer.println("#include <mips.h>");
+        writer.println("\t.text");
+        writer.println("\t.align\t4");
+        writer.println("\t.globl\tmain");
+        writer.println("main:");
+        writer.println("main_framesize=0");
         boolean dropfirst = true;
         for (Frag frag : frags) {
             if (frag instanceof DataFrag) {
