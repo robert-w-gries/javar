@@ -21,6 +21,7 @@ public class MipsFrame extends Frame {
     private Temp framePointer;
     private int argIndex = 0;
     public int maxArgOffset = 0;
+    private int frameOffset = 0;
     private LinkedList<Assem.Instr> instructionList;
 
     private static final int NUM_REGS = 32;
@@ -118,7 +119,9 @@ public class MipsFrame extends Frame {
 
     public int wordSize() { return 4; }
 
-    int frameOffset = 0;
+    public int getFrameSize() {
+        return frameOffset;
+    }
 
     public Access allocFormal() {
         // add a formal
@@ -262,7 +265,7 @@ public class MipsFrame extends Frame {
 
     @Override
     public void procEntryExit3(List<Instr> instrs) {
-        System.out.println("In procEntryExit3()");
+        return;
     }
 
     @Override

@@ -76,11 +76,6 @@ public class Main {
 
         PrintWriter writer = new PrintWriter(System.out);
         writer.println("#include <mips.h>");
-        writer.println("\t.text");
-        writer.println("\t.align\t4");
-        writer.println("\t.globl\tmain");
-        writer.println("main:");
-        writer.println("main_framesize=0");
         boolean dropfirst = true;
         for (Frag frag : frags) {
             if (frag instanceof DataFrag) {
@@ -93,7 +88,7 @@ public class Main {
                 ProcFrag p = (ProcFrag)frag;
                 p.frame.procEntryExit2(p.code);
                 new RegAlloc(p.frame, p.code);
-                //p.frame.procEntryExit3(p.code); // TODO MipsFrame.procEntryExit3
+                p.frame.procEntryExit3(p.code); // TODO MipsFrame.procEntryExit3
                 // Remove redundant MOVEs
                 for (Iterator<Instr> it = p.code.iterator(); it.hasNext();) {
                     Instr i = it.next();
