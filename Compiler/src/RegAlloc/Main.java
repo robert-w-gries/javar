@@ -79,16 +79,13 @@ public class Main {
         boolean dropfirst = true;
         for (Frag frag : frags) {
             if (frag instanceof DataFrag) {
-                if (dropfirst) {
-                    dropfirst = false;
-                } else {
-                    writer.println(frag);
-                }
+                if (dropfirst) dropfirst = false;
+                else writer.println(frag);
             } else {
                 ProcFrag p = (ProcFrag)frag;
                 p.frame.procEntryExit2(p.code);
                 new RegAlloc(p.frame, p.code);
-                p.frame.procEntryExit3(p.code); // TODO MipsFrame.procEntryExit3
+                p.frame.procEntryExit3(p.code);
                 // Remove redundant MOVEs
                 for (Iterator<Instr> it = p.code.iterator(); it.hasNext();) {
                     Instr i = it.next();

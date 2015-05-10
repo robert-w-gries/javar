@@ -258,6 +258,8 @@ public class MipsFrame extends Frame {
         returnUses.add(new Temp(21));
         returnUses.add(new Temp(22));
         returnUses.add(new Temp(23));
+        returnUses.add(new Temp(2));
+        returnUses.add(new Temp(3));
         instrs.add(new Assem.OPER("// Return from " + name.toString(), null, returnUses, null));
         List<Temp> ra = new LinkedList<>();
         ra.add(new Temp(31));

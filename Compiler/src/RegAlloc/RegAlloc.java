@@ -85,11 +85,6 @@ public class RegAlloc {
                         inter.node(def).addEdge(inter.node(out_temp));
                 }
             }
-            if (n.getValue() instanceof MOVE) {
-                InterferenceNode src = inter.node(((MOVE)n.getValue()).src()), dst = inter.node(((MOVE)n.getValue()).dst());
-                inter.addMoveRelatedTemp(src.getValue());
-                inter.addMoveRelatedTemp(dst.getValue());
-            }
         }
 
         return inter;
