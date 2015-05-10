@@ -270,7 +270,7 @@ public class RegAlloc {
                         //insert store instruction
                         if (line.def != null) for (Temp t : line.def) {
                             if (t.equals(spilledNode.getValue())) {
-                                code.add(i+1, OPER.sw(t, frame.FP(), f.getOffset()));
+                                code.add(i+1, OPER.sw(t, new Temp(29), f.getOffset(), frame.name.toString()));
                                 i++;
                                 break;
                             }
@@ -279,7 +279,7 @@ public class RegAlloc {
                         //insert fetch instruction
                         if (line.use != null) for (Temp t : line.use) {
                             if (t.equals(spilledNode.getValue())) {
-                                code.add(i, OPER.lw(t, frame.FP(), f.getOffset(), ""));
+                                code.add(i, OPER.lw(t, new Temp(29), f.getOffset(), frame.name.toString()));
                                 i++;
                                 break;
                             }

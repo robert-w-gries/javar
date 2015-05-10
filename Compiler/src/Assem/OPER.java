@@ -73,6 +73,11 @@ public class OPER extends Instr {
         return nolab1dst1src(assem, dst, src);
     }
 
+    public static OPER addiu(Temp dst, Temp src, int value) {
+        String assem = "addiu `d0, `s0, " + value;
+        return nolab1dst1src(assem, dst, src);
+    }
+
     public static OPER sll(Temp dst, Temp src, int value) {
         String assem = "sll `d0, `s0, " + value;
         return nolab1dst1src(assem, dst, src);
@@ -164,17 +169,31 @@ public class OPER extends Instr {
     }
 
     public static OPER lw(Temp dst, Temp src, int offset, String name) {
-        String assem;
+        String assem = "lw `d0, ";
+        if (offset > 0) {
+            //assem = assem + "-";
+        }
+
         if (src.regIndex == 29) {
-            assem = "lw `d0, " + (offset+12) + "+" + name + "_framesize(`s0)";
+            assem = assem + "-" + offset + "+" + name + "_framesize(`s0)";
         } else {
-            assem = "lw `d0, " + offset + " (`s0)";
+            assem = assem + offset + "(`s0)";
         }
         return nolab1dst1src(assem, dst, src);
     }
 
-    public static OPER sw(Temp src, Temp dst, int offset) {
-        String assem = "sw `s0, " + offset + "(`s1)";
+    public static OPER sw(Temp src, Temp dst, int offset, String name) {
+        //String assem = "sw `s0, -" + offset + "(`s1)";
+        String assem = "sw `s0, ";
+        if (offset != 0) {
+            //assem = assem + "-";
+        }
+
+        if (dst.regIndex == 29) {
+            assem = assem + "-" + offset + "+" + name + "_framesize(`s1)";
+        } else {
+            assem = assem + offset + "(`s1)";
+        }
         List<Temp> ss = new ArrayList<>();
         ss.add(src);
         ss.add(dst);

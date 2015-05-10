@@ -258,7 +258,7 @@ public class MipsFrame extends Frame {
         returnUses.add(new Temp(21));
         returnUses.add(new Temp(22));
         returnUses.add(new Temp(23));
-        instrs.add(new Assem.OPER("// Return sink", null, returnUses, null));
+        instrs.add(new Assem.OPER("// Return from " + name.toString(), null, returnUses, null));
         List<Temp> ra = new LinkedList<>();
         ra.add(new Temp(31));
         instrs.add(new Assem.OPER("jr `s0", null, ra, null));
@@ -267,14 +267,24 @@ public class MipsFrame extends Frame {
     @Override
     public void procEntryExit3(List<Instr> instrs) {
 
-        List<Instr> entryInstrs = new LinkedList<>();
+        int frameSize = frameOffset+maxArgOffset;
+        String frameSizeString = this.name.toString() + "_framesize";
+        List<Temp> sp = new ArrayList<>();
+        sp.add(new Temp(29));
 
+        List<Instr> entryInstrs = new LinkedList<>();
         entryInstrs.add(new Assem.OPER(".text"));
         entryInstrs.add(new Assem.OPER(".align\t4"));
         entryInstrs.add(new Assem.OPER(".globl\t" + this.name.toString()));
         entryInstrs.add(new Assem.LABEL(this.name.toString(), this.name));
-        entryInstrs.add(new Assem.DIRECTIVE(this.name.toString() + "_framsize=" + frameOffset));
+        entryInstrs.add(new Assem.DIRECTIVE(this.name.toString() + "_framesize=" + frameSize));
+        if (frameSize > 0) {
+            entryInstrs.add(new Assem.OPER("addiu `d0, `s0, -" + frameSizeString, sp, sp, null));
+            instrs.add(instrs.size()-1, new Assem.OPER("addiu `d0, `s0, " + frameSizeString, sp, sp, null));
+        }
+
         instrs.addAll(0, entryInstrs);
+
     }
 
     @Override
@@ -310,12 +320,12 @@ public class MipsFrame extends Frame {
                 MEM dst = (MEM)m.dst;
                 if (dst.exp instanceof BINOP && ((BINOP)dst.exp).binop == BINOP.Operation.PLUS
                         && ((BINOP)dst.exp).left instanceof CONST && ((CONST)((BINOP)dst.exp).left).value < 65536) {
-                    emit(OPER.sw(munchExp(m.src), munchExp(((BINOP)dst.exp).right), ((CONST)((BINOP)dst.exp).left).value));
+                    emit(OPER.sw(munchExp(m.src), munchExp(((BINOP)dst.exp).right), ((CONST)((BINOP)dst.exp).left).value, name.toString()));
                 } else if (dst.exp instanceof BINOP && ((BINOP)dst.exp).binop == BINOP.Operation.PLUS
                         && ((BINOP)dst.exp).right instanceof CONST && ((CONST)((BINOP)dst.exp).right).value < 65536) {
-                    emit(OPER.sw(munchExp(m.src), munchExp(((BINOP)dst.exp).left), ((CONST)((BINOP)dst.exp).right).value));
+                    emit(OPER.sw(munchExp(m.src), munchExp(((BINOP)dst.exp).left), ((CONST)((BINOP)dst.exp).right).value, name.toString()));
                 } else {
-                    emit(OPER.sw(munchExp(m.src), munchExp(dst.exp), 0));
+                    emit(OPER.sw(munchExp(m.src), munchExp(dst.exp), 0, name.toString()));
                 }
             } else {
                 emit(new Assem.MOVE("move `d0, `s0", munchExp(m.dst), munchExp(m.src)));
