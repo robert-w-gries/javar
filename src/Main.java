@@ -1,13 +1,18 @@
-import Absyn.Program;
-import Assem.Instr;
-import Assem.MOVE;
-import Parse.MiniJavaParser;
-import RegAlloc.RegAlloc;
-import Semant.TypeChecker;
-import Translate.DataFrag;
-import Translate.Frag;
-import Translate.ProcFrag;
-import Tree.Stm;
+import backend.canon.BasicBlocks;
+import backend.canon.Canon;
+import backend.canon.TraceSchedule;
+import frontend.parse.ast.Program;
+import backend.assem.Instr;
+import backend.assem.MOVE;
+import frontend.parse.MiniJavaParser;
+import backend.alloc.RegAlloc;
+import frontend.translate.Translate;
+import frontend.typecheck.TypeChecker;
+import frontend.translate.DataFrag;
+import frontend.translate.Frag;
+import frontend.translate.ProcFrag;
+import frontend.translate.irtree.Stm;
+import frontend.parse.ParseException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -24,7 +29,7 @@ public class Main {
         System.exit(-2);
     }
 
-    public static void main(String args[]) throws Parse.ParseException {
+    public static void main(String args[]) throws ParseException {
         if (args.length != 1) usage();
 
         Reader reader = null;
@@ -41,9 +46,9 @@ public class Main {
         // type check the program
         new TypeChecker().visit(program);
         // translate the program to intermediate representation
-        Translate.Translate translate = new Translate.Translate();
+        Translate translate = new Translate();
         translate.visit(program);
-        LinkedList<Translate.Frag> frags = (LinkedList<Frag>)translate.results();
+        LinkedList<Frag> frags = (LinkedList<Frag>)translate.results();
         // canonicalize IR fragments, generate assembly
         proccessFrags(frags);
 
@@ -80,9 +85,9 @@ public class Main {
             ProcFrag p = (ProcFrag)frag;
             List<Stm> traced = new LinkedList<>();
             if (p.body != null) {
-                LinkedList<Stm> stms = Canon.Canon.linearize(p.body);
-                Canon.BasicBlocks blocks = new Canon.BasicBlocks(stms);
-                new Canon.TraceSchedule(blocks, traced);
+                LinkedList<Stm> stms = Canon.linearize(p.body);
+                BasicBlocks blocks = new BasicBlocks(stms);
+                new TraceSchedule(blocks, traced);
             }
             p.frame.procEntryExit1(traced);
             p.code = p.frame.codeGen(traced);
