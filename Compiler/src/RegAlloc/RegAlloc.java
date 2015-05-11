@@ -62,8 +62,6 @@ public class RegAlloc {
             if (brk) break;
         }
 
-        printLivenessInfo(f, in, out);
-
         // create interference graph
         InterferenceGraph inter = new InterferenceGraph();
         // add all move edges
@@ -88,8 +86,6 @@ public class RegAlloc {
                 }
             }
         }
-
-        System.out.println(inter.toString());
 
         return inter;
     }
@@ -127,7 +123,7 @@ public class RegAlloc {
 
     private InterferenceNode findSimplifiableNode(InterferenceGraph graph) {
         for (InterferenceNode node : graph.getNodes()) {
-            if (!graph.isMoveRelatedNode(node) && !node.isPrecolored(this.frame) && node.getDegree() < this.frame.numRegs())
+            if (!graph.isMoveRelatedNode(node) && !node.isPrecolored(this.frame) && node.getDegree() < this.frame.numColors())
                 return node;
         }
         return null; // can't simplify graph
@@ -140,13 +136,13 @@ public class RegAlloc {
             move_loop: for (InterferenceNode b : a.getMoves()) {
                 for (Node<Temp> _n : a.getAdj()) {
                     InterferenceNode n = (InterferenceNode)_n;
-                    if (n.getDegree() >= this.frame.numRegs() && !b.getAdj().contains(n))
+                    if (n.getDegree() >= this.frame.numColors() && !b.getAdj().contains(n))
                         continue move_loop; // if n.degree >= K && !b.adj.contains(n), a and b can't be coalesced
                 }
 
                 for (Node<Temp> _n : b.getAdj()) {
                     InterferenceNode n = (InterferenceNode)_n;
-                    if (n.getDegree() >= this.frame.numRegs() && !a.getAdj().contains(n))
+                    if (n.getDegree() >= this.frame.numColors() && !a.getAdj().contains(n))
                         continue move_loop; // if n.degree >= K && !a.adj.contains(n), a and b can't be coalesced
                 }
 
@@ -159,7 +155,7 @@ public class RegAlloc {
 
     private InterferenceNode findFreezableNode(InterferenceGraph graph) {
         for (InterferenceNode node : graph.getNodes()) {
-            if (graph.isMoveRelatedNode(node) && node.getDegree() < this.frame.numRegs()) return node;
+            if (graph.isMoveRelatedNode(node) && node.getDegree() < this.frame.numColors()) return node;
         }
         return null;
     }
@@ -175,10 +171,27 @@ public class RegAlloc {
     }
 
     private InterferenceNode findPotentialSpillNode(InterferenceGraph graph) {
+        InterferenceNode spill = null;
+        double priority = Double.MAX_VALUE;
+
         for (InterferenceNode node : graph.getNodes()) {
-            if (!node.isPrecolored(this.frame)) return node;
+            if (!node.isPrecolored(this.frame)) {
+                // loop through code, looking for uses and defs of this node
+                int defs_uses = 0;
+                for (Instr i : this.code) {
+                    if (i.def != null && i.def.contains(node.getValue())) defs_uses++;
+                    if (i.use != null && i.use.contains(node.getValue())) defs_uses++;
+                }
+                // calculate priority, look for smallest value
+                double pri = (double)defs_uses / node.getDegree();
+                if (pri < priority) {
+                    priority = pri;
+                    spill = node;
+                }
+            }
         }
-        return null;
+
+        return spill;
     }
 
     private Temp selectColor(InterferenceNode node) {
@@ -261,39 +274,8 @@ public class RegAlloc {
                 //allocate memory for each spilledNode
                 for (InterferenceNode spilledNode : spilledNodes) {
 
-                    InFrame f = (InFrame)frame.allocLocal();
-                    //create temp for each def/use
-                    for (int i = 0; i < code.size(); i++) {
-
-                        Instr line = code.get(i);
-                        //insert store instruction
-                        if (line.def != null) for (Temp t : line.def) {
-                            if (t.equals(spilledNode.getValue())) {
-                                if (line instanceof MOVE) {
-                                    code.set(i, OPER.sw(((MOVE)line).src(), new Temp(29), f.getOffset(), frame.name.toString()));
-                                } else {
-                                    t.regIndex = new Temp().regIndex;
-                                    code.add(i + 1, OPER.sw(t, new Temp(29), f.getOffset(), frame.name.toString()));
-                                    i++;
-                                }
-                                break;
-                            }
-                        }
-
-                        //insert fetch instruction
-                        if (line.use != null) for (Temp t : line.use) {
-                            if (t.equals(spilledNode.getValue())) {
-                                if (line instanceof MOVE) {
-                                    code.set(i, OPER.lw(((MOVE)line).dst(), new Temp(29), f.getOffset(), frame.name.toString()));
-                                } else {
-                                    t.regIndex = new Temp().regIndex;
-                                    code.add(i, OPER.lw(t, new Temp(29), f.getOffset(), frame.name.toString()));
-                                    i++;
-                                }
-                                break;
-                            }
-                        }
-                    }
+                    spill(spilledNode.getValue());
+                    for (Temp t : spilledNode.getCoalescedTemps()) spill(t);
 
                 }
 
@@ -309,6 +291,43 @@ public class RegAlloc {
         for (Instr inst : this.code) {
             if (inst.def != null) for (Temp t : inst.def) t.regIndex = colorMap.get(t).regIndex;
             if (inst.use != null) for (Temp t : inst.use) t.regIndex = colorMap.get(t).regIndex;
+        }
+    }
+
+    private void spill(Temp spill) {
+        int tempnum = spill.regIndex;
+        InFrame f = (InFrame)frame.allocLocal();
+        //create temp for each def/use
+        for (int i = 0; i < code.size(); i++) {
+
+            Instr line = code.get(i);
+            //insert store instruction
+            if (line.def != null) for (int j = 0; j < line.def.size(); j++) {
+                if (line.def.get(j).regIndex == tempnum) {
+                    if (line instanceof MOVE) {
+                        code.set(i, OPER.sw(((MOVE)line).src(), new Temp(29), f.getOffset(), frame.name.toString()));
+                    } else {
+                        line.def.set(j, new Temp());
+                        code.add(i + 1, OPER.sw(line.def.get(j), new Temp(29), f.getOffset(), frame.name.toString()));
+                        i++;
+                    }
+                    break;
+                }
+            }
+
+            //insert fetch instruction
+            if (line.use != null) for (int j = 0; j < line.use.size(); j++) {
+                if (line.use.get(j).regIndex == tempnum) {
+                    if (line instanceof MOVE) {
+                        code.set(i, OPER.lw(((MOVE)line).dst(), new Temp(29), f.getOffset(), frame.name.toString()));
+                    } else {
+                        line.use.set(j, new Temp());
+                        code.add(i, OPER.lw(line.use.get(j), new Temp(29), f.getOffset(), frame.name.toString()));
+                        i++;
+                    }
+                    break;
+                }
+            }
         }
     }
 

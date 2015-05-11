@@ -58,19 +58,19 @@ public class InterferenceGraph extends Graph<Temp, InterferenceNode> {
     }
 
     public String toString() {
-        String print = "Interference Graph:\n\n\t";
+        String print = "Interference Graph:\n\n";
+
         for (InterferenceNode node : nodes) {
-            print += "|" + node.getValue().regIndex;
-            if (node.getValue().regIndex < 100) print += "\t";
-        }
-        print += "\n";
-        for (InterferenceNode node : nodes) {
-            print += node.getValue().regIndex + "\t";
-            for (InterferenceNode node1 : nodes) {
-                print += "|";
-                if (node.getAdj().contains(node1)) print += "X";
-                if (node.getMoves().contains(node1)) print += "M";
-                print += "\t";
+            print += node.getValue().regIndex;
+            if (node.getAdj().size() > 26) print += " > K";
+            print += "\n\tinterferes with: ";
+            for (Node<Temp> node1 : node.getAdj()) {
+                if (node.getValue().regIndex < 32 && node1.getValue().regIndex < 32) continue;
+                print += node1.toString() + " ";
+            }
+            print += "\n\tmoves: ";
+            for (InterferenceNode node1 : node.getMoves()) {
+                print += node1.toString() + " ";
             }
             print += "\n";
         }

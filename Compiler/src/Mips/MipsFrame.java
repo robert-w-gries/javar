@@ -588,6 +588,8 @@ public class MipsFrame extends Frame {
         return NUM_REGS;
     }
 
+    public int numColors() { return NUM_REGS - 6; }
+
     public int numAvailableRegs() {
         return availableRegs.size();
     }

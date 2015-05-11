@@ -31,5 +31,6 @@ public abstract class Frame {
     public abstract List<Assem.Instr> codeGen(List<Stm> stms);
     public abstract boolean isRealRegister(Temp.Temp temp);
     public abstract int numRegs();
+    public abstract int numColors();
 
 }
