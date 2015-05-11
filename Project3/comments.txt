@@ -1,5 +1,0 @@
-THINGS THAT NEED TO BE ADDRESSED
---------------------------------
-
-- field expressions with array does not work
-    - code:  int b = this.a[22] == 0;
