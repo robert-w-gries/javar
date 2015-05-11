@@ -1,7 +1,5 @@
 package frontend.parse.ast;
 
-import Translate.*;
-
 /**
  * Parent class of all abstract syntax tree nodes.
  */
