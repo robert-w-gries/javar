@@ -2,6 +2,3 @@
 */.idea/workspace.xml
 *.DS_Store
 *.class
-/Compiler/localtests/test.java
-/Compiler/localtests/test.java.translator
-/Compiler/localtests/test.java.checker
