@@ -62,6 +62,8 @@ public class RegAlloc {
             if (brk) break;
         }
 
+        printLivenessInfo(f, in, out);
+
         // create interference graph
         InterferenceGraph inter = new InterferenceGraph();
         // add all move edges
@@ -86,6 +88,8 @@ public class RegAlloc {
                 }
             }
         }
+
+        System.out.println(inter.toString());
 
         return inter;
     }
@@ -265,8 +269,13 @@ public class RegAlloc {
                         //insert store instruction
                         if (line.def != null) for (Temp t : line.def) {
                             if (t.equals(spilledNode.getValue())) {
-                                code.add(i+1, OPER.sw(t, new Temp(29), f.getOffset(), frame.name.toString()));
-                                i++;
+                                if (line instanceof MOVE) {
+                                    code.set(i, OPER.sw(((MOVE)line).src(), new Temp(29), f.getOffset(), frame.name.toString()));
+                                } else {
+                                    t.regIndex = new Temp().regIndex;
+                                    code.add(i + 1, OPER.sw(t, new Temp(29), f.getOffset(), frame.name.toString()));
+                                    i++;
+                                }
                                 break;
                             }
                         }
@@ -274,8 +283,13 @@ public class RegAlloc {
                         //insert fetch instruction
                         if (line.use != null) for (Temp t : line.use) {
                             if (t.equals(spilledNode.getValue())) {
-                                code.add(i, OPER.lw(t, new Temp(29), f.getOffset(), frame.name.toString()));
-                                i++;
+                                if (line instanceof MOVE) {
+                                    code.set(i, OPER.lw(((MOVE)line).dst(), new Temp(29), f.getOffset(), frame.name.toString()));
+                                } else {
+                                    t.regIndex = new Temp().regIndex;
+                                    code.add(i, OPER.lw(t, new Temp(29), f.getOffset(), frame.name.toString()));
+                                    i++;
+                                }
                                 break;
                             }
                         }
