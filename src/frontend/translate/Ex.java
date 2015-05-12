@@ -12,9 +12,9 @@ import frontend.translate.irtree.Stm;
  * Date: 3/22/15
  * Time: 11:19 PM
  */
-public class Ex extends Exp {
+class Ex extends Exp {
 
-    frontend.translate.irtree.Exp exp;
+    private frontend.translate.irtree.Exp exp;
 
     Ex (frontend.translate.irtree.Exp e) {
         exp = e;

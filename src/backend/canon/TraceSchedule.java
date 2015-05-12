@@ -18,11 +18,10 @@ import java.util.HashMap;
  */
 
 public class TraceSchedule {
-    Label done;
-    Iterator<LinkedList<Stm>> theBlocks;
-    List<Stm> stms;
-    HashMap<Label, LinkedList<Stm>> map
-            = new HashMap<Label, LinkedList<Stm>>();
+    protected Label done;
+    protected Iterator<LinkedList<Stm>> theBlocks;
+    protected List<Stm> stms;
+    protected HashMap<Label, LinkedList<Stm>> map = new HashMap<>();
 
     Stm getLast(LinkedList<Stm> block) {
         Stm last = block.removeLast();

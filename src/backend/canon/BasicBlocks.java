@@ -16,8 +16,8 @@ import java.util.LinkedList;
  */
 
 public class BasicBlocks {
-    public List<LinkedList<Stm>> blocks;
-    public Label done;
+    protected List<LinkedList<Stm>> blocks;
+    protected Label done;
     private LinkedList<Stm> lastStm;
 
     private void addStm(Stm s) {
@@ -48,7 +48,7 @@ public class BasicBlocks {
         if (!slist.isEmpty()) {
             Stm s = slist.removeFirst();
             if (s instanceof LABEL) {
-                lastStm = new LinkedList<Stm>();
+                lastStm = new LinkedList<>();
                 lastStm.add(s);
                 blocks.add(lastStm);
                 doStms(slist);
@@ -62,7 +62,7 @@ public class BasicBlocks {
 
     public BasicBlocks(LinkedList<Stm> stms) {
         done = new Label();
-        blocks = new LinkedList<LinkedList<Stm>>();
+        blocks = new LinkedList<>();
         mkBlocks(stms);
     }
 }

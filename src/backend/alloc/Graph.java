@@ -11,13 +11,13 @@ import java.util.Set;
  * Date: 4/27/15
  * Time: 10:41 PM
  */
-public abstract class Graph<T, N extends Node<T>> {
+abstract class Graph<T, N extends Node<T>> {
 
-    protected Set<N> nodes;
-    protected Map<T, N> lookup;
-    protected boolean bidirectional;
+    Set<N> nodes;
+    Map<T, N> lookup;
+    private boolean bidirectional;
 
-    protected Graph(boolean bidirectional) {
+    Graph(boolean bidirectional) {
         nodes = new HashSet<>();
         lookup = new HashMap<>();
         this.bidirectional = bidirectional;
@@ -37,7 +37,7 @@ public abstract class Graph<T, N extends Node<T>> {
 
     protected abstract N createNode(T el, boolean bidirectional);
 
-    public void removeNode(N node) {
+    void removeNode(N node) {
         nodes.remove(node);
         lookup.remove(node.getValue());
     }

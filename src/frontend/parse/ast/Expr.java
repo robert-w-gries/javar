@@ -7,7 +7,7 @@ import frontend.translate.Translate;
  * Expression abstract class.
  */
 public abstract class Expr extends Absyn {
-    public Expr(){}
+    Expr(){}
 
     /**
      * Visitor pattern dispatch.

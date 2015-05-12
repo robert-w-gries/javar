@@ -16,7 +16,7 @@ public class CONST extends Exp {
 
     @Override
     public List<Exp> kids() {
-        return new LinkedList<Exp>();
+        return new LinkedList<>();
     }
 
     @Override

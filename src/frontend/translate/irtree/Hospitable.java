@@ -1,5 +1,5 @@
 package frontend.translate.irtree;
-public interface Hospitable {
+interface Hospitable {
 
     abstract void accept(IntVisitor v);
 

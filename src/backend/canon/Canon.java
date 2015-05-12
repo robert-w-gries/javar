@@ -9,8 +9,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 class MoveCall extends Stm {
-    TEMP dst;
-    CALL src;
+    private TEMP dst;
+    private CALL src;
 
     MoveCall(TEMP d, CALL s) {
         dst = d;
@@ -32,7 +32,7 @@ class MoveCall extends Stm {
 }
 
 class ExpCall extends Stm {
-    CALL call;
+    private CALL call;
 
     ExpCall(CALL c) {
         call = c;
@@ -67,12 +67,12 @@ class StmExpList {
  */
 
 public class Canon {
-    static boolean isNop(Stm a) {
+    private static boolean isNop(Stm a) {
         return a instanceof EXP_STM
                 && ((EXP_STM)a).exp instanceof CONST;
     }
 
-    static Stm seq(Stm a, Stm b) {
+    private static Stm seq(Stm a, Stm b) {
         if (isNop(a))
             return b;
         else if (isNop(b))
@@ -81,15 +81,15 @@ public class Canon {
             return new SEQ(a, b);
     }
 
-    static boolean commute(Stm a, Exp b) {
+    private static boolean commute(Stm a, Exp b) {
         return isNop(a) || b instanceof NAME || b instanceof CONST;
     }
 
-    static Stm do_stm(SEQ s) {
+    private static Stm do_stm(SEQ s) {
         return seq(do_stm(s.left), do_stm(s.right));
     }
 
-    static Stm do_stm(MOVE s) {
+    private static Stm do_stm(MOVE s) {
         if (s.dst instanceof TEMP && s.src instanceof CALL)
             return reorder_stm(new MoveCall((TEMP)s.dst,
                     (CALL)s.src));
@@ -101,14 +101,14 @@ public class Canon {
             return reorder_stm(s);
     }
 
-    static Stm do_stm(EXP_STM s) {
+    private static Stm do_stm(EXP_STM s) {
         if (s.exp instanceof CALL)
             return reorder_stm(new ExpCall((CALL)s.exp));
         else
             return reorder_stm(s);
     }
 
-    static Stm do_stm(Stm s) {
+    private static Stm do_stm(Stm s) {
         if (s instanceof SEQ)
             return do_stm((SEQ)s);
         else if (s instanceof MOVE)
@@ -119,25 +119,25 @@ public class Canon {
             return reorder_stm(s);
     }
 
-    static Stm reorder_stm(Stm s) {
+    private static Stm reorder_stm(Stm s) {
         StmExpList x = reorder((LinkedList<Exp>)s.kids());
         return seq(x.stm, s.build(x.exps));
     }
 
-    static ESEQ do_exp(ESEQ e) {
+    private static ESEQ do_exp(ESEQ e) {
         Stm stms = do_stm(e.stm);
         ESEQ b = do_exp(e.exp);
         return new ESEQ(seq(stms, b.stm), b.exp);
     }
 
-    static ESEQ do_exp(CALL e) {
+    private static ESEQ do_exp(CALL e) {
         Temp t = new Temp();
         Exp a = new ESEQ(new MOVE(new TEMP(t), e),
                 new TEMP(t));
         return do_exp(a);
     }
 
-    static ESEQ do_exp(Exp e) {
+    private static ESEQ do_exp(Exp e) {
         if (e instanceof ESEQ)
             return do_exp((ESEQ)e);
         else if (e instanceof CALL)
@@ -146,14 +146,14 @@ public class Canon {
             return reorder_exp(e);
     }
 
-    static ESEQ reorder_exp(Exp e) {
+    private static ESEQ reorder_exp(Exp e) {
         StmExpList x = reorder((LinkedList<Exp>)e.kids());
         return new ESEQ(x.stm, e.build(x.exps));
     }
 
-    static final Stm nopNull = new EXP_STM(new CONST(0));
+    private static final Stm nopNull = new EXP_STM(new CONST(0));
 
-    static StmExpList reorder(LinkedList<Exp> exps) {
+    private static StmExpList reorder(LinkedList<Exp> exps) {
         if (exps.isEmpty())
             return new StmExpList(nopNull, exps);
         else {
@@ -176,11 +176,11 @@ public class Canon {
         }
     }
 
-    static LinkedList<Stm> linear(SEQ s, LinkedList<Stm> l) {
+    private static LinkedList<Stm> linear(SEQ s, LinkedList<Stm> l) {
         return linear(s.left, linear(s.right, l));
     }
 
-    static LinkedList<Stm> linear(Stm s, LinkedList<Stm> l) {
+    private static LinkedList<Stm> linear(Stm s, LinkedList<Stm> l) {
         if (s instanceof SEQ)
             return linear((SEQ)s, l);
         else {
@@ -190,6 +190,6 @@ public class Canon {
     }
 
     static public LinkedList<Stm> linearize(Stm s) {
-        return linear(do_stm(s), new LinkedList<Stm>());
+        return linear(do_stm(s), new LinkedList<>());
     }
 }

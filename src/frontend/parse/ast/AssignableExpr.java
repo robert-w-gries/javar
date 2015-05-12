@@ -5,7 +5,7 @@ package frontend.parse.ast;
  */
 public abstract class AssignableExpr extends Expr {
 
-    public AssignableExpr(){
+    AssignableExpr(){
          
     }
 

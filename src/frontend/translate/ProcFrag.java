@@ -14,9 +14,9 @@ import java.util.List;
  */
 public class ProcFrag extends Frag {
 
-    public Stm body;
-    public Frame frame;
-    public List<Instr> code;
+    private Stm body;
+    private Frame frame;
+    private List<Instr> code;
 
     public ProcFrag(Stm body, Frame frame) {
         this.body = body;
@@ -27,4 +27,21 @@ public class ProcFrag extends Frag {
         this.code = code;
         this.frame = frame;
     }
+
+    public Frame getFrame() {
+        return frame;
+    }
+
+    public List<Instr> getProcCode() {
+        return code;
+    }
+
+    public Stm getBody() {
+        return body;
+    }
+
+    public void setCode(List<Instr> code) {
+        this.code = code;
+    }
+
 }

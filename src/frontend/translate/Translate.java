@@ -7,7 +7,6 @@ import arch.Temp;
 import util.SymbolTable;
 import arch.Label;
 import frontend.translate.irtree.*;
-import frontend.translate.irtree.SEQ;
 import frontend.parse.ast.*;
 import frontend.typecheck.ARRAY;
 import frontend.typecheck.FUNCTION;
@@ -31,8 +30,8 @@ public class Translate{
 
     public Translate() {
         frags = new LinkedList<>();
-        accesses = new SymbolTable<Access>();
-        classes = new SymbolTable<OBJECT>();
+        accesses = new SymbolTable<>();
+        classes = new SymbolTable<>();
         classes.put("**ARRAY**", new ARRAY(null));
     }
 
@@ -240,8 +239,8 @@ public class Translate{
     public Exp visit(MethodDecl ast){
         frame = new MipsFrame();
 
-        if (ast.name.equals("main") && ast.returnType == null) frame.name = new Label("main");
-        else frame.name = new Label(currentClass.name + "." + ast.name);
+        if (ast.name.equals("main") && ast.returnType == null) frame.setName(new Label("main"));
+        else frame.setName(new Label(currentClass.name + "." + ast.name));
 
         accesses.beginScope();
         classes.beginScope();

@@ -5,12 +5,13 @@ import arch.Temp;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class InterferenceNode extends Node<Temp> {
 
     private Temp color;
-    private Set<Temp> coalescedTemps;
-    private Set<InterferenceNode> moves;
+    private final Set<Temp> coalescedTemps;
+    private final Set<InterferenceNode> moves;
     private boolean removed;
 
     public InterferenceNode(Temp t) {
@@ -52,8 +53,8 @@ public class InterferenceNode extends Node<Temp> {
     }
 
     public boolean isPrecolored(Frame frame) {
-        if (value.regIndex < frame.numRegs()) return true;
-        for (Temp t : coalescedTemps) if (t.regIndex < frame.numRegs()) return true;
+        if (value.getRegIndex() < frame.numRegs()) return true;
+        for (Temp t : coalescedTemps) if (t.getRegIndex() < frame.numRegs()) return true;
         return false;
     }
 
@@ -73,11 +74,9 @@ public class InterferenceNode extends Node<Temp> {
 
     @Override
     public Set<Node<Temp>> getAdj() {
-        Set<Node<Temp>> adj = new HashSet<>();
-        for (Node<Temp> node : this.adj) {
-            if (!((InterferenceNode)node).removed) adj.add(node);
-        }
-        return adj;
+        return this.adj.stream()
+            .filter(node -> !((InterferenceNode) node).removed)
+            .collect(Collectors.toSet());
     }
 
     @Override

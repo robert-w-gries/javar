@@ -5,7 +5,6 @@ package backend.assem;
 import arch.mips.MipsFrame;
 import arch.Temp;
 import arch.Label;
-import arch.Frame;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -14,12 +13,24 @@ import java.util.List;
  * A data type used for assembly language without assigned registers.
  */
 public abstract class Instr {
-    public String assem;
-    public List<Temp> use;
-    public List<Temp> def;
-    public List<Label> jumps;
+    protected String assem;
+    protected List<Temp> use;
+    protected List<Temp> def;
+    protected List<Label> jumps;
 
-    public void output(PrintWriter writer) {
+    public List<Temp> getUse() {
+        return use;
+    }
+
+    public List<Temp> getDef() {
+        return def;
+    }
+
+    public List<Label> getJumps() {
+        return jumps;
+    }
+
+    void output(PrintWriter writer) {
         if ((def != null) && (def.size() > 0)) {
             writer.print(" defs(");
             for (Temp aDef : def) {

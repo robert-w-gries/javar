@@ -10,7 +10,7 @@ import java.util.LinkedList;
  */
 public class VoidDecl extends MethodDecl{
     public VoidDecl(java.lang.String name, java.util.LinkedList<VarDecl> locals, java.util.LinkedList<Stmt> stmts){
-        super(null, false, name, new LinkedList<Formal>(), locals, stmts, null);
+        super(null, false, name, new LinkedList<>(), locals, stmts, null);
     }
 
     /**

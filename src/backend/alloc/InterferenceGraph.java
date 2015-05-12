@@ -3,6 +3,7 @@ package backend.alloc;
 import arch.Temp;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -44,11 +45,7 @@ public class InterferenceGraph extends Graph<Temp, InterferenceNode> {
     }
 
     public Set<InterferenceNode> getNodes() {
-        Set<InterferenceNode> nodes = new HashSet<>();
-        for (InterferenceNode node : this.nodes) {
-            if (!node.isRemoved()) nodes.add(node);
-        }
-        return nodes;
+        return this.nodes.stream().filter(node -> !node.isRemoved()).collect(Collectors.toSet());
     }
 
     public void coalesceNodes(InterferenceNode n1, InterferenceNode n2) {
@@ -61,11 +58,11 @@ public class InterferenceGraph extends Graph<Temp, InterferenceNode> {
         String print = "Interference Graph:\n\n";
 
         for (InterferenceNode node : nodes) {
-            print += node.getValue().regIndex;
+            print += node.getValue().getRegIndex();
             if (node.getAdj().size() > 26) print += " > K";
             print += "\n\tinterferes with: ";
             for (Node<Temp> node1 : node.getAdj()) {
-                if (node.getValue().regIndex < 32 && node1.getValue().regIndex < 32) continue;
+                if (node.getValue().getRegIndex() < 32 && node1.getValue().getRegIndex() < 32) continue;
                 print += node1.toString() + " ";
             }
             print += "\n\tmoves: ";

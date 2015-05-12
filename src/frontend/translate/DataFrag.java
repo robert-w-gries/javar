@@ -8,7 +8,7 @@ package frontend.translate;
  */
 public class DataFrag extends Frag {
 
-    String data;
+    private String data;
 
     public DataFrag(String data) {
         this.data = data;

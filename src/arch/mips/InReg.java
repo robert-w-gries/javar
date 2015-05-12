@@ -13,7 +13,7 @@ import frontend.translate.irtree.Exp;
  */
 public class InReg extends Access {
 
-    Temp reg;
+    private Temp reg;
 
     public InReg(Temp reg) {
         this.reg = reg;

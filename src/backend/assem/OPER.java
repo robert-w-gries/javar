@@ -38,7 +38,7 @@ public class OPER extends Instr {
     // UTILITY FUNCTIONS FOR CREATING OPERS
 
     private static OPER nolabels(String a, List<Temp> d, List<Temp> s) {
-        return new OPER(a, d, s, new LinkedList<Label>());
+        return new OPER(a, d, s, new LinkedList<>());
     }
 
     private static OPER nolab1dst1src(String a, Temp d, Temp s) {
@@ -61,7 +61,7 @@ public class OPER extends Instr {
     private static OPER nolab1dst0src(String a, Temp d) {
         List<Temp> ds = new ArrayList<>();
         ds.add(d);
-        return nolabels(a, ds, new ArrayList<Temp>());
+        return nolabels(a, ds, new ArrayList<>());
     }
 
     // END UTILITY FUNCTIONS
@@ -170,11 +170,8 @@ public class OPER extends Instr {
 
     public static OPER lw(Temp dst, Temp src, int offset, String name) {
         String assem = "lw `d0, ";
-        if (offset > 0) {
-            //assem = assem + "-";
-        }
 
-        if (src.regIndex == 29) {
+        if (src.getRegIndex() == 29) {
             assem = assem + "-" + offset + "+" + name + "_framesize(`s0)";
         } else {
             assem = assem + offset + "(`s0)";
@@ -183,13 +180,9 @@ public class OPER extends Instr {
     }
 
     public static OPER sw(Temp src, Temp dst, int offset, String name) {
-        //String assem = "sw `s0, -" + offset + "(`s1)";
         String assem = "sw `s0, ";
-        if (offset != 0) {
-            //assem = assem + "-";
-        }
 
-        if (dst.regIndex == 29) {
+        if (dst.getRegIndex() == 29) {
             assem = assem + "-" + offset + "+" + name + "_framesize(`s1)";
         } else {
             assem = assem + offset + "(`s1)";
@@ -197,7 +190,7 @@ public class OPER extends Instr {
         List<Temp> ss = new ArrayList<>();
         ss.add(src);
         ss.add(dst);
-        return new OPER(assem, new ArrayList<Temp>(), ss, new LinkedList<Label>());
+        return new OPER(assem, new ArrayList<>(), ss, new LinkedList<>());
     }
 
     public static OPER b(Label label) {
@@ -225,12 +218,12 @@ public class OPER extends Instr {
 
     public static OPER jalr(List<Temp> defs, List<Temp> uses) {
         String assem = "jalr `s0";
-        return new OPER(assem, defs, uses, new LinkedList<Label>());
+        return new OPER(assem, defs, uses, new LinkedList<>());
     }
 
     public static OPER call_sink(List<Temp> uses) {
         String assem = "// Call sink";
-        return new OPER(assem, null, uses, new LinkedList<Label>());
+        return new OPER(assem, null, uses, new LinkedList<>());
 
     }
 

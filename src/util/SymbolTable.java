@@ -1,6 +1,7 @@
 package util;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by rgries on 2/22/15.
@@ -13,15 +14,15 @@ public class SymbolTable<E> {
 
     public SymbolTable() {
 
-        symMap = new HashMap<Symbol, Stack<E>>();
-        symStack = new Stack<Symbol>();
+        symMap = new HashMap<>();
+        symStack = new Stack<>();
 
     }
 
     void put(Symbol sym, E value) {
         Stack<E> s = symMap.get(sym);
         if (s == null) {
-            symMap.put(sym, new Stack<E>());
+            symMap.put(sym, new Stack<>());
             s = symMap.get(sym);
         }
         s.push(value);
@@ -59,10 +60,6 @@ public class SymbolTable<E> {
     }
 
     public Collection<E> values() {
-        List<E> list = new ArrayList<E>();
-        for (Stack<E> stack : symMap.values()) {
-            list.add(stack.peek());
-        }
-        return list;
+        return symMap.values().stream().map(Stack::peek).collect(Collectors.toList());
     }
 }

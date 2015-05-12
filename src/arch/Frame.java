@@ -14,9 +14,17 @@ import java.util.List;
  */
 public abstract class Frame {
 
-    public Label name;
-    public LinkedList<Access> formals;
-    public LinkedList<Access> actuals;
+    protected Label name;
+    protected LinkedList<Access> formals;
+    protected LinkedList<Access> actuals;
+
+    public Label getName() {
+        return name;
+    }
+
+    public void setName(Label name) {
+        this.name = name;
+    }
 
     public abstract Temp FP();
     public abstract int wordSize();

@@ -27,7 +27,7 @@ public class BINOP extends Exp {
 
     @Override
     public List<Exp> kids() {
-        List<Exp> exps = new LinkedList<Exp>();
+        List<Exp> exps = new LinkedList<>();
         exps.add(left);
         exps.add(right);
         return exps;

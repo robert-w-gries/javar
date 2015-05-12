@@ -1,7 +1,7 @@
 package backend.assem;
 
 /**
- * Created by rgries on 5/8/15.
+ * Created by rgries on 5/8/15
  */
 public class DIRECTIVE extends Instr {
 

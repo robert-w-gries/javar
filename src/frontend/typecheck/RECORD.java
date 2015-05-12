@@ -15,8 +15,8 @@ public class RECORD extends Type implements java.lang.Iterable<FIELD> {
     private int index;
 
     public RECORD() {
-        fieldMap = new HashMap<String, Integer>();
-        fields = new ArrayList<FIELD>();
+        fieldMap = new HashMap<>();
+        fields = new ArrayList<>();
         index = 0;
     }
 
@@ -41,11 +41,9 @@ public class RECORD extends Type implements java.lang.Iterable<FIELD> {
         if (!(t instanceof RECORD)) return false;
         RECORD r = (RECORD)t;
         if (fields.size() != r.fields.size()) return false;
-        for (int i : fieldMap.values()) {
-            if (!this.get(i).coerceTo(r.get(i)))
-                TypeChecker.errorAndExit("ERROR incompatible types: " + r.get(i) + " required, " +
-                        "but " + this.get(i) + " found");
-        }
+        fieldMap.values().stream()
+                .filter(i -> !this.get(i).coerceTo(r.get(i)))
+                .forEach(i -> TypeChecker.errorAndExit("ERROR incompatible types: " + r.get(i) + " required, " + "but " + this.get(i) + " found"));
         return true;
     }
 

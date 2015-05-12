@@ -9,7 +9,7 @@ import arch.Label;
  */
 
 public class LABEL extends Instr {
-    public Label label;
+    private Label label;
 
     public LABEL(String assem, Label label) {
         this.assem = assem;
@@ -17,6 +17,10 @@ public class LABEL extends Instr {
         def = null;
         jumps = null;
         this.label = label;
+    }
+
+    public Label getLabel() {
+        return label;
     }
 
     public void output(java.io.PrintWriter writer) {

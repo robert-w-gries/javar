@@ -9,6 +9,7 @@ import arch.mips.MipsFrame;
 import arch.Temp;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,10 +19,10 @@ import java.util.*;
  */
 public class RegAlloc {
 
-    private Frame frame;
-    private List<Instr> code;
-    private Stack<InterferenceNode> stack;
-    private Map<Temp, Temp> colorMap;
+    private final Frame frame;
+    private final List<Instr> code;
+    private final Stack<InterferenceNode> stack;
+    private final Map<Temp, Temp> colorMap;
 
     public RegAlloc(Frame frame, List<Instr> code) {
         this.frame = frame;
@@ -36,8 +37,8 @@ public class RegAlloc {
         Map<Node<Instr>, Set<Temp>> out = new HashMap<>();
         // add in and out sets for each node
         for (Node<Instr> n : f.getNodes()) {
-            in.put(n, new HashSet<Temp>());
-            out.put(n, new HashSet<Temp>());
+            in.put(n, new HashSet<>());
+            out.put(n, new HashSet<>());
         }
         // compute in and out sets for each node
         while (true) {
@@ -49,9 +50,9 @@ public class RegAlloc {
                 in_.put(n, new HashSet<>(in.get(n)));
                 out_.put(n, new HashSet<>(out.get(n)));
                 // in[n] <- use[n] UNION (out[n] - def[n])
-                in.put(n, union(n.getValue().use, subtract(out.get(n), n.getValue().def)));
+                in.put(n, union(n.getValue().getUse(), subtract(out.get(n), n.getValue().getDef())));
                 // out[n] <- UNION(s in succ[n]) in[s]
-                out.put(n, new HashSet<Temp>());
+                out.put(n, new HashSet<>());
                 for (Node<Instr> s : n.getSucc()) out.put(n, union(out.get(n), in.get(s)));
             }
             // until in'[n] = in[n] and out'[n] = out[n] for all n
@@ -65,27 +66,30 @@ public class RegAlloc {
         // create interference graph
         InterferenceGraph inter = new InterferenceGraph();
         // add all move edges
-        for (Node<Instr> n : out.keySet()) {
-            if (n.getValue() instanceof MOVE) {
-                MOVE m = (MOVE)n.getValue();
+        out.keySet().stream()
+            .filter(n -> n.getValue() instanceof MOVE)
+            .forEach(n -> {
+                MOVE m = (MOVE) n.getValue();
                 inter.addMoveRelatedTemp(m.dst());
                 inter.addMoveRelatedTemp(m.src());
                 inter.node(m.dst()).addMove(inter.node(m.src()));
-            }
-        }
+        });
 
         // for each instruction
-        for (Node<Instr> n : out.keySet()) {
-            // for each def of that instruction
-            if (n.getValue().def != null) for (Temp def : n.getValue().def) {
+        // for each def of that instruction
+        // for each temp that is live out from that instruction
+        // we add an edge between the def and the out_temp unless the out_temp is the source register, then we add a move edge
+        out.keySet().stream()
+            .filter(n -> n.getValue().getDef() != null)
+            .forEach(n -> {
+            for (Temp def : n.getValue().getDef()) {
                 // for each temp that is live out from that instruction
-                for (Temp out_temp : out.get(n)) {
-                    // we add an edge between the def and the out_temp unless the out_temp is the source register, then we add a move edge
-                    if (!(n.getValue() instanceof MOVE) || !out_temp.equals(((MOVE)n.getValue()).src()))
-                        inter.node(def).addEdge(inter.node(out_temp));
-                }
+                // we add an edge between the def and the out_temp unless the out_temp is the source register, then we add a move edge
+                out.get(n).stream()
+                    .filter(out_temp -> !(n.getValue() instanceof MOVE) || !out_temp.equals(((MOVE) n.getValue()).src()))
+                    .forEach(out_temp -> inter.node(def).addEdge(inter.node(out_temp)));
             }
-        }
+        });
 
         return inter;
     }
@@ -98,20 +102,20 @@ public class RegAlloc {
             String instruction = inst.toString();
             // column 2: def set
             String defs = "|";
-            if (inst.def != null) {
-                for (Temp t : inst.def) defs += t.regIndex + " ";
+            if (inst.getDef() != null) {
+                for (Temp t : inst.getDef()) defs += t.getRegIndex() + " ";
             }
             // column 3: use set
             String uses = "|";
-            if (inst.use != null) {
-                for (Temp t : inst.use) uses += t.regIndex + " ";
+            if (inst.getDef() != null) {
+                for (Temp t : inst.getDef()) uses += t.getRegIndex() + " ";
             }
             // column 4: in set
             String ins = "|";
-            for (Temp t : in.get(node)) ins += t.regIndex + " ";
+            for (Temp t : in.get(node)) ins += t.getRegIndex() + " ";
             // column 5: out set
             String outs = "|";
-            for (Temp t : out.get(node)) outs += t.regIndex + " ";
+            for (Temp t : out.get(node)) outs += t.getRegIndex() + " ";
             System.out.format("%-40s%-50s%-50s%-100s%s\n", instruction, defs, uses, ins, outs);
         }
     }
@@ -162,12 +166,10 @@ public class RegAlloc {
 
     private void freezeNode(InterferenceGraph graph, InterferenceNode node) {
         // remove all move edges connected to this node
-        for (InterferenceNode n : new HashSet<>(node.getMoves())) {
-            node.removeMove(n);
-        }
+        new HashSet<>(node.getMoves()).forEach(node::removeMove);
         // this node is no longer to be considered move-related
         graph.removeMoveRelatedTemp(node.getValue());
-        for (Temp t : node.getCoalescedTemps()) graph.removeMoveRelatedTemp(t);
+        node.getCoalescedTemps().forEach(graph::removeMoveRelatedTemp);
     }
 
     private InterferenceNode findPotentialSpillNode(InterferenceGraph graph) {
@@ -179,8 +181,8 @@ public class RegAlloc {
                 // loop through code, looking for uses and defs of this node
                 int defs_uses = 0;
                 for (Instr i : this.code) {
-                    if (i.def != null && i.def.contains(node.getValue())) defs_uses++;
-                    if (i.use != null && i.use.contains(node.getValue())) defs_uses++;
+                    if (i.getDef() != null && i.getDef().contains(node.getValue())) defs_uses++;
+                    if (i.getUse() != null && i.getUse().contains(node.getValue())) defs_uses++;
                 }
                 // calculate priority, look for smallest value
                 double pri = (double)defs_uses / node.getDegree();
@@ -275,7 +277,7 @@ public class RegAlloc {
                 for (InterferenceNode spilledNode : spilledNodes) {
 
                     spill(spilledNode.getValue());
-                    for (Temp t : spilledNode.getCoalescedTemps()) spill(t);
+                    spilledNode.getCoalescedTemps().forEach(this::spill);
 
                 }
 
@@ -289,26 +291,26 @@ public class RegAlloc {
 
         // set each temp to its color
         for (Instr inst : this.code) {
-            if (inst.def != null) for (Temp t : inst.def) t.regIndex = colorMap.get(t).regIndex;
-            if (inst.use != null) for (Temp t : inst.use) t.regIndex = colorMap.get(t).regIndex;
+            if (inst.getDef() != null) for (Temp t : inst.getDef()) t.setRegIndex(colorMap.get(t).getRegIndex());
+            if (inst.getUse() != null) for (Temp t : inst.getUse()) t.setRegIndex(colorMap.get(t).getRegIndex());
         }
     }
 
     private void spill(Temp spill) {
-        int tempnum = spill.regIndex;
+        int tempnum = spill.getRegIndex();
         InFrame f = (InFrame)frame.allocLocal();
         //create temp for each def/use
         for (int i = 0; i < code.size(); i++) {
 
             Instr line = code.get(i);
             //insert store instruction
-            if (line.def != null) for (int j = 0; j < line.def.size(); j++) {
-                if (line.def.get(j).regIndex == tempnum) {
+            if (line.getDef() != null) for (int j = 0; j < line.getDef().size(); j++) {
+                if (line.getDef().get(j).getRegIndex() == tempnum) {
                     if (line instanceof MOVE) {
-                        code.set(i, OPER.sw(((MOVE)line).src(), new Temp(29), f.getOffset(), frame.name.toString()));
+                        code.set(i, OPER.sw(((MOVE)line).src(), new Temp(29), f.getOffset(), frame.getName().toString()));
                     } else {
-                        line.def.set(j, new Temp());
-                        code.add(i + 1, OPER.sw(line.def.get(j), new Temp(29), f.getOffset(), frame.name.toString()));
+                        line.getDef().set(j, new Temp());
+                        code.add(i + 1, OPER.sw(line.getDef().get(j), new Temp(29), f.getOffset(), frame.getName().toString()));
                         i++;
                     }
                     break;
@@ -316,13 +318,13 @@ public class RegAlloc {
             }
 
             //insert fetch instruction
-            if (line.use != null) for (int j = 0; j < line.use.size(); j++) {
-                if (line.use.get(j).regIndex == tempnum) {
+            if (line.getUse() != null) for (int j = 0; j < line.getUse().size(); j++) {
+                if (line.getUse().get(j).getRegIndex() == tempnum) {
                     if (line instanceof MOVE) {
-                        code.set(i, OPER.lw(((MOVE)line).dst(), new Temp(29), f.getOffset(), frame.name.toString()));
+                        code.set(i, OPER.lw(((MOVE)line).dst(), new Temp(29), f.getOffset(), frame.getName().toString()));
                     } else {
-                        line.use.set(j, new Temp());
-                        code.add(i, OPER.lw(line.use.get(j), new Temp(29), f.getOffset(), frame.name.toString()));
+                        line.getUse().set(j, new Temp());
+                        code.add(i, OPER.lw(line.getUse().get(j), new Temp(29), f.getOffset(), frame.getName().toString()));
                         i++;
                     }
                     break;
@@ -352,8 +354,6 @@ public class RegAlloc {
     private <T> Set<T> subtract(Collection<T> left, Collection<T> right) {
         if (left == null) return new HashSet<>();
         if (right == null) return new HashSet<>(left);
-        Set<T> set = new HashSet<>();
-        for (T t : left) if (!right.contains(t)) set.add(t);
-        return set;
+        return left.stream().filter(t -> !right.contains(t)).collect(Collectors.toSet());
     }
 }

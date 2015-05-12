@@ -9,7 +9,7 @@ package arch;
 public class Temp {
 
     private static int regCount = 32;
-    public int regIndex;
+    private int regIndex;
 
     public Temp() {
         regIndex = regCount++;
@@ -21,6 +21,14 @@ public class Temp {
 
     public String toString() {
         return "t" + Integer.toString(this.regIndex);
+    }
+
+    public int getRegIndex() {
+        return this.regIndex;
+    }
+
+    public void setRegIndex(int regIndex) {
+        this.regIndex = regIndex;
     }
 
     @Override

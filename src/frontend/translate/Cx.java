@@ -10,10 +10,10 @@ import frontend.translate.irtree.*;
  * Date: 3/22/15
  * Time: 11:20 PM
  */
-public abstract class Cx extends Exp {
+abstract class Cx extends Exp {
 
-    public static final CONST TRUE = new CONST(1),
-                                FALSE = new CONST(0);
+    private static final CONST TRUE = new CONST(1);
+    private static final CONST FALSE = new CONST(0);
 
     public frontend.translate.irtree.Exp unEx() {
         // expression result register
@@ -52,7 +52,6 @@ public abstract class Cx extends Exp {
         return new SEQ(stm, stm2);
     }
 
-    //TODO: figure out if this is the correct way to do it
     public Stm unNx() {
 
         Label join = new Label();
@@ -61,6 +60,6 @@ public abstract class Cx extends Exp {
 
     }
 
-    public abstract Stm unCx(Label t, Label f);
+    protected abstract Stm unCx(Label t, Label f);
 
 }

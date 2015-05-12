@@ -11,7 +11,7 @@ public abstract class Exp implements Hospitable {
 
     public OBJECT type;
 
-    public Exp() {
+    Exp() {
 
     }
 

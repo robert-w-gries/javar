@@ -18,7 +18,7 @@ public class MOVE extends Stm {
 
     @Override
     public List<Exp> kids() {
-        List<Exp> exps = new LinkedList<Exp>();
+        List<Exp> exps = new LinkedList<>();
         if (dst instanceof MEM) exps.add(((MEM)dst).exp);
         exps.add(src);
         return exps;

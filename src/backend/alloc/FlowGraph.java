@@ -2,7 +2,6 @@ package backend.alloc;
 
 import backend.assem.Instr;
 import backend.assem.LABEL;
-import arch.Label;
 
 import java.util.List;
 
@@ -21,7 +20,7 @@ public class FlowGraph extends Graph<Instr, Node<Instr>> {
         this.code = code;
 
         // add a node for each instruction before adding edges
-        for (Instr inst : code) node(inst);
+        code.forEach(this::node);
 
         // prev is used to indicate an instruction that always falls to the current one
         Node<Instr> prev = null;
@@ -32,14 +31,14 @@ public class FlowGraph extends Graph<Instr, Node<Instr>> {
             if (prev != null) prev.addSucc(n);
 
             // add a succ for every jump
-            if (inst.jumps != null) {
-                for (Label l : inst.jumps) {
-                    if (lookup.containsKey(new LABEL("", l))) n.addSucc(lookup.get(new LABEL("", l)));
-                }
+            if (inst.getJumps() != null) {
+                inst.getJumps().stream()
+                    .filter(l -> lookup.containsKey(new LABEL("", l)))
+                    .forEach(l -> n.addSucc(lookup.get(new LABEL("", l))));
             }
 
             // if there were no jumps, it will always fall to the next one
-            if (inst.jumps == null || inst.jumps.size() == 0) prev = n;
+            if (inst.getJumps() == null || inst.getJumps().size() == 0) prev = n;
             // otherwise, we don't want the next node to have this one as a pred
             else prev = null;
         }
@@ -54,7 +53,7 @@ public class FlowGraph extends Graph<Instr, Node<Instr>> {
             print += inst.toString() + "\t\t\t\t\t\t\tnext:\t";
             Node<Instr> node = this.node(inst);
             for (Node<Instr> s : node.succ) {
-                if (s.getValue() instanceof LABEL) print += ((LABEL)s.getValue()).label.toString() + " ";
+                if (s.getValue() instanceof LABEL) print += ((LABEL)s.getValue()).getLabel().toString() + " ";
                 else print += s.getValue().toString() + " ";
             }
             print += "\n";

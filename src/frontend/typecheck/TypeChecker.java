@@ -2,8 +2,6 @@ package frontend.typecheck;
 
 import java.util.*;
 
-import frontend.parse.ast.Formal;
-import frontend.parse.ast.TypeVisitor;
 import util.SymbolTable;
 import frontend.parse.ast.*;
 
@@ -29,14 +27,14 @@ public class TypeChecker implements TypeVisitor {
     private SymbolTable<Type> symbolTable;
 
     public TypeChecker(SymbolTable<CLASS> classes) {
-        symbolTable = new SymbolTable<Type>();
+        symbolTable = new SymbolTable<>();
         for (CLASS cls : classes.values()) {
             symbolTable.put(cls.name, cls);
         }
     }
 
     public TypeChecker() {
-        symbolTable = new SymbolTable<Type>();
+        symbolTable = new SymbolTable<>();
         symbolTable.put("String", new STRING());
         symbolTable.put("Thread", new CLASS("Thread"));
         ((CLASS)symbolTable.get("Thread")).instance = new OBJECT((CLASS)symbolTable.get("Thread"));

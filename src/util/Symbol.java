@@ -1,12 +1,12 @@
 package util;
 
 /**
- * Created by rgries on 2/22/15.
+ * Created by rgries on 2/22/15
  */
 public class Symbol {
 
     private String name;
-    private static java.util.HashMap<String, Symbol> symDictionary = new java.util.HashMap<String, Symbol>();
+    private static java.util.HashMap<String, Symbol> symDictionary = new java.util.HashMap<>();
 
     private Symbol(String n) {
         name = n;

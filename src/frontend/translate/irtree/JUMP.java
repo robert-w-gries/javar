@@ -13,7 +13,7 @@ public class JUMP extends Stm {
     public Exp exp;
     public Label target;
 
-    public JUMP(Exp e, Label t) {
+    private JUMP(Exp e, Label t) {
         exp = e;
         target = t;
     }
@@ -25,7 +25,7 @@ public class JUMP extends Stm {
 
     @Override
     public List<Exp> kids() {
-        List<Exp> exps = new LinkedList<Exp>();
+        List<Exp> exps = new LinkedList<>();
         exps.add(exp);
         return exps;
     }

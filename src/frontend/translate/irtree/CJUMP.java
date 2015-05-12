@@ -38,7 +38,7 @@ public class CJUMP extends Stm {
 
     @Override
     public List<Exp> kids() {
-        List<Exp> exps = new LinkedList<Exp>();
+        List<Exp> exps = new LinkedList<>();
         exps.add(left);
         exps.add(right);
         return exps;
@@ -66,10 +66,6 @@ public class CJUMP extends Stm {
             case UGT: return RelOperation.ULE;
             default: return RelOperation.ULT; // UGE
         }
-    }
-
-    public static int swapRel(int relop){
-        return 0; //TODO
     }
 
 }

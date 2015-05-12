@@ -11,8 +11,8 @@ import java.util.ArrayList;
  */
 
 public class MOVE extends Instr {
-    public MOVE(String a, Temp d, Temp s) {
-        assem = a;
+    public MOVE(Temp d, Temp s) {
+        assem = "move `d0, `s0";
         use = new ArrayList<>();
         use.add(s);
         def = new ArrayList<>();

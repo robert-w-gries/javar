@@ -19,7 +19,7 @@ public class MipsFrame extends Frame {
 
     private Temp framePointer;
     private int argIndex = 0;
-    public int maxArgOffset = 0;
+    private int maxArgOffset = 0;
     private int frameOffset = 0;
     private LinkedList<Instr> instructionList;
 
@@ -28,10 +28,10 @@ public class MipsFrame extends Frame {
     private static Set<Temp> reservedRegs;
     private static Map<Temp, String> tempMap;
 
-    public static final Label _BADPTR = new Label("_BADPTR");
+    private static final Label _BADPTR = new Label("_BADPTR");
     public Label badPtr() { return _BADPTR; }
 
-    public static final Label _BADSUB = new Label("_BADSUB");
+    private static final Label _BADSUB = new Label("_BADSUB");
     public Label badSub() {
         return _BADSUB;
     }
@@ -290,9 +290,7 @@ public class MipsFrame extends Frame {
     @Override
     public List<Instr> codeGen(List<Stm> stms) {
 
-        for (Stm stm : stms) {
-            munchStm(stm);
-        }
+        stms.forEach(this::munchStm);
 
         return instructionList;
     }
@@ -328,7 +326,7 @@ public class MipsFrame extends Frame {
                     emit(OPER.sw(munchExp(m.src), munchExp(dst.exp), 0, name.toString()));
                 }
             } else {
-                emit(new backend.assem.MOVE("move `d0, `s0", munchExp(m.dst), munchExp(m.src)));
+                emit(new backend.assem.MOVE(munchExp(m.dst), munchExp(m.src)));
             }
         } else if (s instanceof CJUMP) {
             CJUMP c = (CJUMP)s;
@@ -579,7 +577,7 @@ public class MipsFrame extends Frame {
     }
 
     public boolean isRealRegister(Temp temp) {
-         return temp.regIndex < numRegs();
+         return temp.getRegIndex() < numRegs();
     }
 
     public int numRegs() {

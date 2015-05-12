@@ -10,12 +10,14 @@ import frontend.translate.irtree.*;
  * Date: 3/22/15
  * Time: 11:21 PM
  */
-public class IfThenElseExp extends frontend.translate.Exp {
+class IfThenElseExp extends frontend.translate.Exp {
 
-    frontend.translate.Exp cond, a, b;
-    Label t = new Label();
-    Label f = new Label();
-    Label join;
+    private frontend.translate.Exp cond;
+    private frontend.translate.Exp a;
+    private frontend.translate.Exp b;
+    private Label t = new Label();
+    private Label f = new Label();
+    private Label join;
 
     IfThenElseExp(frontend.translate.Exp cond, frontend.translate.Exp a, frontend.translate.Exp b) {
         this.cond = cond;

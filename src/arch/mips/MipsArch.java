@@ -1,6 +1,7 @@
 package arch.mips;
 
 import arch.Arch;
+import arch.Frame;
 import backend.alloc.RegAlloc;
 import backend.assem.DIRECTIVE;
 import backend.assem.Instr;
@@ -19,12 +20,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * Created by rgries on 5/11/15.
+ * Created by rgries on 5/11/15
  */
 public class MipsArch extends Arch {
 
     public MipsArch() {
         instrs = new ArrayList<>();
+        fileExt = "S";
     }
 
     public List<Instr> assemble(List<Frag> frags) {
@@ -46,23 +48,25 @@ public class MipsArch extends Arch {
                 instrs.add(new DIRECTIVE(frag.toString()));
             } else {
                 ProcFrag p = (ProcFrag) frag;
-                p.frame.procEntryExit2(p.code);
+                Frame pFrame = p.getFrame();
+                List<Instr> procCode = p.getProcCode();
+                pFrame.procEntryExit2(procCode);
                 // register allocation
-                new RegAlloc(p.frame, p.code);
-                p.frame.procEntryExit3(p.code);
+                new RegAlloc(pFrame, procCode);
+                pFrame.procEntryExit3(procCode);
 
                 // Remove redundant MOVEs
-                for (Iterator<Instr> it = p.code.iterator(); it.hasNext(); ) {
+                for (Iterator<Instr> it = procCode.iterator(); it.hasNext(); ) {
                     Instr instr = it.next();
                     if (instr instanceof MOVE && ((MOVE)instr).redundantMove())
                         it.remove();
                 }
 
                 // format assem string
-                p.code.stream().forEach(Instr::formatInstruction);
+                procCode.stream().forEach(Instr::formatInstruction);
 
                 //add procFrag instructions to final program
-                instrs.addAll(p.code);
+                instrs.addAll(procCode);
 
             }
 
@@ -76,13 +80,13 @@ public class MipsArch extends Arch {
         frags.stream().filter(frag -> frag instanceof ProcFrag).forEach(frag -> {
             ProcFrag p = (ProcFrag)frag;
             List<Stm> traced = new LinkedList<>();
-            if (p.body != null) {
-                LinkedList<Stm> stms = Canon.linearize(p.body);
+            if (p.getBody() != null) {
+                LinkedList<Stm> stms = Canon.linearize(p.getBody());
                 BasicBlocks blocks = new BasicBlocks(stms);
                 new TraceSchedule(blocks, traced);
             }
-            p.frame.procEntryExit1(traced);
-            p.code = p.frame.codeGen(traced);
+            p.getFrame().procEntryExit1(traced);
+            p.setCode(p.getFrame().codeGen(traced));
         });
     }
 

@@ -18,7 +18,7 @@ public class LABEL extends Stm {
 
     @Override
     public List<Exp> kids() {
-        return new LinkedList<Exp>();
+        return new LinkedList<>();
     }
 
     @Override
