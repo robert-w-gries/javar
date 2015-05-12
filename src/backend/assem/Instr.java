@@ -68,10 +68,6 @@ public abstract class Instr {
     /**
      * Formats an assembly instruction as a string.
      */
-    public String toString() {
-        return assem;
-    }
-
     public void formatInstruction() {
         StringBuilder s = new StringBuilder();
 
@@ -114,6 +110,10 @@ public abstract class Instr {
         }
 
         this.assem = s.toString();
+    }
+
+    public String toString() {
+        return assem;
     }
 
 }

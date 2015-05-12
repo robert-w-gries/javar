@@ -13,7 +13,6 @@ import frontend.translate.Frag;
 import frontend.translate.ProcFrag;
 import frontend.translate.irtree.Stm;
 
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -55,16 +54,16 @@ public class MipsArch extends Arch {
                 // Remove redundant MOVEs
                 for (Iterator<Instr> it = p.code.iterator(); it.hasNext(); ) {
                     Instr instr = it.next();
-                    if (instr instanceof MOVE && ((MOVE) instr).src().equals(((MOVE) instr).dst()))
+                    if (instr instanceof MOVE && ((MOVE)instr).redundantMove())
                         it.remove();
                 }
 
                 // format assem string
-                for (Instr instr : p.code) {
-                    instr.formatInstruction();
-                }
+                p.code.stream().forEach(Instr::formatInstruction);
 
+                //add procFrag instructions to final program
                 instrs.addAll(p.code);
+
             }
 
         });

@@ -26,6 +26,10 @@ public class MOVE extends Instr {
         writer.println(")");
     }
 
+    public boolean redundantMove() {
+        return src().equals(dst());
+    }
+
     /**
      * Returns a list dst.
      */
