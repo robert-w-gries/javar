@@ -69,40 +69,10 @@ public abstract class Instr {
      * Formats an assembly instruction as a string.
      */
     public String toString() {
-        StringBuilder s = new StringBuilder();
-        int len = assem.length();
-        for (int i = 0; i < len; i++) {
-            if (assem.charAt(i) == '`') {
-                switch (assem.charAt(++i)) {
-                    case 's': {
-                        int n = Character.digit(assem.charAt(++i), 10);
-                        s.append(use.get(n).toString());
-                        break;
-                    }
-                    case 'd': {
-                        int n = Character.digit(assem.charAt(++i), 10);
-                        s.append(def.get(n).toString());
-                        break;
-                    }
-                    case 'j': {
-                        int n = Character.digit(assem.charAt(++i), 10);
-                        s.append(jumps.get(n).toString());
-                        break;
-                    }
-                    case '`':
-                        s.append('`');
-                        break;
-                    default:
-                        throw new Error("bad Assem format:" + assem);
-                }
-            }
-            else s.append(assem.charAt(i));
-        }
-        if (this instanceof LABEL) s.append(":");
-        return s.toString();
+        return assem;
     }
 
-    public String formatTemp(Frame frame) {
+    public void formatInstruction() {
         StringBuilder s = new StringBuilder();
 
         if (this instanceof OPER || this instanceof MOVE) {
@@ -134,11 +104,16 @@ public abstract class Instr {
                     default:
                         throw new Error("bad Assem format:" + assem);
                 }
+            } else {
+                s.append(assem.charAt(i));
             }
-            else s.append(assem.charAt(i));
         }
-        if (this instanceof LABEL) s.append(":");
-        return s.toString();
+
+        if (this instanceof LABEL) {
+            s.append(":");
+        }
+
+        this.assem = s.toString();
     }
 
 }

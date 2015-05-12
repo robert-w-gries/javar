@@ -1,96 +1,112 @@
-import backend.canon.BasicBlocks;
-import backend.canon.Canon;
-import backend.canon.TraceSchedule;
+import arch.Arch;
+import arch.mips.MipsArch;
 import frontend.parse.ast.Program;
 import backend.assem.Instr;
-import backend.assem.MOVE;
 import frontend.parse.MiniJavaParser;
-import backend.alloc.RegAlloc;
 import frontend.translate.Translate;
 import frontend.typecheck.TypeChecker;
-import frontend.translate.DataFrag;
 import frontend.translate.Frag;
-import frontend.translate.ProcFrag;
-import frontend.translate.irtree.Stm;
 import frontend.parse.ParseException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.Reader;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 public class Main {
 
-    public static void usage() {
-        System.err.println("Usage: java Main file.java");
+    private static Arch targetArch;
+
+    private static void usage() {
+        System.err.println("Usage: java Main --target targetArch [inputfiles]");
+        System.exit(-2);
+    }
+
+    private static void printArchitectures() {
+        System.err.println("Incorrect target architecture specified. Please select from:");
+        System.err.println("Mips");
         System.exit(-2);
     }
 
     public static void main(String args[]) throws ParseException {
-        if (args.length != 1) usage();
 
-        Reader reader = null;
-        try {
-            reader = new FileReader(args[0]);
-        } catch (FileNotFoundException fnfe) {
-            System.err.println("File Not Found: " + args[0]);
-            System.exit(-1);
+        // need target architecture and at least one input file
+        if (args.length < 3) {
+            usage();
         }
 
-        // parse source file
-        new MiniJavaParser(reader);
-        Program program = MiniJavaParser.Goal();
-        // type check the program
-        new TypeChecker().visit(program);
-        // translate the program to intermediate representation
-        Translate translate = new Translate();
-        translate.visit(program);
-        LinkedList<Frag> frags = (LinkedList<Frag>)translate.results();
-        // canonicalize IR fragments, generate assembly
-        proccessFrags(frags);
+        // check for command options
+        ArrayList<String> fileArgs = new ArrayList<>();
+        for (int i = 0; i < args.length; i++) {
 
-        // output writer for final assembly
-        PrintWriter writer = new PrintWriter(System.out);
-        writer.println("#include <mips.h>");
-        boolean dropfirst = true;
-        for (Frag frag : frags) {
-            if (frag instanceof DataFrag) {
-                if (dropfirst) dropfirst = false;
-                else writer.println(frag);
-            } else {
-                ProcFrag p = (ProcFrag)frag;
-                p.frame.procEntryExit2(p.code);
-                // register allocation
-                new RegAlloc(p.frame, p.code);
-                p.frame.procEntryExit3(p.code);
-                // Remove redundant MOVEs
-                for (Iterator<Instr> it = p.code.iterator(); it.hasNext(); ) {
-                    Instr i = it.next();
-                    if (i instanceof MOVE && ((MOVE)i).src().equals(((MOVE)i).dst())) it.remove();
-                }
-                // print instructions
-                for (Instr i : p.code) {
-                    writer.println(i.formatTemp(p.frame));
-                }
+            switch (args[i]) {
+
+                // set target architecture of compiler
+                case "--target":
+                    // make sure an argument follows the option
+                    if (args.length < i+1) {
+                        usage();
+                    }
+
+                    if (args[i+1].equalsIgnoreCase("mips")) {
+                        targetArch = new MipsArch();
+                    } else {
+                        printArchitectures();
+                    }
+
+                    i++;
+                    break;
+
+                default:
+                    fileArgs.add(args[i]);
+                    break;
+
             }
+
         }
-        writer.flush();
+
+        // Error if target architecture not selected
+        if (targetArch == null) {
+            usage();
+        }
+
+        // compile each file
+        for (String file : fileArgs) {
+
+            // read the source file
+            Reader reader = null;
+            try {
+                reader = new FileReader(file);
+            } catch (FileNotFoundException fnfe) {
+                System.err.println("File Not Found: " + file);
+                System.exit(-1);
+            }
+
+            // parse source file
+            new MiniJavaParser(reader);
+            Program program = MiniJavaParser.Goal();
+
+            // type check the program
+            new TypeChecker().visit(program);
+
+            // translate the program to intermediate representation
+            Translate translate = new Translate();
+            translate.visit(program);
+            LinkedList<Frag> frags = (LinkedList<Frag>) translate.results();
+
+            // backend assembly
+            List<Instr> finalProgram = targetArch.assemble(frags);
+
+            //Print out final program
+            PrintWriter writer = new PrintWriter(System.out);
+            finalProgram.forEach(writer::println);
+            writer.flush();
+
+        }
+
     }
 
-    private static void proccessFrags(LinkedList<Frag> frags) {
-        frags.stream().filter(frag -> frag instanceof ProcFrag).forEach(frag -> {
-            ProcFrag p = (ProcFrag)frag;
-            List<Stm> traced = new LinkedList<>();
-            if (p.body != null) {
-                LinkedList<Stm> stms = Canon.linearize(p.body);
-                BasicBlocks blocks = new BasicBlocks(stms);
-                new TraceSchedule(blocks, traced);
-            }
-            p.frame.procEntryExit1(traced);
-            p.code = p.frame.codeGen(traced);
-        });
-    }
 }
