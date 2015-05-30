@@ -21,7 +21,7 @@ public class Main {
     private static Arch targetArch;
 
     private static void usage() {
-        System.err.println("Usage: java Main --target targetArch [inputfiles]");
+        System.err.println("Usage: --mips [inputfiles]");
         System.exit(-2);
     }
 
@@ -34,34 +34,23 @@ public class Main {
     public static void main(String args[]) throws ParseException {
 
         // need target architecture and at least one input file
-        if (args.length < 3) {
+        if (args.length < 2) {
             usage();
         }
 
         // check for command options
         ArrayList<String> fileArgs = new ArrayList<>();
-        for (int i = 0; i < args.length; i++) {
+        for (String arg : args) {
 
-            switch (args[i]) {
+            switch (arg) {
 
                 // set target architecture of compiler
-                case "--target":
-                    // make sure an argument follows the option
-                    if (args.length < i+1) {
-                        usage();
-                    }
-
-                    if (args[i+1].equalsIgnoreCase("mips")) {
-                        targetArch = new MipsArch();
-                    } else {
-                        printArchitectures();
-                    }
-
-                    i++;
+                case "--mips":
+                    targetArch = new MipsArch();
                     break;
 
                 default:
-                    fileArgs.add(args[i]);
+                    fileArgs.add(arg);
                     break;
 
             }
@@ -71,6 +60,7 @@ public class Main {
         // Error if target architecture not selected
         if (targetArch == null) {
             usage();
+            printArchitectures();
         }
 
         // compile each file
@@ -85,7 +75,7 @@ public class Main {
                 System.exit(-1);
             }
 
-            // parse source file
+            // parse source code
             new MiniJavaParser(reader);
             Program program = MiniJavaParser.Goal();
 

@@ -12,9 +12,16 @@
 > make all
 
 ##Usage
-> java Main --target targetArch [inputfiles]
+> --mips [inputfiles]
 
 > Available target architectures: Mips
+
+##Current Plans
+* Upgrade code to Java 8
+  * Implement stream api as much as possible
+* Make all fields private/protected
+* Make appropiate fields static/final
+* Implement visitor pattern for assem stage
 
 ##Future Plans
 * Implement more exceptions
@@ -22,7 +29,7 @@
   * ClassCastException
   * ClassNotFoundException
   * NegativeArraySizeException
-* Expand grammar to match Java syntax
+* Expand grammar
   * Expressions on the left hand side
 * Support void methods
 * Support threading/concurrency
