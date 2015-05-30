@@ -1,12 +1,20 @@
 #MiniJava Compiler
 
 ##Installation
-> git clone <repo_url>
+
+###Dependencies
+* JavaCC for generating updated parsers
+* Java 8
+
+###Make
+> cd MiniJava-Compiler/src/
 
 > make all
 
 ##Usage
-> java --parse Assem.Main <input_java_file>
+> java Main --target targetArch [inputfiles]
+
+> Available target architectures: Mips
 
 ##Future Plans
 * Implement more exceptions
