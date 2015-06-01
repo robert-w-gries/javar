@@ -23,13 +23,13 @@ public class TraceSchedule {
     protected List<Stm> stms;
     protected HashMap<Label, LinkedList<Stm>> map = new HashMap<>();
 
-    Stm getLast(LinkedList<Stm> block) {
+    public Stm getLast(LinkedList<Stm> block) {
         Stm last = block.removeLast();
         stms.addAll(block);
         return last;
     }
 
-    void trace(LinkedList<Stm> slist) {
+    public void trace(LinkedList<Stm> slist) {
         for (; ; ) {
             Stm s = slist.getFirst();
             LABEL lab = (LABEL)s;

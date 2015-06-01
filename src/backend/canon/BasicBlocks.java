@@ -44,7 +44,7 @@ public class BasicBlocks {
         }
     }
 
-    void mkBlocks(LinkedList<Stm> slist) {
+    public void mkBlocks(LinkedList<Stm> slist) {
         if (!slist.isEmpty()) {
             Stm s = slist.removeFirst();
             if (s instanceof LABEL) {

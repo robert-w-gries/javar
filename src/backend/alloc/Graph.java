@@ -13,11 +13,11 @@ import java.util.Set;
  */
 abstract class Graph<T, N extends Node<T>> {
 
-    Set<N> nodes;
-    Map<T, N> lookup;
+    protected Set<N> nodes;
+    protected Map<T, N> lookup;
     private boolean bidirectional;
 
-    Graph(boolean bidirectional) {
+    protected Graph(boolean bidirectional) {
         nodes = new HashSet<>();
         lookup = new HashMap<>();
         this.bidirectional = bidirectional;

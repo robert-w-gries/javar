@@ -88,7 +88,7 @@ public class InterferenceNode extends Node<Temp> {
         return degree;
     }
 
-    void coalesceWith(InterferenceNode node) {
+    public void coalesceWith(InterferenceNode node) {
         if (this.color == null) this.color = node.color;
         this.coalescedTemps.add(node.value);
         this.coalescedTemps.addAll(node.coalescedTemps);

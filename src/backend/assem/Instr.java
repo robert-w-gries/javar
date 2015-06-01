@@ -30,7 +30,7 @@ public abstract class Instr {
         return jumps;
     }
 
-    void output(PrintWriter writer) {
+    public void output(PrintWriter writer) {
         if ((def != null) && (def.size() > 0)) {
             writer.print(" defs(");
             for (Temp aDef : def) {

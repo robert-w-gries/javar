@@ -13,7 +13,7 @@ public class Node<T> {
     protected Set<Node<T>> succ, pred, adj;
     protected boolean bidirectional;
 
-    Node(T value, boolean bidirectional) {
+    protected Node(T value, boolean bidirectional) {
         this.value = value;
         this.bidirectional = bidirectional;
         if (bidirectional) {
