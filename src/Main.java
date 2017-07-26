@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,13 +65,17 @@ public class Main {
             printArchitectures();
         }
 
+        Path cwd = Paths.get(System.getProperty("user.dir"));
+
+
         // compile each file
         for (String file : fileArgs) {
 
             // read the source file
             Reader reader = null;
             try {
-                reader = new FileReader(file);
+                Path path = cwd.resolve(file);
+                reader = new FileReader(path.toString());
             } catch (FileNotFoundException fnfe) {
                 System.err.println("File Not Found: " + file);
                 System.exit(-1);
