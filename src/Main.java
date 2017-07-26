@@ -82,8 +82,7 @@ public class Main {
             }
 
             // parse source code
-            new MiniJavaParser(reader);
-            Program program = MiniJavaParser.Goal();
+            Program program = new MiniJavaParser(reader).Goal();
 
             // type check the program
             new TypeChecker().visit(program);

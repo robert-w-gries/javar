@@ -4,13 +4,141 @@ import java.util.LinkedList;
 import frontend.parse.ast.*;
 
 public class MiniJavaParser implements MiniJavaParserConstants {
+    private static final class LookaheadSuccess extends Error { }
+    private static final class JJCalls {
+        int gen;
+        Token first;
+        int arg;
+        JJCalls next;
+    }
+
+    /** Generated Token Manager. */
+    private final MiniJavaParserTokenManager token_source;
+    private final int[] jj_la1 = new int[41];
+    private final JJCalls[] jj_2_rtns = new JJCalls[16];
+    private final java.util.List<int[]> jj_expentries = new java.util.ArrayList<int[]>();
+    private final int[] jj_lasttokens = new int[100];
+
+    /** Current token. */
+    private Token token;
+    /** Next token. */
+    private Token jj_nt;
+    private int jj_ntk;
+    private Token jj_scanpos, jj_lastpos;
+    private int jj_la;
+    private int jj_gen;
+    private boolean jj_rescan = false;
+    private int jj_gc = 0;
+    private int[] jj_expentry;
+    private int jj_kind = -1;
+    private int jj_endpos;
+
+    private static final LookaheadSuccess jj_ls = new LookaheadSuccess();
+
+    private static final int[] jj_la1_0 = new int[] {
+        0x0,
+        0x0,
+        0x400,
+        0x0,
+        0x8000000,
+        0x0,
+        0x8000000,
+        0x8000000,
+        0x0,
+        0x8000000,
+        0x100000,
+        0x0,
+        0x2000000,
+        0x0,
+        0x400,
+        0x400,
+        0x0,
+        0x400,
+        0x400,
+        0x0,
+        0x1000000,
+        0x800000,
+        0x600000,
+        0x600000,
+        0xc0000,
+        0xc0000,
+        0x22000,
+        0x22000,
+        0x18000,
+        0x18000,
+        0x6000,
+        0x4000,
+        0x40,
+        0x1100,
+        0x40,
+        0x100,
+        0x2000000,
+        0x6040,
+        0x0,
+        0x0,
+        0x0,
+    };
+
+    private static final int[] jj_la1_1 = new int[] {
+        0x1,
+        0x1,
+        0xc803fa0,
+        0x2,
+        0x800c000,
+        0x800c000,
+        0x0,
+        0x800c000,
+        0x800c000,
+        0x0,
+        0x0,
+        0x8,
+        0x0,
+        0x800c000,
+        0xc803fa0,
+        0xc803fa0,
+        0x800c000,
+        0xc803fa0,
+        0xa0,
+        0xc803f00,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0xc803f00,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0xc803f00,
+        0xc801f00,
+        0x8000000,
+        0x800c000,
+    };
+
+    /** Constructor. */
+    public MiniJavaParser(java.io.Reader stream) {
+        token_source = new MiniJavaParserTokenManager(new SimpleCharStream(stream, 1, 1));
+        token = new Token();
+        jj_ntk = -1;
+        jj_gen = 0;
+        for (int i = 0; i < 41; i++) jj_la1[i] = -1;
+        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
+    }
 
     /**************************************************
      * The MiniJava language grammar starts here      *
      **************************************************/
 
     // Goal ::= MainClassDeclaration ( ClassDeclaration | ThreadDeclaration )* <EOF>
-    public static final Program Goal() throws ParseException {
+    public final Program Goal() throws ParseException {
         // Variable declarations go here
         LinkedList<ClassDecl> classList = new LinkedList<ClassDecl>();
         MainClassDeclaration(classList);
@@ -40,15 +168,15 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     // ClassName ::= "class" <ID>
-    public static final String ClassName() throws ParseException {
+    private final String ClassName() throws ParseException {
         Token className;
         jj_consume_token(32);
         className = jj_consume_token(ID);
         return className.image;
     }
 
-    // MainClassDeclaration ::= ClassName "{" "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")" "{" ( VarDeclaration )* ( Statement )* "}" "}"
-    public static final void MainClassDeclaration(LinkedList<ClassDecl> classList) throws ParseException {
+    // MainClassDeclaration ::= ClassName "{" "private" "static" "void" "main" "(" "String" "[" "]" <ID> ")" "{" ( VarDeclaration )* ( Statement )* "}" "}"
+    private final void MainClassDeclaration(LinkedList<ClassDecl> classList) throws ParseException {
         String name = ClassName();
         Token argsId;
         LinkedList<VarDecl> localsList = new LinkedList<VarDecl>();
@@ -102,7 +230,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     // ClassDeclaration ::= ClassName ( "extends" <ID> )? "{" ( FieldDeclaration | MethodDeclaration | VoidDeclaration )* "}"
-    public static final void ClassDeclaration(LinkedList<ClassDecl> classList) throws ParseException {
+    private final void ClassDeclaration(LinkedList<ClassDecl> classList) throws ParseException {
         String name = ClassName();
         Token parent = null;
         LinkedList<VarDecl> fields = new LinkedList<VarDecl>();
@@ -155,7 +283,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     // ThreadDeclaration ::= ClassName "extends" "Thread" "{" ( FieldDeclaration | MethodDeclaration | VoidDeclaration )* "}"
-    public static final void ThreadDeclaration(LinkedList<ClassDecl> classList) throws ParseException {
+    private final void ThreadDeclaration(LinkedList<ClassDecl> classList) throws ParseException {
         String name;
         LinkedList<VarDecl> fields = new LinkedList<VarDecl>();
         LinkedList<MethodDecl> methods = new LinkedList<MethodDecl>();
@@ -203,7 +331,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     // VarDeclaration ::= Type <ID> ( "=" Expression )? ";"
-    public static final void VarDeclaration(LinkedList<VarDecl> vars) throws ParseException {
+    private final void VarDeclaration(LinkedList<VarDecl> vars) throws ParseException {
         Type type;
         Token id;
         Expr init = null;
@@ -221,8 +349,8 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         vars.add(new VarDecl(type, id.image, init));
     }
 
-    // MethodDeclaration ::= "public" ( "synchronized" )? Type <ID> "(" ( Type <ID> ( "," Type <ID> )* )? ")" "{" ( VarDeclaration )* ( Statement )* "return" Expression ";" "}"
-    public static final void MethodDeclaration(LinkedList<MethodDecl> methods) throws ParseException {
+    // MethodDeclaration ::= "private" ( "synchronized" )? Type <ID> "(" ( Type <ID> ( "," Type <ID> )* )? ")" "{" ( VarDeclaration )* ( Statement )* "return" Expression ";" "}"
+    private final void MethodDeclaration(LinkedList<MethodDecl> methods) throws ParseException {
         Type returnType;
         Token id;
         boolean sync = false;
@@ -309,8 +437,8 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         methods.add(new MethodDecl(returnType, sync, id.image, params, locals, statements, returnVal));
     }
 
-    // VoidDeclaration ::= "public" "void" <ID> "(" ")" "{" ( VarDeclaration )* ( Statement )* "}"
-    public static final void VoidDeclaration(LinkedList<MethodDecl> methods) throws ParseException {
+    // VoidDeclaration ::= "private" "void" <ID> "(" ")" "{" ( VarDeclaration )* ( Statement )* "}"
+    private final void VoidDeclaration(LinkedList<MethodDecl> methods) throws ParseException {
         Token id;
         LinkedList<VarDecl> locals = new LinkedList<VarDecl>();
         LinkedList<Stmt> statements = new LinkedList<Stmt>();
@@ -354,7 +482,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     // FieldDeclaration ::= Type <ID> ";"
-    public static final void FieldDeclaration(LinkedList<VarDecl> fields) throws ParseException {
+    private final void FieldDeclaration(LinkedList<VarDecl> fields) throws ParseException {
         Type type;
         Token id;
         type = Type();
@@ -366,7 +494,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     // Type ::= <ID> ( "[" "]" )*
     //      |   "boolean" ( "[" "]" )*
     //      |   "int" ( "[" "]" )*
-    public static final Type Type() throws ParseException {
+    private final Type Type() throws ParseException {
         Token id = null;
         int dimensions = 0;
         boolean isBool = false, isInt = false;
@@ -413,7 +541,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     //           |   "while" "(" Expression ")" Statement
     //           |   "Xinu" "." <ID> "(" ( Expression ( "," Expression )* )? ")" ";"
     //           |   Expression "=" Expression ";"
-    public static final void Statement(LinkedList<Stmt> statements) throws ParseException {
+    private final void Statement(LinkedList<Stmt> statements) throws ParseException {
         LinkedList<Stmt> innerStatements = new LinkedList<Stmt>();
         Expr innerExpr1 = null, innerExpr2 = null;
         LinkedList<Expr> innerExpressions = new LinkedList<Expr>();
@@ -516,7 +644,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     // Expression ::= Expression1 ( "||" Expression1 )*
-    public static final Expr Expression() throws ParseException {
+    private final Expr Expression() throws ParseException {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
         left = Expression1();
@@ -540,7 +668,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     // Expression1 ::= Expression2 ( "&&" Expression2 )*
-    public static final Expr Expression1() throws ParseException {
+    private final Expr Expression1() throws ParseException {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
         left = Expression2();
@@ -565,7 +693,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
 
     // Expression2 ::= Expression3 ( "==" Expression3 )*
     //             |   Expression3 ( "!=" Expression3 )*
-    public static final Expr Expression2() throws ParseException {
+    private final Expr Expression2() throws ParseException {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
         LinkedList<String> types = new LinkedList<String>();
@@ -609,7 +737,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
 
     // Expression3 ::= Expression4 ( "<" Expression4 )*
     //             |   Expression4 ( ">" Expression4 )*
-    public static final Expr Expression3() throws ParseException {
+    private final Expr Expression3() throws ParseException {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
         LinkedList<String> types = new LinkedList<String>();
@@ -653,7 +781,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
 
     // Expression4 ::= Expression5 ( "+" Expression5 )*
     //             |   Expression5 ( "-" Expression5 )*
-    public static final Expr Expression4() throws ParseException {
+    private final Expr Expression4() throws ParseException {
                 Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
         LinkedList<String> types = new LinkedList<String>();
@@ -697,7 +825,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
 
     // Expression5 ::= Expression6 ( "*" Expression6 )*
     //             |   Expression6 ( "/" Expression6 )*
-    public static final Expr Expression5() throws ParseException {
+    private final Expr Expression5() throws ParseException {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
         LinkedList<String> types = new LinkedList<String>();
@@ -742,7 +870,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     // Expression6 ::=  ( "-" )+ Expression7
     //             |    ( "!" )+ Expression7
     //             |   Expression7
-    public static final Expr Expression6() throws ParseException {
+    private final Expr Expression6() throws ParseException {
         Expr expr;
         LinkedList<String> types = new LinkedList<String>();
         label_19:
@@ -780,7 +908,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     // Expression7 ::=  ( "(" Expression ")" | Expression8 ) ( "." <ID> ( MethodCall )? | "[" Expression "]" )*
-    public static final Expr Expression7() throws ParseException {
+    private final Expr Expression7() throws ParseException {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
         Token id = null;
@@ -856,7 +984,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return left;
     }
 
-    public static final Expr ArrayExpression() throws ParseException {
+    private final Expr ArrayExpression() throws ParseException {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
         left = Expression8();
@@ -880,7 +1008,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     // MethodCall ::= "(" ( Expression ( "," Expression )* )? ")"
-    public static final void MethodCall(LinkedList<Expr> exprs) throws ParseException {
+    private final void MethodCall(LinkedList<Expr> exprs) throws ParseException {
         Expr expr;
         jj_consume_token(6);
         switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
@@ -929,7 +1057,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     //             |    "false"
     //             |    "this"
     //             |    "null"
-    public static final Expr Expression8() throws ParseException {
+    private final Expr Expression8() throws ParseException {
         Type type = null;
         Expr expr = null;
         Token xinuId = null;
@@ -1022,7 +1150,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         }
     }
 
-    public static final Expr AssignableExpression() throws ParseException {
+    private final Expr AssignableExpression() throws ParseException {
         Expr expr;
         Token id;
         if (jj_2_16(2)) {
@@ -1043,7 +1171,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     // NewDecl ::= "new" Type
-    public static final Type NewDecl() throws ParseException {
+    private final Type NewDecl() throws ParseException {
         Token id;
         Type type;
         jj_consume_token(45);
@@ -1068,188 +1196,188 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return type;
     }
 
-    private static boolean jj_2_1(int xla) {
+    private boolean jj_2_1(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_1(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(0, xla); }
     }
 
-    private static boolean jj_2_2(int xla) {
+    private boolean jj_2_2(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_2(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(1, xla); }
     }
 
-    private static boolean jj_2_3(int xla) {
+    private boolean jj_2_3(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_3(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(2, xla); }
     }
 
-    private static boolean jj_2_4(int xla) {
+    private boolean jj_2_4(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_4(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(3, xla); }
     }
 
-    private static boolean jj_2_5(int xla) {
+    private boolean jj_2_5(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_5(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(4, xla); }
     }
 
-    private static boolean jj_2_6(int xla) {
+    private boolean jj_2_6(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_6(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(5, xla); }
     }
 
-    private static boolean jj_2_7(int xla) {
+    private boolean jj_2_7(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_7(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(6, xla); }
     }
 
-    private static boolean jj_2_8(int xla) {
+    private boolean jj_2_8(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_8(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(7, xla); }
     }
 
-    private static boolean jj_2_9(int xla) {
+    private boolean jj_2_9(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_9(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(8, xla); }
     }
 
-    private static boolean jj_2_10(int xla) {
+    private boolean jj_2_10(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_10(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(9, xla); }
     }
 
-    private static boolean jj_2_11(int xla) {
+    private boolean jj_2_11(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_11(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(10, xla); }
     }
 
-    private static boolean jj_2_12(int xla) {
+    private boolean jj_2_12(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_12(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(11, xla); }
     }
 
-    private static boolean jj_2_13(int xla) {
+    private boolean jj_2_13(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_13(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(12, xla); }
     }
 
-    private static boolean jj_2_14(int xla) {
+    private boolean jj_2_14(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_14(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(13, xla); }
     }
 
-    private static boolean jj_2_15(int xla) {
+    private boolean jj_2_15(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_15(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(14, xla); }
     }
 
-    private static boolean jj_2_16(int xla) {
+    private boolean jj_2_16(int xla) {
         jj_la = xla; jj_lastpos = jj_scanpos = token;
         try { return !jj_3_16(); }
         catch(LookaheadSuccess ls) { return true; }
         finally { jj_save(15, xla); }
     }
 
-    private static boolean jj_3R_60() {
+    private boolean jj_3R_60() {
         if (jj_scan_token(44)) return true;
         return false;
     }
 
-    private static boolean jj_3R_59() {
+    private boolean jj_3R_59() {
         if (jj_scan_token(43)) return true;
         return false;
     }
 
-    private static boolean jj_3R_58() {
+    private boolean jj_3R_58() {
         if (jj_scan_token(42)) return true;
         return false;
     }
 
-    private static boolean jj_3R_57() {
+    private boolean jj_3R_57() {
         if (jj_scan_token(41)) return true;
         return false;
     }
 
-    private static boolean jj_3R_56() {
+    private boolean jj_3R_56() {
         if (jj_scan_token(STRING)) return true;
         return false;
     }
 
-    private static boolean jj_3R_55() {
+    private boolean jj_3R_55() {
         if (jj_scan_token(INT)) return true;
         return false;
     }
 
-    private static boolean jj_3R_54() {
+    private boolean jj_3R_54() {
         if (jj_scan_token(ID)) return true;
         return false;
     }
 
-    private static boolean jj_3R_62() {
+    private boolean jj_3R_62() {
         if (jj_scan_token(27)) return true;
         return false;
     }
 
-    private static boolean jj_3R_53() {
+    private boolean jj_3R_53() {
         if (jj_scan_token(40)) return true;
         if (jj_scan_token(12)) return true;
         return false;
     }
 
-    private static boolean jj_3_15() {
+    private boolean jj_3_15() {
         if (jj_3R_29()) return true;
         if (jj_scan_token(8)) return true;
         return false;
     }
 
-    private static boolean jj_3R_31() {
+    private boolean jj_3R_31() {
         if (jj_scan_token(32)) return true;
         if (jj_scan_token(ID)) return true;
         return false;
     }
 
-    private static boolean jj_3_14() {
+    private boolean jj_3_14() {
         if (jj_3R_29()) return true;
         if (jj_scan_token(6)) return true;
         return false;
     }
 
-    private static boolean jj_3R_41() {
+    private boolean jj_3R_41() {
         if (jj_3R_52()) return true;
         return false;
     }
 
-    private static boolean jj_3R_45() {
+    private boolean jj_3R_45() {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3_14()) {
@@ -1283,48 +1411,48 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3_5() {
+    private boolean jj_3_5() {
         if (jj_3R_25()) return true;
         return false;
     }
 
-    private static boolean jj_3R_36() {
+    private boolean jj_3R_36() {
         if (jj_scan_token(35)) return true;
         return false;
     }
 
-    private static boolean jj_3R_35() {
+    private boolean jj_3R_35() {
         if (jj_scan_token(20)) return true;
         return false;
     }
 
-    private static boolean jj_3_4() {
+    private boolean jj_3_4() {
         if (jj_3R_26()) return true;
         return false;
     }
 
-    private static boolean jj_3_1() {
+    private boolean jj_3_1() {
         if (jj_3R_24()) return true;
         return false;
     }
 
-    private static boolean jj_3_13() {
+    private boolean jj_3_13() {
         if (jj_scan_token(8)) return true;
         if (jj_scan_token(9)) return true;
         return false;
     }
 
-    private static boolean jj_3R_66() {
+    private boolean jj_3R_66() {
         if (jj_3R_67()) return true;
         return false;
     }
 
-    private static boolean jj_3R_46() {
+    private boolean jj_3R_46() {
         if (jj_scan_token(8)) return true;
         return false;
     }
 
-    private static boolean jj_3R_26() {
+    private boolean jj_3R_26() {
         if (jj_scan_token(27)) return true;
         Token xsp;
         xsp = jj_scanpos;
@@ -1333,27 +1461,27 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3R_28() {
+    private boolean jj_3R_28() {
         if (jj_3R_41()) return true;
         return false;
     }
 
-    private static boolean jj_3_3() {
+    private boolean jj_3_3() {
         if (jj_3R_26()) return true;
         return false;
     }
 
-    private static boolean jj_3R_50() {
+    private boolean jj_3R_50() {
         if (jj_scan_token(46)) return true;
         return false;
     }
 
-    private static boolean jj_3R_72() {
+    private boolean jj_3R_72() {
         if (jj_3R_45()) return true;
         return false;
     }
 
-    private static boolean jj_3R_25() {
+    private boolean jj_3R_25() {
         if (jj_3R_34()) return true;
         if (jj_scan_token(ID)) return true;
         Token xsp;
@@ -1363,40 +1491,40 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3R_65() {
+    private boolean jj_3R_65() {
         if (jj_3R_66()) return true;
         return false;
     }
 
-    private static boolean jj_3R_40() {
+    private boolean jj_3R_40() {
         if (jj_3R_51()) return true;
         return false;
     }
 
-    private static boolean jj_3_9() {
+    private boolean jj_3_9() {
         if (jj_scan_token(40)) return true;
         if (jj_scan_token(12)) return true;
         if (jj_scan_token(ID)) return true;
         return false;
     }
 
-    private static boolean jj_3R_39() {
+    private boolean jj_3R_39() {
         if (jj_scan_token(39)) return true;
         return false;
     }
 
-    private static boolean jj_3R_32() {
+    private boolean jj_3R_32() {
         if (jj_scan_token(33)) return true;
         if (jj_scan_token(ID)) return true;
         return false;
     }
 
-    private static boolean jj_3R_38() {
+    private boolean jj_3R_38() {
         if (jj_scan_token(37)) return true;
         return false;
     }
 
-    private static boolean jj_3R_30() {
+    private boolean jj_3R_30() {
         if (jj_3R_45()) return true;
         Token xsp;
         if (jj_3R_46()) return true;
@@ -1407,17 +1535,17 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3R_37() {
+    private boolean jj_3R_37() {
         if (jj_scan_token(10)) return true;
         return false;
     }
 
-    private static boolean jj_3R_70() {
+    private boolean jj_3R_70() {
         if (jj_scan_token(14)) return true;
         return false;
     }
 
-    private static boolean jj_3R_27() {
+    private boolean jj_3R_27() {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3R_37()) {
@@ -1436,12 +1564,12 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3R_47() {
+    private boolean jj_3R_47() {
         if (jj_3R_61()) return true;
         return false;
     }
 
-    private static boolean jj_3R_33() {
+    private boolean jj_3R_33() {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3R_47()) {
@@ -1454,32 +1582,32 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3R_42() {
+    private boolean jj_3R_42() {
         if (jj_scan_token(ID)) return true;
         return false;
     }
 
-    private static boolean jj_3R_49() {
+    private boolean jj_3R_49() {
         if (jj_scan_token(47)) return true;
         return false;
     }
 
-    private static boolean jj_3R_44() {
+    private boolean jj_3R_44() {
         if (jj_scan_token(47)) return true;
         return false;
     }
 
-    private static boolean jj_3R_43() {
+    private boolean jj_3R_43() {
         if (jj_scan_token(46)) return true;
         return false;
     }
 
-    private static boolean jj_3R_64() {
+    private boolean jj_3R_64() {
         if (jj_3R_65()) return true;
         return false;
     }
 
-    private static boolean jj_3R_29() {
+    private boolean jj_3R_29() {
         if (jj_scan_token(45)) return true;
         Token xsp;
         xsp = jj_scanpos;
@@ -1493,7 +1621,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3R_24() {
+    private boolean jj_3R_24() {
         if (jj_3R_31()) return true;
         Token xsp;
         xsp = jj_scanpos;
@@ -1507,24 +1635,24 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3_11() {
+    private boolean jj_3_11() {
         if (jj_scan_token(12)) return true;
         if (jj_scan_token(ID)) return true;
         return false;
     }
 
-    private static boolean jj_3R_71() {
+    private boolean jj_3R_71() {
         if (jj_scan_token(6)) return true;
         return false;
     }
 
-    private static boolean jj_3_12() {
+    private boolean jj_3_12() {
         if (jj_scan_token(8)) return true;
         if (jj_3R_28()) return true;
         return false;
     }
 
-    private static boolean jj_3R_69() {
+    private boolean jj_3R_69() {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3R_71()) {
@@ -1534,34 +1662,34 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3_2() {
+    private boolean jj_3_2() {
         if (jj_3R_25()) return true;
         return false;
     }
 
-    private static boolean jj_3_7() {
+    private boolean jj_3_7() {
         if (jj_scan_token(8)) return true;
         if (jj_scan_token(9)) return true;
         return false;
     }
 
-    private static boolean jj_3_8() {
+    private boolean jj_3_8() {
         if (jj_scan_token(38)) return true;
         if (jj_3R_27()) return true;
         return false;
     }
 
-    private static boolean jj_3R_63() {
+    private boolean jj_3R_63() {
         if (jj_scan_token(ID)) return true;
         return false;
     }
 
-    private static boolean jj_3_16() {
+    private boolean jj_3_16() {
         if (jj_3R_30()) return true;
         return false;
     }
 
-    private static boolean jj_3R_34() {
+    private boolean jj_3R_34() {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_scan_token(59)) {
@@ -1578,7 +1706,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3R_51() {
+    private boolean jj_3R_51() {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3_16()) {
@@ -1588,17 +1716,17 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3R_48() {
+    private boolean jj_3R_48() {
         if (jj_3R_62()) return true;
         return false;
     }
 
-    private static boolean jj_3R_52() {
+    private boolean jj_3R_52() {
         if (jj_3R_64()) return true;
         return false;
     }
 
-    private static boolean jj_3R_68() {
+    private boolean jj_3R_68() {
         Token xsp;
         xsp = jj_scanpos;
         if (jj_3_10()) {
@@ -1608,17 +1736,17 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3R_61() {
+    private boolean jj_3R_61() {
         if (jj_3R_34()) return true;
         return false;
     }
 
-    private static boolean jj_3_10() {
+    private boolean jj_3_10() {
         if (jj_scan_token(13)) return true;
         return false;
     }
 
-    private static boolean jj_3R_67() {
+    private boolean jj_3R_67() {
         Token xsp;
         while (true) {
             xsp = jj_scanpos;
@@ -1628,224 +1756,12 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-    private static boolean jj_3_6() {
+    private boolean jj_3_6() {
         if (jj_3R_25()) return true;
         return false;
     }
 
-    private static boolean jj_initialized_once = false;
-    /** Generated Token Manager. */
-    public static MiniJavaParserTokenManager token_source;
-    public static SimpleCharStream jj_input_stream;
-    /** Current token. */
-    public static Token token;
-    /** Next token. */
-    public static Token jj_nt;
-    private static int jj_ntk;
-    private static Token jj_scanpos, jj_lastpos;
-    private static int jj_la;
-    private static int jj_gen;
-    private static final int[] jj_la1 = new int[41];
-    private static int[] jj_la1_0;
-    private static int[] jj_la1_1;
-
-    static {
-        jj_la1_init_0();
-        jj_la1_init_1();
-    }
-
-    private static void jj_la1_init_0() {
-        jj_la1_0 = new int[] {
-            0x0,
-            0x0,
-            0x400,
-            0x0,
-            0x8000000,
-            0x0,
-            0x8000000,
-            0x8000000,
-            0x0,
-            0x8000000,
-            0x100000,
-            0x0,
-            0x2000000,
-            0x0,
-            0x400,
-            0x400,
-            0x0,
-            0x400,
-            0x400,
-            0x0,
-            0x1000000,
-            0x800000,
-            0x600000,
-            0x600000,
-            0xc0000,
-            0xc0000,
-            0x22000,
-            0x22000,
-            0x18000,
-            0x18000,
-            0x6000,
-            0x4000,
-            0x40,
-            0x1100,
-            0x40,
-            0x100,
-            0x2000000,
-            0x6040,
-            0x0,
-            0x0,
-            0x0,
-        };
-    }
-
-    private static void jj_la1_init_1() {
-        jj_la1_1 = new int[] {
-            0x1,
-            0x1,
-            0xc803fa0,
-            0x2,
-            0x800c000,
-            0x800c000,
-            0x0,
-            0x800c000,
-            0x800c000,
-            0x0,
-            0x0,
-            0x8,
-            0x0,
-            0x800c000,
-            0xc803fa0,
-            0xc803fa0,
-            0x800c000,
-            0xc803fa0,
-            0xa0,
-            0xc803f00,
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0xc803f00,
-            0x0,
-            0x0,
-            0x0,
-            0x0,
-            0xc803f00,
-            0xc801f00,
-            0x8000000,
-            0x800c000,
-        };
-    }
-
-    private static final JJCalls[] jj_2_rtns = new JJCalls[16];
-    private static boolean jj_rescan = false;
-    private static int jj_gc = 0;
-
-    /** Constructor with InputStream. */
-    public MiniJavaParser(java.io.InputStream stream) {
-         this(stream, null);
-    }
-
-    /** Constructor with InputStream and supplied encoding */
-    public MiniJavaParser(java.io.InputStream stream, String encoding) {
-        if (jj_initialized_once) {
-            System.out.println("ERROR: Second call to constructor of static parser.  ");
-            System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
-            System.out.println("       during parser generation.");
-            throw new Error();
-        }
-        jj_initialized_once = true;
-        try { jj_input_stream = new SimpleCharStream(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
-        token_source = new MiniJavaParserTokenManager(jj_input_stream);
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 41; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
-    /** Reinitialise. */
-    public static void ReInit(java.io.InputStream stream) {
-         ReInit(stream, null);
-    }
-
-    /** Reinitialise. */
-    public static void ReInit(java.io.InputStream stream, String encoding) {
-        try { jj_input_stream.ReInit(stream, encoding, 1, 1); } catch(java.io.UnsupportedEncodingException e) { throw new RuntimeException(e); }
-        token_source.ReInit(jj_input_stream);
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 41; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
-    /** Constructor. */
-    public MiniJavaParser(java.io.Reader stream) {
-        if (jj_initialized_once) {
-            System.out.println("ERROR: Second call to constructor of static parser. ");
-            System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
-            System.out.println("       during parser generation.");
-            throw new Error();
-        }
-        jj_initialized_once = true;
-        jj_input_stream = new SimpleCharStream(stream, 1, 1);
-        token_source = new MiniJavaParserTokenManager(jj_input_stream);
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 41; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
-    /** Reinitialise. */
-    public static void ReInit(java.io.Reader stream) {
-        jj_input_stream.ReInit(stream, 1, 1);
-        token_source.ReInit(jj_input_stream);
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 41; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
-    /** Constructor with generated Token Manager. */
-    public MiniJavaParser(MiniJavaParserTokenManager tm) {
-        if (jj_initialized_once) {
-            System.out.println("ERROR: Second call to constructor of static parser. ");
-            System.out.println("       You must either use ReInit() or set the JavaCC option STATIC to false");
-            System.out.println("       during parser generation.");
-            throw new Error();
-        }
-        jj_initialized_once = true;
-        token_source = tm;
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 41; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
-    /** Reinitialise. */
-    public void ReInit(MiniJavaParserTokenManager tm) {
-        token_source = tm;
-        token = new Token();
-        jj_ntk = -1;
-        jj_gen = 0;
-        for (int i = 0; i < 41; i++) jj_la1[i] = -1;
-        for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
-    }
-
-    private static Token jj_consume_token(int kind) throws ParseException {
+    private Token jj_consume_token(int kind) throws ParseException {
         Token oldToken;
         if ((oldToken = token).next != null) token = token.next;
         else token = token.next = token_source.getNextToken();
@@ -1869,9 +1785,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         throw generateParseException();
     }
 
-    private static final class LookaheadSuccess extends java.lang.Error { }
-    private static final LookaheadSuccess jj_ls = new LookaheadSuccess();
-    private static boolean jj_scan_token(int kind) {
+    private boolean jj_scan_token(int kind) {
         if (jj_scanpos == jj_lastpos) {
             jj_la--;
             if (jj_scanpos.next == null) {
@@ -1894,38 +1808,12 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         return false;
     }
 
-
-    /** Get the next Token. */
-    public static final Token getNextToken() {
-        if (token.next != null) token = token.next;
-        else token = token.next = token_source.getNextToken();
-        jj_ntk = -1;
-        jj_gen++;
-        return token;
-    }
-
-    /** Get the specific Token. */
-    public static final Token getToken(int index) {
-        Token t = token;
-        for (int i = 0; i < index; i++) {
-            if (t.next != null) t = t.next;
-            else t = t.next = token_source.getNextToken();
-        }
-        return t;
-    }
-
-    private static int jj_ntk() {
+    private int jj_ntk() {
         if ((jj_nt=token.next) == null) return (jj_ntk = (token.next=token_source.getNextToken()).kind);
         else return (jj_ntk = jj_nt.kind);
     }
 
-    private static java.util.List jj_expentries = new java.util.ArrayList();
-    private static int[] jj_expentry;
-    private static int jj_kind = -1;
-    private static int[] jj_lasttokens = new int[100];
-    private static int jj_endpos;
-
-    private static void jj_add_error_token(int kind, int pos) {
+    private void jj_add_error_token(int kind, int pos) {
         if (pos >= 100) return;
         if (pos == jj_endpos + 1) {
             jj_lasttokens[jj_endpos++] = kind;
@@ -1951,7 +1839,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     }
 
     /** Generate ParseException. */
-    public static ParseException generateParseException() {
+    private ParseException generateParseException() {
         jj_expentries.clear();
         boolean[] la1tokens = new boolean[63];
         if (jj_kind >= 0) {
@@ -1984,18 +1872,10 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         for (int i = 0; i < jj_expentries.size(); i++) {
             exptokseq[i] = (int[])jj_expentries.get(i);
         }
-        return new ParseException(token, exptokseq, tokenImage);
+        return new ParseException(token, exptokseq);
     }
 
-    /** Enable tracing. */
-    public static final void enable_tracing() {
-    }
-
-    /** Disable tracing. */
-    public static final void disable_tracing() {
-    }
-
-    private static void jj_rescan_token() {
+    private void jj_rescan_token() {
         jj_rescan = true;
         for (int i = 0; i < 16; i++) {
             try {
@@ -2029,7 +1909,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         jj_rescan = false;
     }
 
-    private static void jj_save(int index, int xla) {
+    private void jj_save(int index, int xla) {
         JJCalls p = jj_2_rtns[index];
         while (p.gen > jj_gen) {
             if (p.next == null) {
@@ -2041,12 +1921,5 @@ public class MiniJavaParser implements MiniJavaParserConstants {
         p.gen = jj_gen + xla - jj_la;
         p.first = token;
         p.arg = xla;
-    }
-
-    private static final class JJCalls {
-        int gen;
-        Token first;
-        int arg;
-        JJCalls next;
     }
 }

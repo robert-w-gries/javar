@@ -3,23 +3,297 @@ package frontend.parse;
 import java.io.IOException;
 import java.io.PrintStream;
 
-/** Token Manager. */
+/**
+ * Token Manager.
+ * NOTE: This class is LEGACY and a product of the original JavaCC generation of this parser code.
+ * As of 2017-07-26, it has been pruned of unused code and has maximal encapsulation.
+ * Feel free to remove or refactor it if it no longer satisfies requirements.
+ */
 public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
-	static boolean anyErrors = false;
-	static void error(String msg) {
+	private boolean anyErrors = false;
+	private final SimpleCharStream input_stream;
+	private final int[] jjrounds = new int[22];
+	private final int[] jjstateSet = new int[44];
+	private StringBuffer image = new StringBuffer();
+	private int jjimageLen;
+	private int lengthOfMatch;
+	private char curChar;
+	private int curLexState = 0;
+	private int jjnewStateCnt;
+	private int jjround;
+	private int jjmatchedPos;
+	private int jjmatchedKind;
+
+	private static final long[] jjbitVec0 = {
+		0x0L, 0x0L, 0xffffffffffffffffL, 0xffffffffffffffffL
+	};
+
+	private static final int[] jjnextStates = {
+		10, 11, 13, 10, 11, 15, 13, 12, 14, 16, 
+	};
+
+	/** Token literal values. */
+	private static final String[] jjstrLiteralImages = {
+		"",
+        null,
+        null,
+        null,
+        null,
+        null,
+        "\50",
+        "\51",
+        "\133",
+        "\135",
+        "\173",
+		"\175",
+        "\56",
+        "\55",
+        "\41",
+        "\52",
+        "\57",
+        "\53",
+        "\74",
+        "\76",
+        "\75",
+        "\75\75",
+		"\41\75",
+        "\46\46",
+        "\174\174",
+        "\54",
+        "\73",
+        "\160\165\142\154\151\143",
+		"\163\164\141\164\151\143",
+        "\166\157\151\144",
+        "\155\141\151\156",
+        "\123\164\162\151\156\147",
+		"\143\154\141\163\163",
+        "\145\170\164\145\156\144\163",
+        "\124\150\162\145\141\144",
+		"\163\171\156\143\150\162\157\156\151\172\145\144",
+        "\162\145\164\165\162\156",
+        "\151\146",
+        "\145\154\163\145",
+		"\167\150\151\154\145",
+        "\130\151\156\165",
+        "\164\162\165\145",
+        "\146\141\154\163\145",
+		"\164\150\151\163",
+        "\156\165\154\154",
+        "\156\145\167",
+        "\151\156\164",
+		"\142\157\157\154\145\141\156",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+		null,
+        null,
+	};
+
+	/** Lex State array. */
+	private static final int[] jjnewLexState = {
+		-1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+		-1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        1,
+        2,
+		3,
+        0,
+        0,
+        0,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+        -1,
+	};
+
+	private static final long[] jjtoToken = {
+		0xf80ffffffffffc1L, 
+	};
+
+	private static final long[] jjtoSkip = {
+		0x403800000000003eL, 
+	};
+
+	private static final long[] jjtoSpecial = {
+		0x38000000000000L, 
+	};
+
+	/** Constructor. */
+	public MiniJavaParserTokenManager(SimpleCharStream stream) {
+		input_stream = stream;
+	}
+
+	/** Get the next Token. */
+	public Token getNextToken()	{
+		Token specialToken = null;
+		Token matchedToken;
+		int curPos = 0;
+
+		EOFLoop: for (;;) {
+			try {
+				curChar = input_stream.BeginToken();
+			} catch(IOException e) {
+				jjmatchedKind = 0;
+				matchedToken = jjFillToken();
+				matchedToken.specialToken = specialToken;
+				return matchedToken;
+			}
+			image = new StringBuffer();
+			image.setLength(0);
+			jjimageLen = 0;
+
+			for (;;) {
+				switch (curLexState) {
+					case 0:
+						try {
+							input_stream.backup(0);
+							while (curChar <= 32 && (0x100003600L & (1L << curChar)) != 0L)
+								curChar = input_stream.BeginToken();
+						} catch (IOException e1) {
+							continue EOFLoop;
+						}
+						jjmatchedKind = 0x7fffffff;
+						jjmatchedPos = 0;
+						curPos = jjMoveStringLiteralDfa0_0();
+						if (jjmatchedPos == 0 && jjmatchedKind > 62) jjmatchedKind = 62;
+						break;
+					case 1:
+						jjmatchedKind = 0x7fffffff;
+						jjmatchedPos = 0;
+						curPos = jjMoveStringLiteralDfa0_1();
+						if (jjmatchedPos == 0 && jjmatchedKind > 54) jjmatchedKind = 54;
+						break;
+					case 2:
+						jjmatchedKind = 0x7fffffff;
+						jjmatchedPos = 0;
+						curPos = jjMoveStringLiteralDfa0_2();
+						if (jjmatchedPos == 0 && jjmatchedKind > 54) jjmatchedKind = 54;
+						break;
+					case 3:
+						jjmatchedKind = 0x7fffffff;
+						jjmatchedPos = 0;
+						curPos = jjMoveStringLiteralDfa0_3();
+						if (jjmatchedPos == 0 && jjmatchedKind > 54) jjmatchedKind = 54;
+						break;
+				}
+				if (jjmatchedKind != 0x7fffffff) {
+					if (jjmatchedPos + 1 < curPos) input_stream.backup(curPos - jjmatchedPos - 1);
+					if ((jjtoToken[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L) {
+						matchedToken = jjFillToken();
+						matchedToken.specialToken = specialToken;
+						if (jjnewLexState[jjmatchedKind] != -1) curLexState = jjnewLexState[jjmatchedKind];
+						return matchedToken;
+					} else if ((jjtoSkip[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L) {
+						if ((jjtoSpecial[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L) {
+							matchedToken = jjFillToken();
+							if (specialToken == null) specialToken = matchedToken;
+							else {
+								matchedToken.specialToken = specialToken;
+								specialToken = (specialToken.next = matchedToken);
+							}
+							SkipLexicalActions(matchedToken);
+						} else SkipLexicalActions(null);
+						if (jjnewLexState[jjmatchedKind] != -1) curLexState = jjnewLexState[jjmatchedKind];
+						continue EOFLoop;
+					}
+					MoreLexicalActions();
+					if (jjnewLexState[jjmatchedKind] != -1) curLexState = jjnewLexState[jjmatchedKind];
+					curPos = 0;
+					jjmatchedKind = 0x7fffffff;
+					try {
+						curChar = input_stream.readChar();
+						continue;
+					} catch (IOException e1) { }
+				}
+				int error_line = input_stream.getEndLine();
+				int error_column = input_stream.getEndColumn();
+				String error_after = null;
+				boolean EOFSeen = false;
+				try {
+	            	input_stream.readChar(); input_stream.backup(1);
+	        	} catch (IOException e1) {
+					EOFSeen = true;
+					error_after = curPos <= 1 ? "" : input_stream.GetImage();
+					if (curChar == '\n' || curChar == '\r') {
+						error_line++;
+						error_column = 0;
+					} else error_column++;
+				}
+				if (!EOFSeen) {
+					input_stream.backup(1);
+					error_after = curPos <= 1 ? "" : input_stream.GetImage();
+				}
+				throw new TokenMgrError(EOFSeen, curLexState, error_line, error_column, error_after, curChar, TokenMgrError.LEXICAL_ERROR);
+			}
+		}
+	}
+	
+	private void error(String msg) {
 		anyErrors = true;
 		System.err.println(msg + ": line " + input_stream.getEndLine() + ", column " + input_stream.getEndColumn());
 	}
 
-	/** Debug output. */
-	public static PrintStream debugStream = System.out;
-	/** Set debug output. */
-	public static void setDebugStream(PrintStream ds) {
-		debugStream = ds;
-	}
-
-
-	private static final int jjStopStringLiteralDfa_0(int pos, long active0) {
+	private final int jjStopStringLiteralDfa_0(int pos, long active0) {
 		switch (pos) {
 			case 0:
 				if ((active0 & 0x5000000010000L) != 0L) return 2;
@@ -111,19 +385,19 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 	}
 
 
-	private static final int jjStartNfa_0(int pos, long active0) {
+	private final int jjStartNfa_0(int pos, long active0) {
 		return jjMoveNfa_0(jjStopStringLiteralDfa_0(pos, active0), pos + 1);
 	}
 
 
-	private static int jjStopAtPos(int pos, int kind) {
+	private int jjStopAtPos(int pos, int kind) {
 		jjmatchedKind = kind;
 		jjmatchedPos = pos;
 		return pos + 1;
 	}
 
 
-	private static int jjMoveStringLiteralDfa0_0() {
+	private int jjMoveStringLiteralDfa0_0() {
 		switch (curChar) {
 			case 33:
 				jjmatchedKind = 14;
@@ -204,7 +478,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 	}
 
 
-	private static int jjMoveStringLiteralDfa1_0(long active0) {
+	private int jjMoveStringLiteralDfa1_0(long active0) {
 		try {
 			curChar = input_stream.readChar();
 		} catch(IOException e) {
@@ -264,7 +538,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 	}
 
 
-	private static int jjMoveStringLiteralDfa2_0(long old0, long active0) {
+	private int jjMoveStringLiteralDfa2_0(long old0, long active0) {
 		if (((active0 &= old0)) == 0L) return jjStartNfa_0(0, old0);
 		try {
 			curChar = input_stream.readChar();
@@ -306,7 +580,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 	}
 
 
-	private static int jjMoveStringLiteralDfa3_0(long old0, long active0) {
+	private int jjMoveStringLiteralDfa3_0(long old0, long active0) {
 		if (((active0 &= old0)) == 0L) return jjStartNfa_0(1, old0);
 		try {
 			curChar = input_stream.readChar();
@@ -349,7 +623,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 	}
 
 
-	private static int jjMoveStringLiteralDfa4_0(long old0, long active0) {
+	private int jjMoveStringLiteralDfa4_0(long old0, long active0) {
 		if (((active0 &= old0)) == 0L) return jjStartNfa_0(2, old0);
 		try {
 			curChar = input_stream.readChar();
@@ -384,7 +658,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 	}
 
 
-	private static int jjMoveStringLiteralDfa5_0(long old0, long active0) {
+	private int jjMoveStringLiteralDfa5_0(long old0, long active0) {
 		if (((active0 &= old0)) == 0L) return jjStartNfa_0(3, old0);
 		try {
             curChar = input_stream.readChar();
@@ -419,7 +693,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 	}
 
 
-	private static int jjMoveStringLiteralDfa6_0(long old0, long active0) {
+	private int jjMoveStringLiteralDfa6_0(long old0, long active0) {
 		if (((active0 &= old0)) == 0L) return jjStartNfa_0(4, old0);
 		try {
             curChar = input_stream.readChar();
@@ -445,7 +719,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 	}
 
 
-	private static int jjMoveStringLiteralDfa7_0(long old0, long active0) {
+	private int jjMoveStringLiteralDfa7_0(long old0, long active0) {
 		if (((active0 &= old0)) == 0L) return jjStartNfa_0(5, old0);
 		try {
             curChar = input_stream.readChar();
@@ -465,7 +739,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 	}
 
 
-	private static int jjMoveStringLiteralDfa8_0(long old0, long active0) {
+	private int jjMoveStringLiteralDfa8_0(long old0, long active0) {
 		if (((active0 &= old0)) == 0L) return jjStartNfa_0(6, old0);
 		try {
             curChar = input_stream.readChar();
@@ -485,7 +759,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 	}
 
 
-	private static int jjMoveStringLiteralDfa9_0(long old0, long active0) {
+	private int jjMoveStringLiteralDfa9_0(long old0, long active0) {
 		if (((active0 &= old0)) == 0L) return jjStartNfa_0(7, old0);
 		try {
             curChar = input_stream.readChar();
@@ -503,7 +777,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		return jjStartNfa_0(8, active0);
 	}
 
-	private static int jjMoveStringLiteralDfa10_0(long old0, long active0) {
+	private int jjMoveStringLiteralDfa10_0(long old0, long active0) {
 		if (((active0 &= old0)) == 0L) return jjStartNfa_0(8, old0);
 		try {
             curChar = input_stream.readChar();
@@ -521,7 +795,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		return jjStartNfa_0(9, active0);
 	}
 
-	private static int jjMoveStringLiteralDfa11_0(long old0, long active0) {
+	private int jjMoveStringLiteralDfa11_0(long old0, long active0) {
 		if (((active0 &= old0)) == 0L) return jjStartNfa_0(9, old0);
 		try {
             curChar = input_stream.readChar();
@@ -540,7 +814,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		return jjStartNfa_0(10, active0);
 	}
 
-	private static int jjStartNfaWithStates_0(int pos, int kind, int state) {
+	private int jjStartNfaWithStates_0(int pos, int kind, int state) {
 		jjmatchedKind = kind;
 		jjmatchedPos = pos;
 		try {
@@ -549,11 +823,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		return jjMoveNfa_0(state, pos + 1);
 	}
 
-	public static final long[] jjbitVec0 = {
-		0x0L, 0x0L, 0xffffffffffffffffL, 0xffffffffffffffffL
-	};
-
-	private static int jjMoveNfa_0(int startState, int curPos) {
+	private int jjMoveNfa_0(int startState, int curPos) {
 		int startsAt = 0;
 		jjnewStateCnt = 22;
 		int i = 1;
@@ -722,7 +992,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		}
 	}
 
-	private static int jjMoveStringLiteralDfa0_3() {
+	private int jjMoveStringLiteralDfa0_3() {
 		switch (curChar) {
 			case 42:
 				return jjMoveStringLiteralDfa1_3(0x20000000000000L);
@@ -731,7 +1001,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		}
 	}
 
-	private static int jjMoveStringLiteralDfa1_3(long active0) {
+	private int jjMoveStringLiteralDfa1_3(long active0) {
 		try {
             curChar = input_stream.readChar();
         } catch(IOException e) {
@@ -748,11 +1018,11 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		return 2;
 	}
 
-	private static int jjMoveStringLiteralDfa0_1() {
+	private int jjMoveStringLiteralDfa0_1() {
 		return jjMoveNfa_1(0, 0);
 	}
 
-	private static int jjMoveNfa_1(int startState, int curPos) {
+	private int jjMoveNfa_1(int startState, int curPos) {
 		int startsAt = 0;
 		jjnewStateCnt = 3;
 		int i = 1;
@@ -811,7 +1081,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		}
 	}
 
-	private static int jjMoveStringLiteralDfa0_2() {
+	private int jjMoveStringLiteralDfa0_2() {
 		switch (curChar) {
 			case 42:
 				return jjMoveStringLiteralDfa1_2(0x10000000000000L);
@@ -820,7 +1090,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		}
 	}
 
-	private static int jjMoveStringLiteralDfa1_2(long active0) {
+	private int jjMoveStringLiteralDfa1_2(long active0) {
 		try {
             curChar = input_stream.readChar();
         } catch(IOException e) {
@@ -837,219 +1107,13 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		return 2;
 	}
 
-	public static final int[] jjnextStates = {
-		10, 11, 13, 10, 11, 15, 13, 12, 14, 16, 
-	};
-
-	/** Token literal values. */
-	public static final String[] jjstrLiteralImages = {
-		"",
-        null,
-        null,
-        null,
-        null,
-        null,
-        "\50",
-        "\51",
-        "\133",
-        "\135",
-        "\173",
-		"\175",
-        "\56",
-        "\55",
-        "\41",
-        "\52",
-        "\57",
-        "\53",
-        "\74",
-        "\76",
-        "\75",
-        "\75\75",
-		"\41\75",
-        "\46\46",
-        "\174\174",
-        "\54",
-        "\73",
-        "\160\165\142\154\151\143",
-		"\163\164\141\164\151\143",
-        "\166\157\151\144",
-        "\155\141\151\156",
-        "\123\164\162\151\156\147",
-		"\143\154\141\163\163",
-        "\145\170\164\145\156\144\163",
-        "\124\150\162\145\141\144",
-		"\163\171\156\143\150\162\157\156\151\172\145\144",
-        "\162\145\164\165\162\156",
-        "\151\146",
-        "\145\154\163\145",
-		"\167\150\151\154\145",
-        "\130\151\156\165",
-        "\164\162\165\145",
-        "\146\141\154\163\145",
-		"\164\150\151\163",
-        "\156\165\154\154",
-        "\156\145\167",
-        "\151\156\164",
-		"\142\157\157\154\145\141\156",
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-		null,
-        null,
-	};
-
-	/** Lexer state names. */
-	public static final String[] lexStateNames = {
-		"DEFAULT",
-		"IN_SINGLE_LINE_COMMENT",
-		"IN_FORMAL_COMMENT",
-		"IN_MULTI_LINE_COMMENT",
-	};
-
-	/** Lex State array. */
-	public static final int[] jjnewLexState = {
-		-1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-		-1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        1,
-        2,
-		3,
-        0,
-        0,
-        0,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-        -1,
-	};
-
-	public static final long[] jjtoToken = {
-		0xf80ffffffffffc1L, 
-	};
-
-	public static final long[] jjtoSkip = {
-		0x403800000000003eL, 
-	};
-
-	public static final long[] jjtoSpecial = {
-		0x38000000000000L, 
-	};
-
-	public static final long[] jjtoMore = {
-		0x47000000000000L, 
-	};
-
-	protected static SimpleCharStream input_stream;
-	private static final int[] jjrounds = new int[22];
-	private static final int[] jjstateSet = new int[44];
-	private static final StringBuffer jjimage = new StringBuffer();
-	private static StringBuffer image = jjimage;
-	private static int jjimageLen;
-	private static int lengthOfMatch;
-	protected static char curChar;
-
-	/** Constructor. */
-	public MiniJavaParserTokenManager(SimpleCharStream stream) {
-		if (input_stream != null)
-			throw new TokenMgrError("ERROR: Second call to constructor of static lexer. You must use ReInit() to initialize the static variables.", TokenMgrError.STATIC_LEXER_ERROR);
-		input_stream = stream;
-	}
-
-	/** Constructor. */
-	public MiniJavaParserTokenManager(SimpleCharStream stream, int lexState) {
-		this(stream);
-		SwitchTo(lexState);
-	}
-
-	/** Reinitialise parser. */
-	public static void ReInit(SimpleCharStream stream) {
-		jjmatchedPos = jjnewStateCnt = 0;
-		curLexState = defaultLexState;
-		input_stream = stream;
-		ReInitRounds();
-	}
-
-	private static void ReInitRounds() {
+	private void ReInitRounds() {
 		int i;
 		jjround = 0x80000001;
 		for (i = 22; i-- > 0;) jjrounds[i] = 0x80000000;
 	}
 
-	/** Reinitialise parser. */
-	public static void ReInit(SimpleCharStream stream, int lexState) {
-		ReInit(stream);
-		SwitchTo(lexState);
-	}
-
-	/** Switch to specified lex state. */
-	public static void SwitchTo(int lexState) {
-		if (lexState >= 4 || lexState < 0)
-			throw new TokenMgrError("Error: Ignoring invalid lexical state : " + lexState + ". State unchanged.", TokenMgrError.INVALID_LEXICAL_STATE);
-		else
-			curLexState = lexState;
-	}
-
-	protected static Token jjFillToken() {
+	private Token jjFillToken() {
 		final Token t;
 		final String curTokenImage;
 		final int beginLine;
@@ -1062,7 +1126,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		beginColumn = input_stream.getBeginColumn();
 		endLine = input_stream.getEndLine();
 		endColumn = input_stream.getEndColumn();
-		t = Token.newToken(jjmatchedKind, curTokenImage);
+		t = new Token(jjmatchedKind, curTokenImage);
 
 		t.beginLine = beginLine;
 		t.endLine = endLine;
@@ -1072,119 +1136,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		return t;
 	}
 
-	public static int curLexState = 0;
-	public static int defaultLexState = 0;
-	public static int jjnewStateCnt;
-	public static int jjround;
-	public static int jjmatchedPos;
-	public static int jjmatchedKind;
-
-	/** Get the next Token. */
-	public static Token getNextToken()	{
-		Token specialToken = null;
-		Token matchedToken;
-		int curPos = 0;
-
-		EOFLoop: for (;;) {
-			try {
-				curChar = input_stream.BeginToken();
-			} catch(IOException e) {
-				jjmatchedKind = 0;
-				matchedToken = jjFillToken();
-				matchedToken.specialToken = specialToken;
-				return matchedToken;
-			}
-			image = jjimage;
-			image.setLength(0);
-			jjimageLen = 0;
-
-			for (;;) {
-				switch (curLexState) {
-					case 0:
-						try {
-							input_stream.backup(0);
-							while (curChar <= 32 && (0x100003600L & (1L << curChar)) != 0L)
-								curChar = input_stream.BeginToken();
-						} catch (IOException e1) {
-							continue EOFLoop;
-						}
-						jjmatchedKind = 0x7fffffff;
-						jjmatchedPos = 0;
-						curPos = jjMoveStringLiteralDfa0_0();
-						if (jjmatchedPos == 0 && jjmatchedKind > 62) jjmatchedKind = 62;
-						break;
-					case 1:
-						jjmatchedKind = 0x7fffffff;
-						jjmatchedPos = 0;
-						curPos = jjMoveStringLiteralDfa0_1();
-						if (jjmatchedPos == 0 && jjmatchedKind > 54) jjmatchedKind = 54;
-						break;
-					case 2:
-						jjmatchedKind = 0x7fffffff;
-						jjmatchedPos = 0;
-						curPos = jjMoveStringLiteralDfa0_2();
-						if (jjmatchedPos == 0 && jjmatchedKind > 54) jjmatchedKind = 54;
-						break;
-					case 3:
-						jjmatchedKind = 0x7fffffff;
-						jjmatchedPos = 0;
-						curPos = jjMoveStringLiteralDfa0_3();
-						if (jjmatchedPos == 0 && jjmatchedKind > 54) jjmatchedKind = 54;
-						break;
-				}
-				if (jjmatchedKind != 0x7fffffff) {
-					if (jjmatchedPos + 1 < curPos) input_stream.backup(curPos - jjmatchedPos - 1);
-					if ((jjtoToken[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L) {
-						matchedToken = jjFillToken();
-						matchedToken.specialToken = specialToken;
-						if (jjnewLexState[jjmatchedKind] != -1) curLexState = jjnewLexState[jjmatchedKind];
-						return matchedToken;
-					} else if ((jjtoSkip[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L) {
-						if ((jjtoSpecial[jjmatchedKind >> 6] & (1L << (jjmatchedKind & 077))) != 0L) {
-							matchedToken = jjFillToken();
-							if (specialToken == null) specialToken = matchedToken;
-							else {
-								matchedToken.specialToken = specialToken;
-								specialToken = (specialToken.next = matchedToken);
-							}
-							SkipLexicalActions(matchedToken);
-						} else SkipLexicalActions(null);
-						if (jjnewLexState[jjmatchedKind] != -1) curLexState = jjnewLexState[jjmatchedKind];
-						continue EOFLoop;
-					}
-					MoreLexicalActions();
-					if (jjnewLexState[jjmatchedKind] != -1) curLexState = jjnewLexState[jjmatchedKind];
-					curPos = 0;
-					jjmatchedKind = 0x7fffffff;
-					try {
-						curChar = input_stream.readChar();
-						continue;
-					} catch (IOException e1) { }
-				}
-				int error_line = input_stream.getEndLine();
-				int error_column = input_stream.getEndColumn();
-				String error_after = null;
-				boolean EOFSeen = false;
-				try {
-	            	input_stream.readChar(); input_stream.backup(1);
-	        	} catch (IOException e1) {
-					EOFSeen = true;
-					error_after = curPos <= 1 ? "" : input_stream.GetImage();
-					if (curChar == '\n' || curChar == '\r') {
-						error_line++;
-						error_column = 0;
-					} else error_column++;
-				}
-				if (!EOFSeen) {
-					input_stream.backup(1);
-					error_after = curPos <= 1 ? "" : input_stream.GetImage();
-				}
-				throw new TokenMgrError(EOFSeen, curLexState, error_line, error_column, error_after, curChar, TokenMgrError.LEXICAL_ERROR);
-			}
-		}
-	}
-
-	public static void SkipLexicalActions(Token matchedToken) {
+	private void SkipLexicalActions(Token matchedToken) {
 		switch (jjmatchedKind) {
 			case 62:
 				image.append(input_stream.GetSuffix(jjimageLen + (lengthOfMatch = jjmatchedPos + 1)));
@@ -1195,7 +1147,7 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		}
 	}
 
-	public static void MoreLexicalActions() {
+	private void MoreLexicalActions() {
 		jjimageLen += (lengthOfMatch = jjmatchedPos + 1);
 		switch (jjmatchedKind) {
 			case 49:
@@ -1208,25 +1160,20 @@ public class MiniJavaParserTokenManager implements MiniJavaParserConstants {
 		}
 	}
 
-	private static void jjCheckNAdd(int state) {
+	private void jjCheckNAdd(int state) {
 		if (jjrounds[state] != jjround) {
 			jjstateSet[jjnewStateCnt++] = state;
 			jjrounds[state] = jjround;
 		}
 	}
 
-	private static void jjAddStates(int start, int end) {
+	private void jjAddStates(int start, int end) {
 		do {
 			jjstateSet[jjnewStateCnt++] = jjnextStates[start];
 		} while (start++ != end);
 	}
 
-	private static void jjCheckNAddTwoStates(int state1, int state2) {
-		jjCheckNAdd(state1);
-		jjCheckNAdd(state2);
-	}
-
-	private static void jjCheckNAddStates(int start, int end) {
+	private void jjCheckNAddStates(int start, int end) {
 		do {
 			jjCheckNAdd(jjnextStates[start]);
 		} while (start++ != end);

@@ -8,8 +8,105 @@ package frontend.parse;
  *
  * You can modify this class to customize your error reporting
  * mechanisms so long as you retain the public fields.
+ *
+ * NOTE: This class is LEGACY and a product of the original JavaCC generation of this parser code.
+ * As of 2017-07-26, it has been pruned of unused code and has maximal encapsulation.
+ * Feel free to remove or refactor it if it no longer satisfies requirements.
  */
 public class ParseException extends Exception {
+    /**
+     * This variable determines which constructor was used to create
+     * this object and thereby affects the semantics of the
+     * "getMessage" method (see below).
+     */
+    private final boolean specialConstructor;
+
+    /**
+     * This is the last token that has been consumed successfully.  If
+     * this object has been created due to a parse error, the token
+     * followng this token will (therefore) be the first error token.
+     */
+    private final Token currentToken;
+
+    /**
+     * Each entry in this array is an array of integers.  Each array
+     * of integers represents a sequence of tokens (by their ordinal
+     * values) that is expected at this point of the parse.
+     */
+    private final int[][] expectedTokenSequences;
+
+    /** Literal token values. */
+    private static final String[] tokenImage = {
+        "<EOF>",
+        "\" \"",
+        "\"\\t\"",
+        "\"\\n\"",
+        "\"\\r\"",
+        "\"\\f\"",
+        "\"(\"",
+        "\")\"",
+        "\"[\"",
+        "\"]\"",
+        "\"{\"",
+        "\"}\"",
+        "\".\"",
+        "\"-\"",
+        "\"!\"",
+        "\"*\"",
+        "\"/\"",
+        "\"+\"",
+        "\"<\"",
+        "\">\"",
+        "\"=\"",
+        "\"==\"",
+        "\"!=\"",
+        "\"&&\"",
+        "\"||\"",
+        "\",\"",
+        "\";\"",
+        "\"public\"",
+        "\"static\"",
+        "\"void\"",
+        "\"main\"",
+        "\"String\"",
+        "\"class\"",
+        "\"extends\"",
+        "\"Thread\"",
+        "\"synchronized\"",
+        "\"return\"",
+        "\"if\"",
+        "\"else\"",
+        "\"while\"",
+        "\"Xinu\"",
+        "\"true\"",
+        "\"false\"",
+        "\"this\"",
+        "\"null\"",
+        "\"new\"",
+        "\"int\"",
+        "\"boolean\"",
+        "\"//\"",
+        "<token of kind 49>",
+        "\"/*\"",
+        "<SINGLE_LINE_COMMENT>",
+        "\"*/\"",
+        "\"*/\"",
+        "<token of kind 54>",
+        "<INT>",
+        "<OCT>",
+        "<HEX>",
+        "<STRING>",
+        "<ID>",
+        "<LETTER>",
+        "<DIGIT>",
+        "<token of kind 62>",
+    };
+
+    /**
+     * The end of line string for this machine.
+     */
+    private static final String eol = System.getProperty("line.separator", "\n");
+
     /**
      * This constructor is used by the method "generateParseException"
      * in the generated parser.  Calling this constructor generates
@@ -22,12 +119,11 @@ public class ParseException extends Exception {
      * print the error message in the form:
      *     ParseException: <result of getMessage>
      */
-    public ParseException(Token currentTokenVal, int[][] expectedTokenSequencesVal, String[] tokenImageVal) {
+    public ParseException(Token currentTokenVal, int[][] expectedTokenSequencesVal) {
         super("");
         specialConstructor = true;
         currentToken = currentTokenVal;
         expectedTokenSequences = expectedTokenSequencesVal;
-        tokenImage = tokenImageVal;
     }
 
     /**
@@ -42,41 +138,9 @@ public class ParseException extends Exception {
     public ParseException() {
         super();
         specialConstructor = false;
+        currentToken = null;
+        expectedTokenSequences = null;
     }
-
-    /** Constructor with message. */
-    public ParseException(String message) {
-        super(message);
-        specialConstructor = false;
-    }
-
-    /**
-     * This variable determines which constructor was used to create
-     * this object and thereby affects the semantics of the
-     * "getMessage" method (see below).
-     */
-    protected boolean specialConstructor;
-
-    /**
-     * This is the last token that has been consumed successfully.  If
-     * this object has been created due to a parse error, the token
-     * followng this token will (therefore) be the first error token.
-     */
-    public Token currentToken;
-
-    /**
-     * Each entry in this array is an array of integers.  Each array
-     * of integers represents a sequence of tokens (by their ordinal
-     * values) that is expected at this point of the parse.
-     */
-    public int[][] expectedTokenSequences;
-
-    /**
-     * This is a reference to the "tokenImage" array of the generated
-     * parser within which the parse error occurred.  This array is
-     * defined in the generated ...Constants interface.
-     */
-    public String[] tokenImage;
 
     /**
      * This method has the standard behavior when this object has been
@@ -132,16 +196,11 @@ public class ParseException extends Exception {
     }
 
     /**
-     * The end of line string for this machine.
-     */
-    protected String eol = System.getProperty("line.separator", "\n");
-
-    /**
      * Used to convert raw characters to their escaped version
      * when these raw version cannot be used as part of an ASCII
      * string literal.
      */
-    protected String add_escapes(String str) {
+    private String add_escapes(String str) {
         StringBuffer retval = new StringBuffer();
         char ch;
         for (int i = 0; i < str.length(); i++) {
@@ -183,5 +242,5 @@ public class ParseException extends Exception {
             }
         }
         return retval.toString();
-     }
+    }
 }
