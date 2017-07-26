@@ -54,7 +54,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// MainClassDeclaration ::=	ClassName "{" "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")" "{" ( VarDeclaration )* ( Statement )* "}" "}"
+// MainClassDeclaration ::= ClassName "{" "public" "static" "void" "main" "(" "String" "[" "]" <ID> ")" "{" ( VarDeclaration )* ( Statement )* "}" "}"
   static final public void MainClassDeclaration(LinkedList<ClassDecl> classList) throws ParseException {
         String name;
         Token argsId;
@@ -116,7 +116,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
                 classList.add(new ClassDecl(name, null, new LinkedList<VarDecl>(), methods));
   }
 
-// ClassDeclaration	::=	ClassName ( "extends" <ID> )? "{" ( FieldDeclaration | MethodDeclaration | VoidDeclaration )* "}"
+// ClassDeclaration ::= ClassName ( "extends" <ID> )? "{" ( FieldDeclaration | MethodDeclaration | VoidDeclaration )* "}"
   static final public void ClassDeclaration(LinkedList<ClassDecl> classList) throws ParseException {
         String name;
         Token parent = null;
@@ -596,7 +596,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   }
 
 // Expression2 ::= Expression3 ( "==" Expression3 )*
-//			   |   Expression3 ( "!=" Expression3 )*
+//             |   Expression3 ( "!=" Expression3 )*
   static final public Expr Expression2() throws ParseException {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
@@ -642,7 +642,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   }
 
 // Expression3 ::= Expression4 ( "<" Expression4 )*
-//			   |   Expression4 ( ">" Expression4 )*
+//             |   Expression4 ( ">" Expression4 )*
   static final public Expr Expression3() throws ParseException {
         Expr left, right = null;
     LinkedList<Expr> exprs = new LinkedList<Expr>();
@@ -688,7 +688,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   }
 
 // Expression4 ::= Expression5 ( "+" Expression5 )*
-//			   |   Expression5 ( "-" Expression5 )*
+//             |   Expression5 ( "-" Expression5 )*
   static final public Expr Expression4() throws ParseException {
         Expr left, right = null;
     LinkedList<Expr> exprs = new LinkedList<Expr>();
@@ -734,7 +734,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
   }
 
 // Expression5 ::= Expression6 ( "*" Expression6 )*
-//			   |   Expression6 ( "/" Expression6 )*
+//             |   Expression6 ( "/" Expression6 )*
   static final public Expr Expression5() throws ParseException {
         Expr left, right = null;
     LinkedList<Expr> exprs = new LinkedList<Expr>();
@@ -779,8 +779,8 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// Expression6 ::=	( "-" )+ Expression7
-//             |	( "!" )+ Expression7
+// Expression6 ::=  ( "-" )+ Expression7
+//             |    ( "!" )+ Expression7
 //             |   Expression7
   static final public Expr Expression6() throws ParseException {
         Expr expr;
@@ -821,7 +821,7 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     throw new Error("Missing return statement in function");
   }
 
-// Expression7 ::=	( "(" Expression ")" | Expression8 ) ( "." <ID> ( MethodCall )? | "[" Expression "]" )*
+// Expression7 ::=  ( "(" Expression ")" | Expression8 ) ( "." <ID> ( MethodCall )? | "[" Expression "]" )*
   static final public Expr Expression7() throws ParseException {
         Expr left, right = null;
         LinkedList<Expr> exprs = new LinkedList<Expr>();
@@ -966,16 +966,16 @@ public class MiniJavaParser implements MiniJavaParserConstants {
     jj_consume_token(7);
   }
 
-// Expression8 ::=	NewDecl "(" ")"
+// Expression8 ::=  NewDecl "(" ")"
 //             |    NewDecl "[" Expression "]" ( "[" "]" )*
-//             |	"Xinu" "." <ID> "(" ( Expression ( "," Expression )* )? ")"
-//             |	<ID>
-//             |	<INT>
-//             |	<STRING>
-//             |	"true"
-//             |	"false"
-//             |	"this"
-//             |	"null"
+//             |    "Xinu" "." <ID> "(" ( Expression ( "," Expression )* )? ")"
+//             |    <ID>
+//             |    <INT>
+//             |    <STRING>
+//             |    "true"
+//             |    "false"
+//             |    "this"
+//             |    "null"
   static final public Expr Expression8() throws ParseException {
         Type type = null;
         Expr expr = null;
