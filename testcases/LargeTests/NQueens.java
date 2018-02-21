@@ -1,4 +1,4 @@
-/* A MiniJava program to solve the 8-queens problem */
+/* A program to solve the 8-queens problem */
 class NQueens {
     public static void main (String[] a) {
     int n;

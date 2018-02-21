@@ -1,30 +1,37 @@
-# MiniJava Compiler
+# javar
 
-## Installation
+#### Java Compiler written in Java
+
+## Building
 
 ### Dependencies
-* JavaCC for generating parsers (.java files are included, so you only need this if you are updating the parser)
-* Java 8
+* JavaCC 7.0.3 for generating parsers files
+  * Note: This is only needed if the parser files need to be re-generated
+* jdk9
 
-### Make
-> cd MiniJava-Compiler/src/
-> make all
+### IDE
 
-### Alternative Installation (without Make)
-> cd MiniJava-Compiler
-> javac -d out -cp src Main.java
+**Recommended: IntelliJ IDEA**
 
-.class files will be located under MiniJava-Compiler/out/
+Whille using an IDE, you can build and run by simply pressing "Run".
+
+### Build from command line
+
+```bash
+javac -d out -cp src/ src/Main.java
+```
 
 ## Usage
-> cd MiniJava-Compiler
-> java -cp out Main --mips [inputfiles]
+
+```bash
+java -cp out Main --mips [inputfiles]
+```
 
 `inputfiles` is a space-separated list of at least one file path. The path can be absolute or relative to the current directory.
 
-Available target architectures:
+### Available Target Architectures
+
 * MIPS
-* More to come... (x86, LLVM, JVM bytecode)
 
 ## Current Plans
 * Refactoring:

@@ -2,7 +2,7 @@ import arch.Arch;
 import arch.mips.MipsArch;
 import frontend.parse.ast.Program;
 import backend.assem.Instr;
-import frontend.parse.MiniJavaParser;
+import frontend.parse.JavarParser;
 import frontend.translate.Translate;
 import frontend.typecheck.TypeChecker;
 import frontend.translate.Frag;
@@ -82,7 +82,7 @@ public class Main {
             }
 
             // parse source code
-            Program program = new MiniJavaParser(reader).Goal();
+            Program program = new JavarParser(reader).Goal();
 
             // type check the program
             new TypeChecker().visit(program);

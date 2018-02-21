@@ -160,7 +160,7 @@ public class MipsFrame extends Frame {
 
     public Access allocLocal(boolean escape){
         if(escape){
-            // This case will not happen in minijava, the passed arg to allocLocal here is a ..
+            // This case will not happen in our language, the passed arg to allocLocal here is a ..
             // .. formality.
             frameOffset += wordSize(); // Basically what happens in the else case in allocFormal
             return new InFrame(frameOffset);
