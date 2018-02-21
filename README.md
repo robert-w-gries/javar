@@ -1,6 +1,6 @@
 # javar
 
-#### Java Compiler written in Java
+A Java Compiler written in Java.  It currently can compile simple Java programs to MIPS assembly format.
 
 ## Building
 
