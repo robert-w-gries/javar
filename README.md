@@ -5,9 +5,9 @@ A Java Compiler written in Java.  It currently can compile simple Java programs 
 ## Building
 
 ### Dependencies
-* JavaCC 7.0.3 for generating parsers files
-  * Note: This is only needed if the parser files need to be re-generated
 * jdk9
+* JavaCC 6.0
+  * Note: This is only needed if the parser files need to be re-generated
 
 ### IDE
 
@@ -32,6 +32,37 @@ java -cp out Main --mips [inputfiles]
 ### Available Target Architectures
 
 * MIPS
+
+## Generating Parser using JavaCC
+
+### Usage
+
+
+```bash
+javacc -OUTPUT_DIRECTORY=src/frontend/parse/ src/frontend/parse/JavarParser.jj
+```
+
+### Issues with javacc
+
+Since `6.0`, the advertised `javacc` script is not packaged in binaries.  You will need to add the following script in `javacc-6.0/bin/`:
+
+```bash
+#!/bin/sh
+JAR="`dirname $0`/lib/javacc.jar"
+
+case "`uname`" in
+     CYGWIN*) JAR="`cygpath --windows -- "$JAR"`" ;;
+esac
+
+java -classpath "$JAR" javacc "$@"
+
+```
+
+Make sure that the `JAR` variable points to the correct location of the `javacc.jar` file.
+
+# Features
+
+## TODO
 
 ## Current Plans
 * Refactoring:
