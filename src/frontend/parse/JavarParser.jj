@@ -1,16 +1,15 @@
-PARSER_BEGIN(MiniJavaParser)
+PARSER_BEGIN(JavarParser)
 package frontend.parse;
 
 import java.util.LinkedList;
-import Absyn.*;
-import java.io.*;
+import frontend.parse.ast.*;
 
-public class MiniJavaParser {
+public class JavarParser {
 } 
-PARSER_END(MiniJavaParser)
+PARSER_END(JavarParser)
 
 /**************************************************
- * The MiniJava language lexical spec starts here *
+ * The Javar language lexical spec starts here *
  **************************************************/
 
 TOKEN_MGR_DECLS :
@@ -149,7 +148,7 @@ SKIP :
 }
 
 /**************************************************
- * The MiniJava language grammar starts here      *
+ * The Javar language grammar starts here      *
  **************************************************/
 
 // Goal ::= MainClassDeclaration ( ClassDeclaration | ThreadDeclaration )* <EOF>

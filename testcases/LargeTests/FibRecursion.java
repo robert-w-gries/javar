@@ -1,4 +1,3 @@
-/* A MiniJava program to solve the 8-queens problem */
 class FibRecursion {
     public static void main (String[] a) {
         int n = 0;

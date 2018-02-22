@@ -1,30 +1,68 @@
-# MiniJava Compiler
+# javar
 
-## Installation
+A Java Compiler written in Java.  It currently can compile simple Java programs to MIPS assembly format.
+
+## Building
 
 ### Dependencies
-* JavaCC for generating parsers (.java files are included, so you only need this if you are updating the parser)
-* Java 8
+* jdk9
+* [JavaCC 7.0.3](https://github.com/javacc/javacc)
+  * Note: This is only needed if the parser files need to be re-generated
 
-### Make
-> cd MiniJava-Compiler/src/
-> make all
+### IDE
 
-### Alternative Installation (without Make)
-> cd MiniJava-Compiler
-> javac -d out -cp src Main.java
+**Recommended: IntelliJ IDEA**
 
-.class files will be located under MiniJava-Compiler/out/
+Whille using an IDE, you can build and run by simply pressing "Run".
+
+### Build from command line
+
+```bash
+javac -d out -cp src/ src/Main.java
+```
 
 ## Usage
-> cd MiniJava-Compiler
-> java -cp out Main --mips [inputfiles]
+
+```bash
+java -cp out Main --mips [inputfiles]
+```
 
 `inputfiles` is a space-separated list of at least one file path. The path can be absolute or relative to the current directory.
 
-Available target architectures:
+### Available Target Architectures
+
 * MIPS
-* More to come... (x86, LLVM, JVM bytecode)
+
+## Generating Parser using JavaCC
+
+### Usage
+
+
+```bash
+javacc -OUTPUT_DIRECTORY=src/frontend/parse/ src/frontend/parse/JavarParser.jj
+```
+
+### Issues with javacc
+
+Since `6.0`, the advertised `javacc` script is not packaged in binaries.  You will need to add the following script in `javacc-7.x.x/target/` after building:
+
+```bash
+#!/bin/sh
+JAR="`dirname $0`/javacc.jar"
+
+case "`uname`" in
+     CYGWIN*) JAR="`cygpath --windows -- "$JAR"`" ;;
+esac
+
+java -classpath "$JAR" javacc "$@"
+
+```
+
+Note: Make sure that the `JAR` variable points to the correct location of the `javacc.jar` file.
+
+# Features
+
+## TODO
 
 ## Current Plans
 * Refactoring:
