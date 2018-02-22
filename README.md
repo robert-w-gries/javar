@@ -6,7 +6,7 @@ A Java Compiler written in Java.  It currently can compile simple Java programs 
 
 ### Dependencies
 * jdk9
-* JavaCC 6.0
+* [JavaCC 7.0.3](https://github.com/javacc/javacc)
   * Note: This is only needed if the parser files need to be re-generated
 
 ### IDE
@@ -44,11 +44,11 @@ javacc -OUTPUT_DIRECTORY=src/frontend/parse/ src/frontend/parse/JavarParser.jj
 
 ### Issues with javacc
 
-Since `6.0`, the advertised `javacc` script is not packaged in binaries.  You will need to add the following script in `javacc-6.0/bin/`:
+Since `6.0`, the advertised `javacc` script is not packaged in binaries.  You will need to add the following script in `javacc-7.x.x/target/` after building:
 
 ```bash
 #!/bin/sh
-JAR="`dirname $0`/lib/javacc.jar"
+JAR="`dirname $0`/javacc.jar"
 
 case "`uname`" in
      CYGWIN*) JAR="`cygpath --windows -- "$JAR"`" ;;
@@ -58,7 +58,7 @@ java -classpath "$JAR" javacc "$@"
 
 ```
 
-Make sure that the `JAR` variable points to the correct location of the `javacc.jar` file.
+Note: Make sure that the `JAR` variable points to the correct location of the `javacc.jar` file.
 
 # Features
 
